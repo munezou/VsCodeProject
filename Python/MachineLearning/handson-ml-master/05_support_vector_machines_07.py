@@ -136,3 +136,22 @@ svm_clf.fit(X, y)
 
 print('svm_clf.predict([[5.3, 1.3]]) = {0}'.format(svm_clf.predict([[5.3, 1.3]])))
 print()
+
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '                                         Hinge loss                                                              \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
+t = np.linspace(-2, 4, 200)
+h = np.where(1 - t < 0, 0, 1 - t)  # max(0, 1-t)
+
+plt.figure(figsize=(5,2.8))
+plt.plot(t, h, "b-", linewidth=2, label="$max(0, 1 - t)$")
+plt.grid(True, which='both')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.yticks(np.arange(-1, 2.5, 1))
+plt.xlabel("$t$", fontsize=16)
+plt.axis([-2, 4, -1, 2.5])
+plt.legend(loc="upper right", fontsize=16)
+plt.show()
+
+print()
