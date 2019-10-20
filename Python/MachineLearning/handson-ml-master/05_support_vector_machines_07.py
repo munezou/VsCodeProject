@@ -87,3 +87,52 @@ plot_3D_decision_function(ax1, w=svm_clf2.coef_[0], b=svm_clf2.intercept_[0])
 
 #save_fig("iris_3D_plot")
 plt.show()
+print()
+
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '                           Small weight vector results in a large margin                                         \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
+def plot_2D_decision_function(w, b, ylabel=True, x1_lim=[-3, 3]):
+    x1 = np.linspace(x1_lim[0], x1_lim[1], 200)
+    y = w * x1 + b
+    m = 1 / w
+
+    plt.plot(x1, y)
+    plt.plot(x1_lim, [1, 1], "k:")
+    plt.plot(x1_lim, [-1, -1], "k:")
+    plt.axhline(y=0, color='k')
+    plt.axvline(x=0, color='k')
+    plt.plot([m, m], [0, 1], "k--")
+    plt.plot([-m, -m], [0, -1], "k--")
+    plt.plot([-m, m], [0, 0], "k-o", linewidth=3)
+    plt.axis(x1_lim + [-2, 2])
+    plt.xlabel(r"$x_1$", fontsize=16)
+    if ylabel:
+        plt.ylabel(r"$w_1 x_1$  ", rotation=0, fontsize=16)
+    plt.title(r"$w_1 = {}$".format(w), fontsize=16)
+
+plt.figure(figsize=(12, 5))
+plt.subplot(121)
+plot_2D_decision_function(1, 0)
+plt.subplot(122)
+plot_2D_decision_function(0.5, 0, ylabel=False)
+plt.show()
+
+print()
+
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '          Prediction by SVC when the error term penalty parameter (C = 1) is set                                 \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
+
+from sklearn.svm import SVC
+from sklearn import datasets
+
+iris = datasets.load_iris()
+X = iris["data"][:, (2, 3)] # petal length, petal width
+y = (iris["target"] == 2).astype(np.float64) # Iris-Virginica
+
+svm_clf = SVC(kernel="linear", C=1)
+svm_clf.fit(X, y)
+
+print('svm_clf.predict([[5.3, 1.3]]) = {0}'.format(svm_clf.predict([[5.3, 1.3]])))
+print()
