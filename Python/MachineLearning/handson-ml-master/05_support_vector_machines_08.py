@@ -107,4 +107,8 @@ svm_clf_predict = svm_clf.predict(np.array([[5, 2], [4, 1]]))
 print('svm_clf_predict = \n{0}'.format(svm_clf_predict))
 print()
 
+plt.plot(range(svm_clf.n_epochs), svm_clf.Js)
+plt.axis([0, svm_clf.n_epochs, 0, 100])
+plt.show()
+print()
 
