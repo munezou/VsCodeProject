@@ -1,5 +1,6 @@
 # using library
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.pipeline import Pipeline
@@ -9,6 +10,45 @@ from sklearn.svm import LinearSVC
 
 # prepare data
 iris = datasets.load_iris()
+
+# check data contens
+print('Keys of iris: \n{0}'.format(iris.keys()))
+print()
+
+print('First five columns of data: \n{0}'.format(iris['data'][:5]))
+print()
+
+print('Shape of data: {0}'.format(iris['data'].shape))
+print()
+
+print(iris['DESCR'][:193] + "\n...")
+print()
+
+print('Feature names: \n{0}'.format(iris['feature_names']))
+print()
+ 
+print('First five columns of target: \n{0}'.format(iris['target'][:5]))
+print()
+ 
+print('Filename: {0}'.format(iris['filename']))
+print()
+ 
+print('Target names: \n{}'.format(iris['target_names']))
+print()
+
+# plot data charactor
+iris_dataframe = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+print('iris_dataframe.head() = \n{0}'.format(iris_dataframe.head()))
+print()
+ 
+iris_datalabel = pd.Series(data=iris.target)
+print('iris_datalabel.head() = \n{0}'.format(iris_datalabel.head()))
+print()
+ 
+gr = pd.plotting.scatter_matrix(iris_dataframe, c=iris_datalabel, figsize=(8,8), marker = 'o', hist_kwds = {'bins':20}, s=60, alpha=.8)
+plt.show()
+
+# The feature quantity to be used is determined as the pental length and the pental width.
 X = iris["data"][:, (2, 3)]  # petal length, petal width
 y = iris["target"]
 
