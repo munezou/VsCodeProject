@@ -51,16 +51,16 @@ def plot_predictions(clf, axes):
     plt.contourf(x0, x1, y_pred, cmap=plt.cm.brg, alpha=0.2)
     plt.contourf(x0, x1, y_decision, cmap=plt.cm.brg, alpha=0.1)
 
-plt.figure(figsize=(11, 5))
+plt.figure(figsize=(12, 5))
 
 plt.subplot(121)
 plot_predictions(poly_kernel_svm_clf, [-1.5, 2.5, -1, 1.5])
 plot_dataset(X, y, [-1.5, 2.5, -1, 1.5])
-plt.title(r"$d=3, r=1, C=5$", fontsize=18)
+plt.title(r"$degree = 3, coef0 = 1, C = 5$", fontsize=15)
 
 plt.subplot(122)
 plot_predictions(poly100_kernel_svm_clf, [-1.5, 2.5, -1, 1.5])
 plot_dataset(X, y, [-1.5, 2.5, -1, 1.5])
-plt.title(r"$d=10, r=100, C=5$", fontsize=18)
+plt.title(r"$degree = 10, coef0 = 100, C = 5$", fontsize=15)
 
 plt.show()
