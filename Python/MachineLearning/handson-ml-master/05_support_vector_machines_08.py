@@ -13,6 +13,7 @@ from sklearn.svm import LinearSVC
 from sklearn.svm import LinearSVR
 from sklearn.svm import SVC
 from sklearn.svm import SVR
+from sklearn.linear_model import SGDClassifier
 
 print('------------------------------------------------------------------------------------------------------\n'
       '                           Extra material                                                             \n'
@@ -112,3 +113,72 @@ plt.axis([0, svm_clf.n_epochs, 0, 100])
 plt.show()
 print()
 
+print('svm_clf.intercept_ = {0}\n svm_clf.coef_ = \n{1}'.format(svm_clf.intercept_, svm_clf.coef_))
+print()
+
+svm_clf2 = SVC(kernel="linear", C=C)
+svm_clf2.fit(X, y.ravel())
+print('svm_clf2.intercept_ = {0}\n svm_clf2.coef_ = \n{1}'.format(svm_clf2.intercept_, svm_clf2.coef_))
+print()
+
+def plot_svc_decision_boundary(svm_clf, xmin, xmax):
+    w = svm_clf.coef_[0]
+    b = svm_clf.intercept_[0]
+
+    # At the decision boundary, w0*x0 + w1*x1 + b = 0
+    # => x1 = -w0/w1 * x0 - b/w1
+    x0 = np.linspace(xmin, xmax, 200)
+    decision_boundary = -w[0]/w[1] * x0 - b/w[1]
+
+    margin = 1/w[1]
+    gutter_up = decision_boundary + margin
+    gutter_down = decision_boundary - margin
+
+    svs = svm_clf.support_vectors_
+    plt.scatter(svs[:, 0], svs[:, 1], s=180, facecolors='#FFAAAA')
+    plt.plot(x0, decision_boundary, "k-", linewidth=2)
+    plt.plot(x0, gutter_up, "k--", linewidth=2)
+    plt.plot(x0, gutter_down, "k--", linewidth=2)
+
+yr = y.ravel()
+plt.figure(figsize=(12, 4.0))
+plt.subplot(121)
+plt.plot(X[:, 0][yr==1], X[:, 1][yr==1], "g^", label="Iris-Virginica")
+plt.plot(X[:, 0][yr==0], X[:, 1][yr==0], "bs", label="Not Iris-Virginica")
+plot_svc_decision_boundary(svm_clf, 4, 6)
+plt.xlabel("Petal length", fontsize=14)
+plt.ylabel("Petal width", fontsize=14)
+plt.title("MyLinearSVC", fontsize=14)
+plt.axis([4, 6, 0.8, 2.8])
+
+plt.subplot(122)
+plt.plot(X[:, 0][yr==1], X[:, 1][yr==1], "g^")
+plt.plot(X[:, 0][yr==0], X[:, 1][yr==0], "bs")
+plot_svc_decision_boundary(svm_clf2, 4, 6)
+plt.xlabel("Petal length", fontsize=14)
+plt.title("SVC", fontsize=14)
+plt.axis([4, 6, 0.8, 2.8])
+plt.show()
+
+sgd_clf = SGDClassifier(loss="hinge", alpha = 0.017, max_iter = 50, tol=-np.infty, random_state=42)
+sgd_clf.fit(X, y.ravel())
+
+m = len(X)
+t = y * 2 - 1  # -1 if t==0, +1 if t==1
+X_b = np.c_[np.ones((m, 1)), X]  # Add bias input x0=1
+X_b_t = X_b * t
+sgd_theta = np.r_[sgd_clf.intercept_[0], sgd_clf.coef_[0]]
+print('sgd_theta = {0}'.format(sgd_theta))
+support_vectors_idx = (X_b_t.dot(sgd_theta) < 1).ravel()
+sgd_clf.support_vectors_ = X[support_vectors_idx]
+sgd_clf.C = C
+
+plt.figure(figsize=(5.5,3.2))
+plt.plot(X[:, 0][yr==1], X[:, 1][yr==1], "g^")
+plt.plot(X[:, 0][yr==0], X[:, 1][yr==0], "bs")
+plot_svc_decision_boundary(sgd_clf, 4, 6)
+plt.xlabel("Petal length", fontsize=14)
+plt.ylabel("Petal width", fontsize=14)
+plt.title("SGDClassifier", fontsize=14)
+plt.axis([4, 6, 0.8, 2.8])
+plt.show()
