@@ -7,7 +7,7 @@ This dataset was obtained from the OECD's website at: http://stats.oecd.org/inde
 
     Int64Index: 3292 entries, 0 to 3291
     Data columns (total 17 columns):
-    ﻿"LOCATION"              3292 non-null object
+    "LOCATION"              3292 non-null object
     Country                  3292 non-null object
     INDICATOR                3292 non-null object
     Indicator                3292 non-null object

@@ -1,4 +1,4 @@
-﻿"LOCATION","Country","INDICATOR","Indicator","MEASURE","Measure","INEQUALITY","Inequality","Unit Code","Unit","PowerCode Code","PowerCode","Reference Period Code","Reference Period","Value","Flag Codes","Flags"
+"LOCATION","Country","INDICATOR","Indicator","MEASURE","Measure","INEQUALITY","Inequality","Unit Code","Unit","PowerCode Code","PowerCode","Reference Period Code","Reference Period","Value","Flag Codes","Flags"
 "AUS","Australia","HO_BASE","Dwellings without basic facilities","L","Value","TOT","Total","PC","Percentage","0","units",,,1.1,"E","Estimated value"
 "AUT","Austria","HO_BASE","Dwellings without basic facilities","L","Value","TOT","Total","PC","Percentage","0","units",,,1,,
 "BEL","Belgium","HO_BASE","Dwellings without basic facilities","L","Value","TOT","Total","PC","Percentage","0","units",,,2,,
