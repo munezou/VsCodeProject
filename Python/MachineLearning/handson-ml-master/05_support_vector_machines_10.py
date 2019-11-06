@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_openml
+from sklearn.svm import LinearSVC
 
 
 print('--------------------------------------------------------------------------------------------------------------\n'
@@ -34,3 +35,7 @@ y_train = y_train[rnd_idx]
 
 # Let's start simple, with a linear SVM classifier. 
 # It will automatically use the One-vs-All (also called One-vs-the-Rest, OvR) strategy, so there's nothing special we need to do. Easy!
+lin_clf = LinearSVC(random_state=42)
+lin_clf_fit = lin_clf.fit(X_train, y_train)
+print('lin_clf_fit = \n{0}'.format(lin_clf_fit))
+print()
