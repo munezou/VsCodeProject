@@ -35,13 +35,12 @@ with open(sys.argv[1], encoding='utf-8') as fp:
             location = (line_no, column_no)
             print ('location = ( {0}, {1} )'.format(line_no, column_no))
             # this is ugly; coded like this to make a point
-            occurrences = index.get(word, [])  # <1>
-            occurrences.append(location)       # <2>
-            index[word] = occurrences          # <3>
-            print ('index[{0}] = {1}'.format(word, occurrences))
+            index.setdefault(word, []).append(location)
+            print ('index[{0}] = {1}'.format(word, location))
         print ()
 
 # print in alphabetical order
 for word in sorted(index, key=str.upper):  # <4>
     print(word, index[word])
+
 # END INDEX0
