@@ -3,43 +3,9 @@
 # selecting best promotion from list of functions
 # registered by a decorator
 
-"""
-    >>> joe = Customer('John Doe', 0)
-    >>> ann = Customer('Ann Smith', 1100)
-    >>> cart = [LineItem('banana', 4, .5),
-    ...         LineItem('apple', 10, 1.5),
-    ...         LineItem('watermellon', 5, 5.0)]
-    >>> Order(joe, cart, fidelity)
-    <Order total: 42.00 due: 42.00>
-    >>> Order(ann, cart, fidelity)
-    <Order total: 42.00 due: 39.90>
-    >>> banana_cart = [LineItem('banana', 30, .5),
-    ...                LineItem('apple', 10, 1.5)]
-    >>> Order(joe, banana_cart, bulk_item)
-    <Order total: 30.00 due: 28.50>
-    >>> long_order = [LineItem(str(item_code), 1, 1.0)
-    ...               for item_code in range(10)]
-    >>> Order(joe, long_order, large_order)
-    <Order total: 10.00 due: 9.30>
-    >>> Order(joe, cart, large_order)
-    <Order total: 42.00 due: 42.00>
-
-# BEGIN STRATEGY_BEST_TESTS
-
-    >>> Order(joe, long_order, best_promo)
-    <Order total: 10.00 due: 9.30>
-    >>> Order(joe, banana_cart, best_promo)
-    <Order total: 30.00 due: 28.50>
-    >>> Order(ann, cart, best_promo)
-    <Order total: 42.00 due: 39.90>
-
-# END STRATEGY_BEST_TESTS
-"""
-
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
-
 
 class LineItem:
 
@@ -111,3 +77,36 @@ def best_promo(order):  # <4>
     return max(promo(order) for promo in promos)
 
 # END STRATEGY_BEST4
+
+# BEGIN STRATEGY_BEST_TESTS
+joe = Customer('John Doe', 0)
+ann = Customer('Ann Smith', 1100)
+cart = [LineItem('banana', 4, .5),
+        LineItem('apple', 10, 1.5),
+        LineItem('watermellon', 5, 5.0)]
+
+Order_joe_cart_fidelity = Order(joe, cart, fidelity)
+print('Order_joe_cart_fidelity = {0}'.format(Order_joe_cart_fidelity))
+
+Order_ann_cart_fidelity = Order(ann, cart, fidelity)
+print('Order_ann_cart_fidelity = {0}'.format(Order_ann_cart_fidelity))
+
+banana_cart = [LineItem('banana', 30, .5),
+               LineItem('apple', 10, 1.5)]
+
+joe_banana_cart_bulk = Order(joe, banana_cart, bulk_item)
+print('joe_banana_cart_bulk = {0}'.format(joe_banana_cart_bulk))
+print()
+
+long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
+
+Order_joe_long_best = Order(joe, long_order, best_promo)
+print('Order_joe_long_best = {0}'.format(Order_joe_long_best))
+
+Order_joe_banana_best = Order(joe, banana_cart, best_promo)
+print('Order_joe_banana_best = {0}'.format(Order_joe_banana_best))
+
+Order_ann_cart_best = Order(ann, cart, best_promo)
+print('Order_ann_cart_best = {0}'.format(Order_ann_cart_best))
+print()             
+# END STRATEGY_BEST_TESTS
