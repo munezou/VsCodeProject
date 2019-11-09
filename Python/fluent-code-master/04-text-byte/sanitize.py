@@ -4,11 +4,11 @@ Radical folding and text sanitizing.
 
 Handling a string with `cp1252` symbols:
 
-    >>> order = '�gHerr Vos:   cup of tker caffe latte  bowl of acai.�h'
+    >>> order = '“Herr Vos:   cup of tker caffe latte  bowl of acai.”'
     >>> shave_marks(order)
-    '�gHerr Vos:   cup of tker caffe latte  bowl of acai.�h'
+    '“Herr Vos:   cup of tker caffe latte  bowl of acai.”'
     >>> shave_marks_latin(order)
-    '�gHerr Vos:   cup of tker caffe latte  bowl of acai.�h'
+    '“Herr Vos:   cup of tker caffe latte  bowl of acai.”'
     >>> dewinize(order)
     '"Herr Vos: -  cup of OEtker(TM) caffe latte - bowl of acai."'
     >>> asciize(order)
@@ -16,15 +16,15 @@ Handling a string with `cp1252` symbols:
 
 Handling a string with Greek and Latin accented characters:
 
-    >>> greek = '���Ӄ҃σ�, Zefiro'
+    >>> greek = 'Ζφυρο, Zefiro'
     >>> shave_marks(greek)
-    '���ÃӃ҃σ�, Zefiro'
+    'Ζεφυρο, Zefiro'
     >>> shave_marks_latin(greek)
-    '���Ӄ҃σ�, Zefiro'
+    'Ζφυρο, Zefiro'
     >>> dewinize(greek)
-    '���Ӄ҃σ�, Zefiro'
+    'Ζφυρο, Zefiro'
     >>> asciize(greek)
-    '���Ӄ҃σ�, Zefiro'
+    'Ζφυρο, Zefiro'
 
 """
 
@@ -59,17 +59,17 @@ def shave_marks_latin(txt):
 # END SHAVE_MARKS_LATIN
 
 # BEGIN ASCIIZE
-single_map = str.maketrans("""���e�f�g�h""",  # <1>
+single_map = str.maketrans("""‚ƒ„†ˆ‹‘’“”•–—˜›""",  # <1>
                            """'f"*^<''""---~>""")
 
 multi_map = str.maketrans({  # <2>
-    '': '<euro>',
-    '�c': '...',
-    '': 'OE',
-    '': '(TM)',
-    '': 'oe',
-    '��': '<per mille>',
-    '��': '**',
+    '€': '<euro>',
+    '…': '...',
+    '€': 'OE',
+    '™': '(TM)',
+    'œ': 'oe',
+    '‰': '<per mille>',
+    '‡': '**',
 })
 
 multi_map.update(single_map)  # <3>
@@ -85,3 +85,20 @@ def asciize(txt):
     no_marks = no_marks.replace('s', 'ss')          # <6>
     return unicodedata.normalize('NFKC', no_marks)  # <7>
 # END ASCIIZE
+
+print('----------------------------------------------------------------------\n'
+      '          4.6.3 Extreme normalization to remove sign symbols          \n'
+      '----------------------------------------------------------------------\n')
+order = '“Herr Voß: • ½ cup of Œtker™ caffè latte • bowl of açaí.”'
+print('order = {0}'.format(order))
+print('shave_marks(order) = {0}'.format(shave_marks(order)))
+print()
+greek = 'Ζφυρο, Zefiro'
+print('greek = {0}'.format(greek))
+print('shave_marks(greek) = {0}'.format(shave_marks(greek)))
+print()
+
+print('shave_marks_latin(order) = {0}'.format(shave_marks_latin(order)))
+print()
+print('shave_marks_latin(greek) = {0}'.format(shave_marks_latin(greek)))
+print()
