@@ -1,7 +1,8 @@
-# strategy_best2.py
-# Strategy pattern -- function-based implementation
-# selecting best promotion from current module globals
+# common library
+#import os, sys
+#sys.path.append(os.path.dirname(__file__))
 
+#class
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
@@ -34,15 +35,16 @@ class Order:  # the Context
         if self.promotion is None:
             discount = 0
         else:
-            discount = self.promotion(self)
+            discount = self.promotion(self)  # <1>
         return self.total() - discount
 
     def __repr__(self):
         fmt = '<Order total: {:.2f} due: {:.2f}>'
         return fmt.format(self.total(), self.due())
 
+# <2>
 
-def fidelity_promo(order):
+def fidelity_promo(order):  # <3>
     """5% discount for customers with 1000 or more fidelity points"""
     return order.total() * .05 if order.customer.fidelity >= 1000 else 0
 
@@ -63,36 +65,32 @@ def large_order_promo(order):
         return order.total() * .07
     return 0
 
-# BEGIN STRATEGY_BEST2
-
-promos = [globals()[name] for name in globals()  # <1>
-            if name.endswith('_promo')  # <2>
-            and name != 'best_promo']   # <3>
-
-def best_promo(order):
-    """Select best discount available
-    """
-    return max(promo(order) for promo in promos)  # <4>
-# END STRATEGY_BEST2
-
-
-
-# BEGIN STRATEGY_BEST_TESTS
+'''
+------------------------------------------------------------------------------------------------------------------------
+6.1.2 Function-oriented strategy pattern
+------------------------------------------------------------------------------------------------------------------------
+'''
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '                           6.1.2 Function-oriented strategy pattern                                              \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
 joe = Customer('John Doe', 0)
 ann = Customer('Ann Smith', 1100)
-cart = [LineItem('banana', 4, .5), LineItem('apple', 10, 1.5), LineItem('watermellon', 5, 5.0)]
-banana_cart = [LineItem('banana', 30, .5), LineItem('apple', 10, 1.5)]
+cart = [LineItem('banana', 4, .5),
+        LineItem('apple', 10, 1.5),
+        LineItem('watermellon', 5, 5.0)]
+
+print('Order(joe, cart, fidelity_promo) = {0}'.format(Order(joe, cart, fidelity_promo)))
+
+print('Order(ann, cart, fidelity_promo) = {0}'.format(Order(ann, cart, fidelity_promo)))
+
+banana_cart = [LineItem('banana', 30, .5),
+               LineItem('apple', 10, 1.5)]
+
+print('Order(joe, banana_cart, bulk_item_promo) = {0}'.format(Order(joe, banana_cart, bulk_item_promo)))
+
 long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
 
-joe_long_order_best = Order(joe, long_order, best_promo)
-print('joe_long_order_best = \n{0}'.format(joe_long_order_best))
-print()
+print('Order(joe, long_order, large_order_promo) = {0}'.format(Order(joe, long_order, large_order_promo)))
 
-joe_banana_cart_best = Order(joe, banana_cart, best_promo)
-print('joe_banana_cart_best = \n{0}'.format(joe_banana_cart_best))
+print('Order(joe, cart, large_order_promo) = {0}'.format(Order(joe, cart, large_order_promo)))
 print()
-
-ann_cart_best = Order(ann, cart, best_promo)
-print('ann_cart_best = \n{0}'.format(ann_cart_best))
-print()
-# END STRATEGY_BEST_TESTS

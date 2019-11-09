@@ -2,43 +2,10 @@
 # Strategy pattern -- function-based implementation
 # selecting best promotion from static list of functions
 
-"""
-    >>> joe = Customer('John Doe', 0)
-    >>> ann = Customer('Ann Smith', 1100)
-    >>> cart = [LineItem('banana', 4, .5),
-    ...         LineItem('apple', 10, 1.5),
-    ...         LineItem('watermellon', 5, 5.0)]
-    >>> Order(joe, cart, fidelity_promo)
-    <Order total: 42.00 due: 42.00>
-    >>> Order(ann, cart, fidelity_promo)
-    <Order total: 42.00 due: 39.90>
-    >>> banana_cart = [LineItem('banana', 30, .5),
-    ...                LineItem('apple', 10, 1.5)]
-    >>> Order(joe, banana_cart, bulk_item_promo)
-    <Order total: 30.00 due: 28.50>
-    >>> long_order = [LineItem(str(item_code), 1, 1.0)
-    ...               for item_code in range(10)]
-    >>> Order(joe, long_order, large_order_promo)
-    <Order total: 10.00 due: 9.30>
-    >>> Order(joe, cart, large_order_promo)
-    <Order total: 42.00 due: 42.00>
-
-# BEGIN STRATEGY_BEST_TESTS
-
-    >>> Order(joe, long_order, best_promo)  # <1>
-    <Order total: 10.00 due: 9.30>
-    >>> Order(joe, banana_cart, best_promo)  # <2>
-    <Order total: 30.00 due: 28.50>
-    >>> Order(ann, cart, best_promo)  # <3>
-    <Order total: 42.00 due: 39.90>
-
-# END STRATEGY_BEST_TESTS
-"""
-
+# START STRATEGY_BEST
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
-
 
 class LineItem:
 
@@ -104,5 +71,27 @@ def best_promo(order):  # <2>
     """Select best discount available
     """
     return max(promo(order) for promo in promos)  # <3>
-
 # END STRATEGY_BEST
+
+# BEGIN STRATEGY_BEST_TESTS
+joe = Customer('John Doe', 0)
+ann = Customer('Ann Smith', 1100)
+
+cart = [LineItem('banana', 4, .5), LineItem('apple', 10, 1.5), LineItem('watermellon', 5, 5.0)]
+
+banana_cart = [LineItem('banana', 30, .5), LineItem('apple', 10, 1.5)]
+
+long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
+    
+joe_long_order_best = Order(joe, long_order, best_promo)  # <1>
+print('joe_long_order_best = \n{0}'.format(joe_long_order_best))
+print()
+
+joe_bana_cart_best = Order(joe, banana_cart, best_promo)  # <2>
+print('joe_banana_cart_best = \n{0}'.format(joe_bana_cart_best))
+print()
+
+ann_cart_best = Order(ann, cart, best_promo)  # <3>
+print('ann_cart_best = \n{0}'.format(ann_cart_best))
+print()
+# END STRATEGY_BEST_TESTS

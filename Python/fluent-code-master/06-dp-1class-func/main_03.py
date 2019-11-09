@@ -1,7 +1,10 @@
-# strategy_best2.py
-# Strategy pattern -- function-based implementation
-# selecting best promotion from current module globals
+# common library
+#import os, sys
+#sys.path.append(os.path.dirname(__file__))
 
+#from strategy_best2 import *
+
+# class
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
@@ -73,26 +76,53 @@ def best_promo(order):
     """Select best discount available
     """
     return max(promo(order) for promo in promos)  # <4>
-# END STRATEGY_BEST2
 
 
-
-# BEGIN STRATEGY_BEST_TESTS
+'''
+------------------------------------------------------------------------------------------------------------------------
+6.1.4 Search for a strategy in a module.
+------------------------------------------------------------------------------------------------------------------------
+'''
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '                          6.1.4-1 Search for a strategy in a module.                                             \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
 joe = Customer('John Doe', 0)
 ann = Customer('Ann Smith', 1100)
-cart = [LineItem('banana', 4, .5), LineItem('apple', 10, 1.5), LineItem('watermellon', 5, 5.0)]
-banana_cart = [LineItem('banana', 30, .5), LineItem('apple', 10, 1.5)]
+cart = [LineItem('banana', 4, .5),
+        LineItem('apple', 10, 1.5),
+        LineItem('watermellon', 5, 5.0)]
+
+Order_joe_cart_fidelity = Order(joe, cart, fidelity_promo)
+print('Order_joe_cart_fidelity = {0}'.format(Order_joe_cart_fidelity))
+
+Order_ann_cart_fidelity = Order(ann, cart, fidelity_promo)
+print('Order_ann_cart_fidelity = {0}'.format(Order_ann_cart_fidelity))
+
+banana_cart = [LineItem('banana', 30, .5),
+               LineItem('apple', 10, 1.5)]
+
+Order_joe_banana_bulk = Order(joe, banana_cart, bulk_item_promo)
+print('Order_joe_banana_bulk = {0}'.format(Order_joe_banana_bulk))
+
 long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
 
-joe_long_order_best = Order(joe, long_order, best_promo)
-print('joe_long_order_best = \n{0}'.format(joe_long_order_best))
+Order_joe_long_large = Order(joe, long_order, large_order_promo)
+print('Order_joe_long_large = {0}'.format(Order_joe_long_large))
+
+Order_joe_cart_large = Order(joe, cart, large_order_promo)
+print('Order_joe_cart_large = {0}'.format(Order_joe_cart_large))
 print()
 
-joe_banana_cart_best = Order(joe, banana_cart, best_promo)
-print('joe_banana_cart_best = \n{0}'.format(joe_banana_cart_best))
-print()
+# BEGIN STRATEGY_BEST_TESTS
 
-ann_cart_best = Order(ann, cart, best_promo)
-print('ann_cart_best = \n{0}'.format(ann_cart_best))
-print()
+print('---< BEGIN STRATEGY_BEST_TESTS >---')
+Order_joe_long_best = Order(joe, long_order, best_promo)
+print('Order_joe_long_best = {0}'.format(Order_joe_long_best))
+
+Order_joe_banana_best = Order(joe, banana_cart, best_promo)
+print('Order_joe_banana_best = {0}'.format(Order_joe_banana_best))
+
+Order_ann_cart_best = Order(ann, cart, best_promo)
+print('Order_ann_cart_best = {0}'.format(Order_ann_cart_best))
+
 # END STRATEGY_BEST_TESTS

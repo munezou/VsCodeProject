@@ -1,37 +1,10 @@
 # strategy.py
 # Strategy pattern -- function-based implementation
 
-"""
-# BEGIN STRATEGY_TESTS
-
-    >>> joe = Customer('John Doe', 0)  # <1>
-    >>> ann = Customer('Ann Smith', 1100)
-    >>> cart = [LineItem('banana', 4, .5),
-    ...         LineItem('apple', 10, 1.5),
-    ...         LineItem('watermellon', 5, 5.0)]
-    >>> Order(joe, cart, fidelity_promo)  # <2>
-    <Order total: 42.00 due: 42.00>
-    >>> Order(ann, cart, fidelity_promo)
-    <Order total: 42.00 due: 39.90>
-    >>> banana_cart = [LineItem('banana', 30, .5),
-    ...                LineItem('apple', 10, 1.5)]
-    >>> Order(joe, banana_cart, bulk_item_promo)  # <3>
-    <Order total: 30.00 due: 28.50>
-    >>> long_order = [LineItem(str(item_code), 1, 1.0)
-    ...               for item_code in range(10)]
-    >>> Order(joe, long_order, large_order_promo)
-    <Order total: 10.00 due: 9.30>
-    >>> Order(joe, cart, large_order_promo)
-    <Order total: 42.00 due: 42.00>
-
-# END STRATEGY_TESTS
-"""
 # BEGIN STRATEGY
-
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
-
 
 class LineItem:
 
@@ -89,5 +62,35 @@ def large_order_promo(order):
     if len(distinct_items) >= 10:
         return order.total() * .07
     return 0
-
 # END STRATEGY
+
+
+# BEGIN STRATEGY_TESTS
+joe = Customer('John Doe', 0)  # <1>
+ann = Customer('Ann Smith', 1100)
+cart = [LineItem('banana', 4, .5), LineItem('apple', 10, 1.5), LineItem('watermellon', 5, 5.0)]
+
+joe_cart_fidelity = Order(joe, cart, fidelity_promo)  # <2>
+print('joe_cart_fidelity = \n{0}'.format(joe_cart_fidelity))
+print()
+
+ann_cart_fidelity = Order(ann, cart, fidelity_promo)
+print('ann_cart_fidelity = \n{0}'.format(ann_cart_fidelity))
+print()
+
+banana_cart = [LineItem('banana', 30, .5), LineItem('apple', 10, 1.5)]
+
+joe_banana_cart_bulk = Order(joe, banana_cart, bulk_item_promo)  # <3>
+print('joe_banana_cart_bulk = \n{0}'.format(joe_banana_cart_bulk))
+print()
+
+long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
+
+joe_long_order_large_order = Order(joe, long_order, large_order_promo)
+print('joe_long_order_large_order = \n{0}'.format(joe_long_order_large_order))
+print()
+
+joe_cart_large_order = Order(joe, cart, large_order_promo)
+print('joe_cart_large_order = \n{0}'.format(joe_long_order_large_order))
+print()
+# END STRATEGY_TESTS

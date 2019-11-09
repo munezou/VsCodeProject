@@ -1,10 +1,20 @@
-# classic_strategy.py
-# Strategy pattern -- classic implementation
+'''
+------------------------------------------------------------------------------------------------------------------------
+6.1 Strategy pattern as a refactoring case study
+------------------------------------------------------------------------------------------------------------------------
+'''
+print('-----------------------------------------------------------------------------------------------------------------\n'
+      '                             6.1.1 Typical Strategy pattern                                                      \n'
+      '-----------------------------------------------------------------------------------------------------------------\n')
+# common library
+#import os, sys
+#sys.path.append(os.path.dirname(__file__))
 
-# BEGIN CLASSIC_STRATEGY
+#from classic_strategy import *
 from abc import ABC, abstractmethod
 from collections import namedtuple
 
+# class
 Customer = namedtuple('Customer', 'name fidelity')
 
 
@@ -76,34 +86,34 @@ class LargeOrderPromo(Promotion):  # third Concrete Strategy
         if len(distinct_items) >= 10:
             return order.total() * .07
         return 0
-# END CLASSIC_STRATEGY
 
-# BEGIN CLASSIC_STRATEGY_TESTS
-joe = Customer('John Doe', 0)  # <1>
+joe = Customer('John Doe', 0)
 ann = Customer('Ann Smith', 1100)
-cart = [LineItem('banana', 4, .5), LineItem('apple', 10, 1.5), LineItem('watermellon', 5, 5.0)]
 
-joe_cart_Fidelity = Order(joe, cart, FidelityPromo())  # <3>
-print('joe_cart_Fidelity = \n{0}'.format(joe_cart_Fidelity))
+cart = [LineItem('banana', 4, .5),
+        LineItem('apple', 10, 1.5),
+        LineItem('watermellon', 5, 5.0)]
+
+Order_joe = Order(joe, cart, FidelityPromo())
+print('Order_joe = \n {0}'.format(Order_joe))
 print()
 
-ann_cart_Fidelity = Order(ann, cart, FidelityPromo())  # <4>
-print('ann_cart_Fidelity = \n{0}'.format(ann_cart_Fidelity))
+Order_ann = Order(ann, cart, FidelityPromo())
+print('Order_ann = \n {0}'.format(Order_ann))
 print()
 
-banana_cart = [LineItem('banana', 30, .5), LineItem('apple', 10, 1.5)]
+banana_cart = [LineItem('banana', 30, .5),
+               LineItem('apple', 10, 1.5)]
 
-joe_banana_cart_BulkItem = Order(joe, banana_cart, BulkItemPromo())  # <6>
-print('joe_banana_cart_BulkItem = \n{0}'.format(joe_banana_cart_BulkItem))
+Order_joe_2 = Order(joe, banana_cart, BulkItemPromo())
+print('Order_joe_2 = \n{0}'.format(Order_joe_2))
 print()
 
 long_order = [LineItem(str(item_code), 1, 1.0) for item_code in range(10)]
-
-joe_long_order_LargeOrder = Order(joe, long_order, LargeOrderPromo())  # <8>
-print('joe_long_order_LargeOrder = \n{0}'.format(joe_long_order_LargeOrder))
+Order_joe_3 = Order(joe, long_order, LargeOrderPromo())
+print('Order_joe_3 = \n{0}'.format(Order_joe_3))
 print()
 
-joe_cart_LargeOrder = Order(joe, cart, LargeOrderPromo())
-print('joe_cart_LargeOrder = \n{0}'.format(joe_cart_LargeOrder))
+Order_joe_4 = Order(joe, cart, LargeOrderPromo())
+print('Order_joe_4 = \n{0}'.format(Order_joe_4))
 print()
-# END CLASSIC_STRATEGY_TESTS
