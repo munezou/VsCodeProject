@@ -1,30 +1,3 @@
-
-
-"""
-# BEGIN TAG_DEMO
->>> tag('br')  # <1>
-'<br />'
->>> tag('p', 'hello')  # <2>
-'<p>hello</p>'
->>> print(tag('p', 'hello', 'world'))
-<p>hello</p>
-<p>world</p>
->>> tag('p', 'hello', id=33)  # <3>
-'<p id="33">hello</p>'
->>> print(tag('p', 'hello', 'world', cls='sidebar'))  # <4>
-<p class="sidebar">hello</p>
-<p class="sidebar">world</p>
->>> tag(content='testing', name="img")  # <5>
-'<img content="testing" />'
->>> my_tag = {'name': 'img', 'title': 'Sunset Boulevard',
-...           'src': 'sunset.jpg', 'cls': 'framed'}
->>> tag(**my_tag)  # <6>
-'<img class="framed" src="sunset.jpg" title="Sunset Boulevard" />'
-
-# END TAG_DEMO
-"""
-
-
 # BEGIN TAG_FUNC
 def tag(name, *content, cls=None, **attrs):
     """Generate one or more HTML tags"""
@@ -42,3 +15,27 @@ def tag(name, *content, cls=None, **attrs):
     else:
         return '<%s%s />' % (name, attr_str)
 # END TAG_FUNC
+
+# BEGIN TAG_DEMO
+print('tag("br") = {0}'.format(tag('br')))
+print()
+
+print('tag("p", "hello") = {0}'.format(tag('p', 'hello')))
+print()
+
+print('tag("p", "hello", "world") = {0}'.format(tag('p', 'hello', 'world')))
+print()
+
+print('tag("p", "hello", id=33) = {0}'.format(tag('p', 'hello', id=33)))
+print()
+
+print('tag("p", "hello", cls="sidebar") = {0}'.format(tag('p', 'hello', cls='sidebar')))
+print()
+
+print('tag(content="testing", name="img") = {0}'.format(tag(content='testing', name="img")))
+print()
+
+my_tag = {'name': 'img', 'title': 'Sunset Boulevard', 'src': 'sunset.jpg', 'cls': 'framed'}
+print('tag(**my_tag) = \n{0}'.format(tag(**my_tag)))
+# END TAG_DEMO
+

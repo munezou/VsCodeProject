@@ -1,27 +1,8 @@
-"""
-    >>> clip('banana ', 6)
-    'banana'
-    >>> clip('banana ', 7)
-    'banana'
-    >>> clip('banana ', 5)
-    'banana'
-    >>> clip('banana split', 6)
-    'banana'
-    >>> clip('banana split', 7)
-    'banana'
-    >>> clip('banana split', 10)
-    'banana'
-    >>> clip('banana split', 11)
-    'banana'
-    >>> clip('banana split', 12)
-    'banana split'
-"""
-
-# BEGIN CLIP_ANNOT
-
+# BIGIN CLIP_ANNOT
 def clip(text:str, max_len:'int > 0'=80) -> str:  # <1>
-    """Return text clipped at the last space before or after max_len
-    """
+    '''
+    Return text clipped at the last space before or after max_len
+    '''
     end = None
     if len(text) > max_len:
         space_before = text.rfind(' ', 0, max_len)
@@ -36,3 +17,27 @@ def clip(text:str, max_len:'int > 0'=80) -> str:  # <1>
     return text[:end].rstrip()
 
 # END CLIP_ANNOT
+
+print('clip("banana ", 6) = {0}'.format(clip('banana', 6)))
+print()
+
+print('clip("banana ", 7) = {0}'.format(clip('banana ', 7)))
+print()
+
+print('clip("banana ", 5) = {0}'.format(clip('banana ', 5)))
+print()
+
+print('clip("banana split", 6) = {0}'.format(clip('banana split', 6)))
+print()
+
+print('clip("banana split", 7) = {0}'.format(clip('banana split', 7)))
+print()
+
+print('clip("banana split", 10) = {0}'.format(clip('banana split', 10)))
+print()
+
+print('clip("banana split", 11) = {0}'.format(clip('banana split', 11)))
+print()
+
+print('clip("banana split", 12) = {0}'.format(clip('banana split', 12)))
+print()
