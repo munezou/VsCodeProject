@@ -4,7 +4,9 @@ import os, sys
 sys.path.append(os.path.dirname(__file__))
 
 from sklearn.datasets import load_iris
+from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.tree import export_graphviz
 from PIL import Image
 from subprocess import check_call
@@ -43,6 +45,10 @@ print('-------------------------------------------------------------------------
       '------------------------------------------------------------------------------------------------------\n')
 # load data
 iris = load_iris()
+
+# Display iris data-set
+print('iris data-set information = \n{0}\n'.format(iris["DESCR"]))
+
 X = iris.data[:, 2:] # petal length and width
 y = iris.target
 
@@ -115,9 +121,189 @@ tree_clf_predict = tree_clf.predict([[5, 1.5]])
 print('tree_clf_priedict = {0}\n'.format(tree_clf_predict))
 
 print('------------------------------------------------------------------------------------------------------\n'
-      '          Sensitivity to training set details                                                         \n'
+      '            6.7 Regularized high parameters                                                           \n'
       '------------------------------------------------------------------------------------------------------\n')
+# create moons datasets
+Xm, ym = make_moons(n_samples=100, noise=0.25, random_state=53)
+
+# Display raw data of moons.
+plt.figure(figsize=(6, 5))
+plt.title("raw moons data(noise=0.25, random_state=53)")
+plt.scatter(Xm[:, 0][ym == 0], Xm[:, 1][ym == 0], c='red', label="Xm[0]")
+plt.scatter(Xm[:, 0][ym == 1], Xm[:, 1][ym == 1], c='blue', label="Xm[1]")
+plt.xlabel("Xm[0]")
+plt.ylabel("Xm[1]")
+plt.grid(True)
+plt.show()
+print()
+
+deep_tree_clf1 = DecisionTreeClassifier(random_state=42)
+deep_tree_clf2 = DecisionTreeClassifier(min_samples_leaf=4, random_state=42)
+deep_tree_clf1.fit(Xm, ym)
+deep_tree_clf2.fit(Xm, ym)
+
+plt.figure(figsize=(11, 4))
+plt.subplot(121)
+plot_decision_boundary(deep_tree_clf1, Xm, ym, axes=[-1.5, 2.5, -1, 1.5], iris=False)
+plt.title("No restrictions", fontsize=16)
+plt.subplot(122)
+plot_decision_boundary(deep_tree_clf2, Xm, ym, axes=[-1.5, 2.5, -1, 1.5], iris=False)
+plt.title("min_samples_leaf = {}".format(deep_tree_clf2.min_samples_leaf), fontsize=14)
+
+save_fig("min_samples_leaf_plot")
+plt.show()
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '            6.9 Regression trees                                                                      \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# prepare data
+# Quadratic training set + noise
+np.random.seed(42)
+m = 200
+X = np.random.rand(m, 1)
+y = 4 * (X - 0.5) ** 2
+y = y + np.random.randn(m, 1) / 10
+
+# Display raw data
+plt.figure(figsize=(6, 5))
+plt.title("Quadratic training set")
+plt.scatter(X[:], y[:], c='red')
+plt.xlabel("X")
+plt.ylabel("y")
+plt.grid(True)
+plt.show()
+print()
+
+# setting classifier
+tree_reg = DecisionTreeRegressor(max_depth=2, random_state=42)
+
+# fit data
+tree_reg_fit = tree_reg.fit(X, y)
+
+tree_reg1 = DecisionTreeRegressor(random_state=42, max_depth=2)
+tree_reg2 = DecisionTreeRegressor(random_state=42, max_depth=3)
+tree_reg1.fit(X, y)
+tree_reg2.fit(X, y)
+
+def plot_regression_predictions(tree_reg, X, y, axes=[0, 1, -0.2, 1], ylabel="$y$"):
+    x1 = np.linspace(axes[0], axes[1], 500).reshape(-1, 1)
+    y_pred = tree_reg.predict(x1)
+    plt.axis(axes)
+    plt.xlabel("$x_1$", fontsize=18)
+    if ylabel:
+        plt.ylabel(ylabel, fontsize=18, rotation=0)
+    plt.plot(X, y, "b.")
+    plt.plot(x1, y_pred, "r.-", linewidth=2, label=r"$\hat{y}$")
+
+plt.figure(figsize=(11, 4))
+plt.subplot(121)
+plot_regression_predictions(tree_reg1, X, y)
+for split, style in ((0.1973, "k-"), (0.0917, "k--"), (0.7718, "k--")):
+    plt.plot([split, split], [-0.2, 1], style, linewidth=2)
+plt.text(0.21, 0.65, "Depth=0", fontsize=15)
+plt.text(0.01, 0.2, "Depth=1", fontsize=13)
+plt.text(0.65, 0.8, "Depth=1", fontsize=13)
+plt.legend(loc="upper center", fontsize=18)
+plt.title("max_depth=2", fontsize=14)
+
+plt.subplot(122)
+plot_regression_predictions(tree_reg2, X, y, ylabel=None)
+for split, style in ((0.1973, "k-"), (0.0917, "k--"), (0.7718, "k--")):
+    plt.plot([split, split], [-0.2, 1], style, linewidth=2)
+for split in (0.0458, 0.1298, 0.2873, 0.9040):
+    plt.plot([split, split], [-0.2, 1], "k:", linewidth=1)
+plt.text(0.3, 0.5, "Depth=2", fontsize=13)
+plt.title("max_depth=3", fontsize=14)
+
+save_fig("tree_regression_plot")
+plt.show()
+
+# Display decision trees
+export_graphviz(
+        tree_reg1,
+        out_file=image_path("regression_tree.dot"),
+        feature_names=["x1"],
+        rounded=True,
+        filled=True
+    )
+
+check_call(['dot','-Tpng',image_path("regression_tree.dot"),'-o',image_path("regression_tree.png")])
+
+img = Image.open(image_path("regression_tree.png"))
+img.show()
+
+tree_reg1 = DecisionTreeRegressor(random_state=42)
+tree_reg2 = DecisionTreeRegressor(random_state=42, min_samples_leaf=10)
+tree_reg1.fit(X, y)
+tree_reg2.fit(X, y)
+
+x1 = np.linspace(0, 1, 500).reshape(-1, 1)
+y_pred1 = tree_reg1.predict(x1)
+y_pred2 = tree_reg2.predict(x1)
+
+plt.figure(figsize=(11, 4))
+
+plt.subplot(121)
+plt.plot(X, y, "b.")
+plt.plot(x1, y_pred1, "r.-", linewidth=2, label=r"$\hat{y}$")
+plt.axis([0, 1, -0.2, 1.1])
+plt.xlabel("$x_1$", fontsize=18)
+plt.ylabel("$y$", fontsize=18, rotation=0)
+plt.legend(loc="upper center", fontsize=18)
+plt.title("No restrictions", fontsize=14)
+
+plt.subplot(122)
+plt.plot(X, y, "b.")
+plt.plot(x1, y_pred2, "r.-", linewidth=2, label=r"$\hat{y}$")
+plt.axis([0, 1, -0.2, 1.1])
+plt.xlabel("$x_1$", fontsize=18)
+plt.title("min_samples_leaf={}".format(tree_reg2.min_samples_leaf), fontsize=14)
+
+save_fig("tree_regression_regularization_plot")
+plt.show()
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          6.9 Sensitivity to training set details                                                     \n'
+      '------------------------------------------------------------------------------------------------------\n')
+
+np.random.seed(6)
+Xs = np.random.rand(100, 2) - 0.5
+ys = (Xs[:, 0] > 0).astype(np.float32) * 2
+
+angle = np.pi / 4
+rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+Xsr = Xs.dot(rotation_matrix)
+
+tree_clf_s = DecisionTreeClassifier(random_state=42)
+tree_clf_s.fit(Xs, ys)
+tree_clf_sr = DecisionTreeClassifier(random_state=42)
+tree_clf_sr.fit(Xsr, ys)
+
+plt.figure(figsize=(11, 4))
+plt.subplot(121)
+plot_decision_boundary(tree_clf_s, Xs, ys, axes=[-0.7, 0.7, -0.7, 0.7], iris=False)
+plt.subplot(122)
+plot_decision_boundary(tree_clf_sr, Xsr, ys, axes=[-0.7, 0.7, -0.7, 0.7], iris=False)
+
+save_fig("sensitivity_to_rotation_plot")
+plt.show()
+
 # to find widest Iris-Versicolor flower
+iris = load_iris()
+X = iris.data[:, 2:] # petal length and width
+y = iris.target
+
+# plot raw data
+plt.figure(figsize=(8, 4))
+plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], c='red', label="Iris-Setosa")
+plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], c='blue', label="Iris-Versicolor")
+plt.scatter(X[:, 0][y == 2], X[:, 1][y == 2], c='green', label="Iris-Virginica")
+plt.xlabel("pental length")
+plt.ylabel("pental widdth")
+plt.grid(True)
+plt.legend()
+plt.show()
+
 widest_iris_versicolor = X[(X[:, 1]==X[:, 1][y==1].max()) & (y==1)]
 print('widest_iris_versicolor = {0}\n'.format(widest_iris_versicolor))
 
@@ -125,14 +311,31 @@ not_widest_versicolor = (X[:, 1]!=1.8) | (y==2)
 X_tweaked = X[not_widest_versicolor]
 y_tweaked = y[not_widest_versicolor]
 
-# plot
-plt.figure(figsize=(8, 4))
-plt.scatter(X_tweaked[:, 0], X_tweaked[:, 1])
-plt.xlabel("pental length")
-plt.ylabel("pental widdth")
-plt.grid(True)
-plt.show()
-
 tree_clf_tweaked = DecisionTreeClassifier(max_depth=2, random_state=40)
 tree_clf_tweaked_fit = tree_clf_tweaked.fit(X_tweaked, y_tweaked)
+print('tree_clf_tweaked_fit = \n{0}\n'.format(tree_clf_tweaked_fit))
+
+# Display result
+plt.figure(figsize=(8, 4))
+plot_decision_boundary(tree_clf_tweaked, X_tweaked, y_tweaked, legend=False)
+plt.plot([0, 7.5], [0.8, 0.8], "k-", linewidth=2)
+plt.plot([0, 7.5], [1.75, 1.75], "k--", linewidth=2)
+plt.text(1.0, 0.9, "Depth=0", fontsize=15)
+plt.text(1.0, 1.80, "Depth=1", fontsize=13)
+
+save_fig("decision_tree_instability_plot")
+plt.show()
+
+# Rotate 20deg
+angle = np.pi / 180 * 20
+rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+Xr = X.dot(rotation_matrix)
+
+tree_clf_r = DecisionTreeClassifier(random_state=42)
+tree_clf_r.fit(Xr, y)
+
+plt.figure(figsize=(8, 3))
+plot_decision_boundary(tree_clf_r, Xr, y, axes=[0.5, 7.5, -1.0, 1], iris=False)
+
+plt.show()
 
