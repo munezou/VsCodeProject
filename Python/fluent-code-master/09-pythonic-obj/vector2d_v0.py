@@ -1,30 +1,7 @@
 """
+---------------------------------
 A 2-dimensional vector class
-
-# BEGIN VECTOR2D_V0_DEMO
-
-    >>> v1 = Vector2d(3, 4)
-    >>> print(v1.x, v1.y)  # <1>
-    3.0 4.0
-    >>> x, y = v1  # <2>
-    >>> x, y
-    (3.0, 4.0)
-    >>> v1  # <3>
-    Vector2d(3.0, 4.0)
-    >>> v1_clone = eval(repr(v1))  # <4>
-    >>> v1 == v1_clone  # <5>
-    True
-    >>> print(v1)  # <6>
-    (3.0, 4.0)
-    >>> octets = bytes(v1)  # <7>
-    >>> octets
-    b'd\\x00\\x00\\x00\\x00\\x00\\x00\\x08@\\x00\\x00\\x00\\x00\\x00\\x00\\x10@'
-    >>> abs(v1)  # <8>
-    5.0
-    >>> bool(v1), bool(Vector2d(0, 0))  # <9>
-    (True, False)
-
-# END VECTOR2D_V0_DEMO
+---------------------------------
 """
 
 # BEGIN VECTOR2D_V0
@@ -62,3 +39,30 @@ class Vector2d:
     def __bool__(self):
         return bool(abs(self))  # <10>
 # END VECTOR2D_V0
+
+# BEGIN VECTOR2D_V0_DEMO
+print('------------------------------------------------------------------------------------------------\n'
+      '             9.2 Revisiting the vector class　　　　　　　　　　　　　　　　　　　　　　　　　　\n'
+      '------------------------------------------------------------------------------------------------\n')
+
+v1 = Vector2d(3, 4)
+print('v1.x = {0}\nV1.y = {1}\n'.format(v1.x, v1.y))  # <1>
+
+x, y = v1  # <2>
+print('({0}, {1})'.format(x, y))
+
+print('v1 = {0}\n'.format(v1))  # <3>
+
+v1_clone = eval(repr(v1))  # <4>
+print('v1 == v1_clone = {0}\n'.format(v1 == v1_clone))
+print(v1)  # <6>
+print()
+
+octets = bytes(v1)  # <7>
+print('octets = {0}\n'.format(octets))
+
+print('abs(v1) = {0}\n'.format(abs(v1))) # <8>
+
+print('({0}, {1})'.format(bool(v1), bool(Vector2d(0, 0)))) # <9>
+
+# END VECTOR2D_V0_DEMO

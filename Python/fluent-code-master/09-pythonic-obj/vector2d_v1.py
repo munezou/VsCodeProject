@@ -1,41 +1,9 @@
 """
 A 2-dimensional vector class
-
-    >>> v1 = Vector2d(3, 4)
-    >>> print(v1.x, v1.y)
-    3.0 4.0
-    >>> x, y = v1
-    >>> x, y
-    (3.0, 4.0)
-    >>> v1
-    Vector2d(3.0, 4.0)
-    >>> v1_clone = eval(repr(v1))
-    >>> v1 == v1_clone
-    True
-    >>> print(v1)
-    (3.0, 4.0)
-    >>> octets = bytes(v1)
-    >>> octets
-    b'd\\x00\\x00\\x00\\x00\\x00\\x00\\x08@\\x00\\x00\\x00\\x00\\x00\\x00\\x10@'
-    >>> abs(v1)
-    5.0
-    >>> bool(v1), bool(Vector2d(0, 0))
-    (True, False)
-
-
-Test of ``.frombytes()`` class method:
-
-    >>> v1_clone = Vector2d.frombytes(bytes(v1))
-    >>> v1_clone
-    Vector2d(3.0, 4.0)
-    >>> v1 == v1_clone
-    True
-
 """
-
+# common library
 from array import array
 import math
-
 
 class Vector2d:
     typecode = 'd'
@@ -74,3 +42,34 @@ class Vector2d:
         memv = memoryview(octets[1:]).cast(typecode)  # <4>
         return cls(*memv)  # <5>
 # END VECTOR2D_V1
+
+print('------------------------------------------------------------------------------------------------\n'
+      '             9.3 Another version of the constructor　　　　　　　　　　　　　　　　　　　　　　　\n'
+      '------------------------------------------------------------------------------------------------\n')
+
+v1 = Vector2d(3, 4)
+print('v1.x = {0}\nV1.y = {1}\n'.format(v1.x, v1.y))  # <1>
+
+x, y = v1  # <2>
+print('({0}, {1})'.format(x, y))
+
+print('v1 = {0}\n'.format(v1))  # <3>
+
+v1_clone = eval(repr(v1))  # <4>
+print('v1 == v1_clone = {0}\n'.format(v1 == v1_clone))
+print(v1)  # <6>
+print()
+
+octets = bytes(v1)  # <7>
+print('octets = {0}\n'.format(octets))
+
+print('abs(v1) = {0}\n'.format(abs(v1))) # <8>
+
+print('({0}, {1})\n'.format(bool(v1), bool(Vector2d(0, 0)))) # <9>
+
+#Test of ``.frombytes()`` class method:
+
+v1_clone = Vector2d.frombytes(bytes(v1))
+print('v1_clone = {0}\n'.format(v1_clone))
+
+print('v1 == v1_clone = {0}\n'.format(v1 == v1_clone))
