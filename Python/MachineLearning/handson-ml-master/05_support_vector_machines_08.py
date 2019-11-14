@@ -113,12 +113,14 @@ plt.axis([0, svm_clf.n_epochs, 0, 100])
 plt.show()
 print()
 
-print('svm_clf.intercept_ = {0}\n svm_clf.coef_ = \n{1}'.format(svm_clf.intercept_, svm_clf.coef_))
+print('svm_clf.intercept_ = {0}'.format(svm_clf.intercept_))
+print('svm_clf.coef_ = \n{0}'.format(svm_clf.coef_))
 print()
 
 svm_clf2 = SVC(kernel="linear", C=C)
 svm_clf2.fit(X, y.ravel())
-print('svm_clf2.intercept_ = {0}\n svm_clf2.coef_ = \n{1}'.format(svm_clf2.intercept_, svm_clf2.coef_))
+print('svm_clf2.intercept_ = {0}'.format(svm_clf2.intercept_))
+print('svm_clf2.coef_ = \n{0}'.format(svm_clf2.coef_))
 print()
 
 def plot_svc_decision_boundary(svm_clf, xmin, xmax):
@@ -141,7 +143,7 @@ def plot_svc_decision_boundary(svm_clf, xmin, xmax):
     plt.plot(x0, gutter_down, "k--", linewidth=2)
 
 yr = y.ravel()
-plt.figure(figsize=(12, 4.0))
+plt.figure(figsize=(12,3.2))
 plt.subplot(121)
 plt.plot(X[:, 0][yr==1], X[:, 1][yr==1], "g^", label="Iris-Virginica")
 plt.plot(X[:, 0][yr==0], X[:, 1][yr==0], "bs", label="Not Iris-Virginica")
@@ -159,6 +161,7 @@ plt.xlabel("Petal length", fontsize=14)
 plt.title("SVC", fontsize=14)
 plt.axis([4, 6, 0.8, 2.8])
 plt.show()
+
 
 sgd_clf = SGDClassifier(loss="hinge", alpha = 0.017, max_iter = 50, tol=-np.infty, random_state=42)
 sgd_clf.fit(X, y.ravel())
@@ -181,4 +184,5 @@ plt.xlabel("Petal length", fontsize=14)
 plt.ylabel("Petal width", fontsize=14)
 plt.title("SGDClassifier", fontsize=14)
 plt.axis([4, 6, 0.8, 2.8])
+
 plt.show()

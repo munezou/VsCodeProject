@@ -1,29 +1,34 @@
 # Common imports
 import numpy as np
-import os, sys
-sys.path.append(os.path.dirname(__file__))
+import os
 
 from sklearn.datasets import load_iris
-from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.tree import export_graphviz
 from PIL import Image
 from subprocess import check_call
 from matplotlib.colors import ListedColormap
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+from sklearn.datasets import make_moons
+from sklearn.tree import DecisionTreeRegressor
 
+'''
+----------------------------------------------------------------------
+    Setup
+----------------------------------------------------------------------
+'''
 # to make this notebook's output stable across runs
 np.random.seed(42)
 
 # To plot pretty figures
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 mpl.rc('axes', labelsize=14)
 mpl.rc('xtick', labelsize=12)
 mpl.rc('ytick', labelsize=12)
 
 # Where to save the figures
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+
 CHAPTER_ID = "decision_trees"
 
 def image_path(fig_id):
@@ -34,7 +39,7 @@ def save_fig(fig_id, tight_layout=True):
     if tight_layout:
         plt.tight_layout()
     plt.savefig(image_path(fig_id) + ".png", format='png', dpi=300)
-
+    
 '''
 ------------------------------------------------------------------------------------------------------------------------
 6 Decision tree
@@ -43,20 +48,34 @@ def save_fig(fig_id, tight_layout=True):
 print('------------------------------------------------------------------------------------------------------\n'
       '          6.1 Decision tree training and visualization                                                \n'
       '------------------------------------------------------------------------------------------------------\n')
-# load data
+# load iris data-set
 iris = load_iris()
 
-# Display iris data-set
-print('iris data-set information = \n{0}\n'.format(iris["DESCR"]))
+print('iris data information = \n{0}\n'.format(iris["DESCR"]))
 
-X = iris.data[:, 2:] # petal length and width
-y = iris.target
+# learning data are petal length and petal width.
+X = iris["data"][:, 2:]
+y = iris["target"]
 
+# plot raw datas
+plt.figure(figsize=(7, 5))
+plt.title("petal data of raw iris")
+plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], c='red', label='setosa')
+plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], c='blue', label='versicolour')
+plt.scatter(X[:, 0][y == 2], X[:, 1][y == 2], c='green', label='virginica')
+plt.xlabel("petal length")
+
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# classifier used is DecisionTreeClassifier(criterion: gini)
 tree_clf = DecisionTreeClassifier(max_depth=2, random_state=42)
 tree_clf_fit = tree_clf.fit(X, y)
 print('tree_clf_fit = \n{0}\n'.format(tree_clf_fit))
 
-pdp_data = export_graphviz(
+# plot decision trees
+export_graphviz(
         tree_clf,
         out_file=image_path("iris_tree.dot"),
         feature_names=iris.feature_names[2:],
@@ -65,9 +84,45 @@ pdp_data = export_graphviz(
         filled=True
     )
 
+# Convert dot file to png file.
 check_call(['dot','-Tpng',image_path("iris_tree.dot"),'-o',image_path("iris_tree.png")])
 
+# Disply result of decision trees.
 img = Image.open(image_path("iris_tree.png"))
+img.show()
+
+# confirm whether data is changed or not.
+plt.figure(figsize=(7, 5))
+plt.title("petal data of raw iris")
+plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], c='red', label='setosa')
+plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], c='blue', label='versicolour')
+plt.scatter(X[:, 0][y == 2], X[:, 1][y == 2], c='green', label='virginica')
+plt.xlabel("petal length")
+
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# classifier used is DecisionTreeClassifier(criterion: entropy)
+tree_clf_ent = DecisionTreeClassifier(criterion='entropy', max_depth=2, random_state=42)
+tree_clf_ent_fit = tree_clf_ent.fit(X, y)
+print('tree_clf_ent_fit = \n{0}\n'.format(tree_clf_ent_fit))
+
+# plot decision trees
+export_graphviz(
+        tree_clf,
+        out_file=image_path("iris_tree_ent.dot"),
+        feature_names=iris.feature_names[2:],
+        class_names=iris.target_names,
+        rounded=True,
+        filled=True
+    )
+
+# Convert dot file to png file.
+check_call(['dot','-Tpng',image_path("iris_tree_ent.dot"),'-o',image_path("iris_tree_ent.png")])
+
+# Disply result of decision trees.
+img = Image.open(image_path("iris_tree_ent.png"))
 img.show()
 
 def plot_decision_boundary(clf, X, y, axes=[0, 7.5, 0, 3], iris=True, legend=False, plot_training=True):
@@ -121,21 +176,20 @@ tree_clf_predict = tree_clf.predict([[5, 1.5]])
 print('tree_clf_priedict = {0}\n'.format(tree_clf_predict))
 
 print('------------------------------------------------------------------------------------------------------\n'
-      '            6.7 Regularized high parameters                                                           \n'
+      '          6.7 Regularized high parameters                                                             \n'
       '------------------------------------------------------------------------------------------------------\n')
-# create moons datasets
+print('---< dataset = make_moons >---')
 Xm, ym = make_moons(n_samples=100, noise=0.25, random_state=53)
 
-# Display raw data of moons.
-plt.figure(figsize=(6, 5))
-plt.title("raw moons data(noise=0.25, random_state=53)")
-plt.scatter(Xm[:, 0][ym == 0], Xm[:, 1][ym == 0], c='red', label="Xm[0]")
-plt.scatter(Xm[:, 0][ym == 1], Xm[:, 1][ym == 1], c='blue', label="Xm[1]")
-plt.xlabel("Xm[0]")
-plt.ylabel("Xm[1]")
+plt.figure(figsize=(8, 4))
+plt.title("raw data in make_moons")
+plt.scatter(Xm[:, 0][ym == 0], Xm[:,1][ym == 0], c='red', label="ym = 0")
+plt.scatter(Xm[:, 0][ym == 1], Xm[:,1][ym == 1], c='blue', label="ym = 1")
 plt.grid(True)
+plt.xlabel("X1")
+plt.ylabel("X2")
+plt.legend(loc='upper right')
 plt.show()
-print()
 
 deep_tree_clf1 = DecisionTreeClassifier(random_state=42)
 deep_tree_clf2 = DecisionTreeClassifier(min_samples_leaf=4, random_state=42)
@@ -154,7 +208,7 @@ save_fig("min_samples_leaf_plot")
 plt.show()
 
 print('------------------------------------------------------------------------------------------------------\n'
-      '            6.9 Regression trees                                                                      \n'
+      '            6.8 Regression trees                                                                      \n'
       '------------------------------------------------------------------------------------------------------\n')
 # prepare data
 # Quadratic training set + noise

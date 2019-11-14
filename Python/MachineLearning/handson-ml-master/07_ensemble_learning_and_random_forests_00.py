@@ -80,11 +80,12 @@ plt.grid(True)
 plt.legend()
 plt.show()
 
+print()
 
 # split  data to test data and train data.
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
-# setting classifier
+print('---< setting classifier(voting="hard") >---')
 log_clf = LogisticRegression(solver="liblinear", random_state=42)
 rnd_clf = RandomForestClassifier(n_estimators=10, random_state=42)
 svm_clf = SVC(gamma="auto", random_state=42)
@@ -97,10 +98,32 @@ voting_clf = VotingClassifier(
 volt_clf_fit = voting_clf.fit(X_train, y_train)
 print('volt_clf_fit = \n{0}\n'.format(volt_clf_fit))
 
-from sklearn.metrics import accuracy_score
-
+# Performance evaluation
 for clf in (log_clf, rnd_clf, svm_clf, voting_clf):
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
     print(clf.__class__.__name__, accuracy_score(y_test, y_pred))
+
+print()
+
+print('---< setting classifier(voting="soft") >---')
+log_clf = LogisticRegression(solver="liblinear", random_state=42)
+rnd_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+svm_clf = SVC(gamma="auto", probability=True, random_state=42)
+
+voting_clf = VotingClassifier(
+    estimators=[('lr', log_clf), ('rf', rnd_clf), ('svc', svm_clf)],
+    voting='soft')
+
+# fitting
+volt_clf_fit = voting_clf.fit(X_train, y_train)
+print('volt_clf_fit = \n{0}\n'.format(volt_clf_fit))
+
+# Performance evaluation
+for clf in (log_clf, rnd_clf, svm_clf, voting_clf):
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    print(clf.__class__.__name__, accuracy_score(y_test, y_pred))
+
+print()
 

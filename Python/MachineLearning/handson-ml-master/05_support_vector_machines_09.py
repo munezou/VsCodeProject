@@ -1,8 +1,3 @@
-'''
------------------------------------------------------------------------
-5.5 Exercise solutions
------------------------------------------------------------------------
-'''
 # common library
 import numpy as np
 from sklearn import datasets
@@ -11,30 +6,61 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
+print('-------------------------------------------------------------------------------------------------------------------\n'
+      ' 8.                                                                                                                \n'
+      ' Exercise:                                                                                                         \n'
+      ' train a LinearSVC on a linearly separable dataset.                                                                \n'
+      ' Then train an SVC and a SGDClassifier on the same dataset.                                                        \n'
+      ' See if you can get them to produce roughly the same model.                                                        \n'
+      '                                                                                                                   \n'
+      ' Let us use the Iris dataset: the Iris Setosa and Iris Versicolor classes are linearly separable.                  \n'
+      '-------------------------------------------------------------------------------------------------------------------\n')
 
-print('------------------------------------------------------------------------------------------------------\n'
-      '           8.                                                                                         \n'
-      '              train a LinearSVC on a linearly separable dataset.                                      \n'
-      '              Then train an SVC and a SGDClassifier on the same dataset.                              \n'
-      '              See if you can get them to produce roughly the same model.                              \n'
-      '    Let us use the Iris dataset: the Iris Setosa and Iris Versicolor classes are linearly separable.  \n'
-      '------------------------------------------------------------------------------------------------------\n')
-      
+# Read iris dataset
 iris = datasets.load_iris()
-X = iris["data"][:, (2, 3)]  # petal length, petal width
+
+# check iris dataset
+print('iris dataset information = \n{0}\n'.format(iris["DESCR"]))
+
+# prepare learning data
+X = iris["data"][:, (2, 3)]
 y = iris["target"]
 
+# plot data condition
+plt.figure(figsize=(8, 7))
+plt.title("iris raw data related by petal")
+plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], c = 'red', label= 'Setosa')
+plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], c = 'blue', label = 'Versicolour')
+plt.scatter(X[:, 0][y == 2], X[:, 1][y == 2], c = 'lime', label = 'Virginica')
+plt.xlabel("petal length")
+plt.ylabel("petal width")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Extract target = 0 (Setosa) and target = 1 (Versicolour).
 setosa_or_versicolor = (y == 0) | (y == 1)
 X = X[setosa_or_versicolor]
 y = y[setosa_or_versicolor]
 
+# Classification of setosa and versicolour
+plt.figure(figsize=(8, 7))
+plt.title("setosa and versicolour data")
+plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], c = 'red', label= 'Setosa')
+plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], c = 'blue', label = 'Versicolour')
+plt.xlabel("petal length")
+plt.ylabel("petal width")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Compare LinearSVC, SVC and SGDClassifier.
 C = 5
 alpha = 1 / (C * len(X))
 
 lin_clf = LinearSVC(loss="hinge", C=C, random_state=42)
 svm_clf = SVC(kernel="linear", C=C)
-sgd_clf = SGDClassifier(loss="hinge", learning_rate="constant", eta0=0.001, alpha=alpha,
-                        max_iter=100000, tol=-np.infty, random_state=42)
+sgd_clf = SGDClassifier(loss="hinge", learning_rate="constant", eta0=0.001, alpha=alpha, max_iter=100000, tol=-np.infty, random_state=42)
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
@@ -43,10 +69,12 @@ lin_clf.fit(X_scaled, y)
 svm_clf.fit(X_scaled, y)
 sgd_clf.fit(X_scaled, y)
 
-print("LinearSVC:                   ", lin_clf.intercept_, lin_clf.coef_)
-print("SVC:                         ", svm_clf.intercept_, svm_clf.coef_)
-print("SGDClassifier(alpha={:.5f}):".format(sgd_clf.alpha), sgd_clf.intercept_, sgd_clf.coef_)
+print('LinearSVC:\nlin_clf.intercept_ = {0}\nlin_clf.coef_ = {1}\n'.format(lin_clf.intercept_, lin_clf.coef_))
+print('SVC:\nsvm_clf.intercept_ = {0}\nsvm_clf.coef_ = {1}\n'.format(svm_clf.intercept_, svm_clf.coef_))
+print('SGDClassifier(alpha={0:.5f}):\nsgd_clf.intercept_ = {1}\nsgd_clf.coef_\n'.format(sgd_clf.alpha, sgd_clf.intercept_, sgd_clf.coef_))
+print()
 
+print('Let us plot the decision boundaries of these three models:')
 # Compute the slope and bias of each decision boundary
 w1 = -lin_clf.coef_[0, 0]/lin_clf.coef_[0, 1]
 b1 = -lin_clf.intercept_[0]/lin_clf.coef_[0, 1]
