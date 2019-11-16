@@ -3,16 +3,25 @@ import numpy as np
 import os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+from matplotlib.colors import ListedColormap
+
+from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_openml
 from sklearn.datasets import make_moons
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import BaggingClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
+from sklearn.ensemble import AdaBoostClassifier
+
 from sklearn.metrics import accuracy_score
-from sklearn.tree import DecisionTreeClassifier
-from matplotlib.colors import ListedColormap
+
 
 '''
 --------------------------------------------------------------------
@@ -186,3 +195,162 @@ plot_decision_boundary(bag_clf, X, y)
 plt.title("Decision Trees with Bagging", fontsize=14)
 save_fig("decision_tree_without_and_with_bagging_plot")
 plt.show()
+
+print()
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          7.2.2 Out-of-Bag evaluation                                                                 \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# Bagging Classifier
+bag_clf = BaggingClassifier(DecisionTreeClassifier(), n_estimators=500, bootstrap_features=True, n_jobs=-1, oob_score=True)
+
+# fitting
+bag_clf_fit = bag_clf.fit(X_train, y_train)
+print('bag_clf_fit = \n{0}\n'.format(bag_clf_fit))
+
+# OOB verification
+bag_clf_score = bag_clf.oob_score_
+print('bag_clf_score = {0}\n'.format(bag_clf_score))
+
+# accuracy score
+y_pred = bag_clf.predict(X_test)
+bad_clf_accuracy = accuracy_score(y_test, y_pred)
+print('bad_clf_accuracy = {0}\n'.format(bad_clf_accuracy))
+
+# oob_decision function by X_train
+bad_clf_oob_decision = bag_clf.oob_decision_function_
+print('bad_clf_oob_decision = \n{0}\n'.format(bad_clf_oob_decision))
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          7.4 Random Forests                                                                          \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# Bagging Classifier with Decision Trees
+bag_clf = BaggingClassifier(
+    DecisionTreeClassifier(splitter="random", max_leaf_nodes=16, random_state=42),
+    n_estimators=500, max_samples=1.0, bootstrap=True, n_jobs=-1, random_state=42)
+
+# fiting and predict
+bag_clf.fit(X_train, y_train)
+y_pred = bag_clf.predict(X_test)
+
+# Random Forest Classifier
+rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1, random_state=42)
+
+# fiting and predict
+rnd_clf.fit(X_train, y_train)
+y_pred_rf = rnd_clf.predict(X_test)
+
+# different of Bagging Classifier with Decision and Random Forest Classifier
+diff = np.sum(y_pred == y_pred_rf) / len(y_pred)
+print('diff = {0}\n'.format(diff))
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          7.4.2 Importance of features                                                                \n'
+      '------------------------------------------------------------------------------------------------------\n')
+
+# load iris data
+iris = load_iris()
+
+# Random Forest Classifier
+rnd_clf = RandomForestClassifier(n_estimators=500, n_jobs=-1, random_state=42)
+
+# fitting
+rnd_clf.fit(iris["data"], iris["target"])
+
+for name, score in zip(iris["feature_names"], rnd_clf.feature_importances_):
+    print(name, score)
+
+print()
+
+rnd_clf_feature_importance = rnd_clf.feature_importances_
+print('rnd_clf_feature_importance = \n{0}\n'.format(rnd_clf_feature_importance))
+
+plt.figure(figsize=(6, 4))
+
+for i in range(15):
+    tree_clf = DecisionTreeClassifier(max_leaf_nodes=16, random_state=42 + i)
+    indices_with_replacement = np.random.randint(0, len(X_train), len(X_train))
+    tree_clf.fit(X[indices_with_replacement], y[indices_with_replacement])
+    plot_decision_boundary(tree_clf, X, y, axes=[-1.5, 2.5, -1, 1.5], alpha=0.02, contour=False)
+
+plt.show()
+print()
+
+# load mnist data
+mnist = fetch_openml('mnist_784', version=1)
+mnist.target = mnist.target.astype(np.int64)
+
+# Random Forest Classifier
+rnd_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+
+# fitting
+rnd_clf_fit = rnd_clf.fit(mnist["data"], mnist["target"])
+
+def plot_digit(data):
+    image = data.reshape(28, 28)
+    plt.imshow(image, cmap = mpl.cm.hot, interpolation="nearest")
+    plt.axis("off")
+
+plot_digit(rnd_clf.feature_importances_)
+
+cbar = plt.colorbar(ticks=[rnd_clf.feature_importances_.min(), rnd_clf.feature_importances_.max()])
+cbar.ax.set_yticklabels(['Not important', 'Very important'])
+
+save_fig("mnist_feature_importance_plot")
+plt.show()
+
+'''
+-----------------------------------------------------------------------------------
+7.5 Boosting
+-----------------------------------------------------------------------------------
+'''
+print('------------------------------------------------------------------------------------------------------\n'
+      '          7.5.1 AdaBoost                                                                              \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# create moons data
+X, y = make_moons(n_samples=500, noise=0.30, random_state=42)
+
+# split  data to test data and train data.
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# AdaBoost Classifier
+ada_clf = AdaBoostClassifier(
+    DecisionTreeClassifier(max_depth=1), n_estimators=200,
+    algorithm="SAMME.R", learning_rate=0.5, random_state=42)
+
+# fitting
+ada_clf_fit = ada_clf.fit(X_train, y_train)
+
+plot_decision_boundary(ada_clf, X, y)
+
+m = len(X_train)
+
+plt.figure(figsize=(11, 4))
+for subplot, learning_rate in ((121, 1), (122, 0.5)):
+    sample_weights = np.ones(m)
+    plt.subplot(subplot)
+    for i in range(5):
+        svm_clf = SVC(kernel="rbf", C=0.05, gamma="auto", random_state=42)
+        svm_clf.fit(X_train, y_train, sample_weight=sample_weights)
+        y_pred = svm_clf.predict(X_train)
+        sample_weights[y_pred != y_train] *= (1 + learning_rate)
+        plot_decision_boundary(svm_clf, X, y, alpha=0.2)
+        plt.title("learning_rate = {}".format(learning_rate), fontsize=16)
+    if subplot == 121:
+        plt.text(-0.7, -0.65, "1", fontsize=14)
+        plt.text(-0.6, -0.10, "2", fontsize=14)
+        plt.text(-0.5,  0.10, "3", fontsize=14)
+        plt.text(-0.4,  0.55, "4", fontsize=14)
+        plt.text(-0.3,  0.90, "5", fontsize=14)
+
+save_fig("boosting_plot")
+plt.show()
+print()
+
+list_ada = list(m for m in dir(ada_clf) if not m.startswith("_") and m.endswith("_"))
+print('list_ada = \n{0}\n'.format(list_ada))
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          7.5.2 Gradient Boosting                                                                     \n'
+      '------------------------------------------------------------------------------------------------------\n')
+
