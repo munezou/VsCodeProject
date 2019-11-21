@@ -66,6 +66,7 @@ class Vector2d:
         memv = memoryview(octets[1:]).cast(typecode)
         return cls(*memv)
 
+
 # Sart DEMO
 v1 = Vector2d(3, 4)
 print('{0}, {1}\n'.format(v1.x, v1.y))
