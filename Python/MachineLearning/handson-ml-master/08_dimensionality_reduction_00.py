@@ -19,11 +19,21 @@ import seaborn as sns
 from sklearn.datasets import make_swiss_roll
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 from sklearn.decomposition import PCA
 from sklearn.decomposition import IncrementalPCA
 from sklearn.decomposition import KernelPCA
+from sklearn.pipeline import Pipeline
 
+from sklearn.manifold import LocallyLinearEmbedding
+from sklearn.manifold import MDS
+from sklearn.manifold import Isomap
+from sklearn.manifold import TSNE
 
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+from sklearn.metrics import mean_squared_error
 
 # to make this notebook's output stable across runs
 np.random.seed(42)
@@ -576,12 +586,24 @@ calculate the PCA and then calculate the required order to maintain 95% of the t
 pca = PCA()
 pca_fit = pca.fit(X_train)
 cumsum = np.cumsum(pca.explained_variance_ratio_)
-d = np.argmax(cumsum >= 0.95) + 1
+x_95_cumsum = np.argmax(cumsum >= 0.95)
+d = x_95_cumsum + 1
+y_95_cumsum = cumsum[x_95_cumsum]
 print('nesesary dimension(95%) = {0}\n'.format(d))
+print('x_95_cumsum = {0}, y_95_cumsum = {1}\n'.format(x_95_cumsum, y_95_cumsum))
+
+line1_x_95 = np.linspace(0, 700, 700)
+line1_y = np.linspace(y_95_cumsum, y_95_cumsum, 700)
+line2_x = np.linspace(x_95_cumsum, x_95_cumsum, 200)
+line2_y_95 = np.linspace(0, y_95_cumsum, 200)
 
 plt.figure(figsize=(8, 6))
 plt.title("Relationship between explained variance ratio and dimension")
 plt.plot(cumsum)
+plt.scatter(x_95_cumsum, y_95_cumsum, marker='o', c='blue')
+plt.plot(line1_x_95, line1_y, linestyle='dashed')
+plt.plot(line2_x, line2_y_95, linestyle='dashed')
+plt.axis([0, 700, 0, 1])
 plt.xlabel('Dimensions')
 plt.ylabel('explained variance');
 plt.show()
@@ -823,6 +845,35 @@ print('-------------------------------------------------------------------------
       '          8.4.1 Kernel selection and high parameter tuning                                            \n'
       '------------------------------------------------------------------------------------------------------\n')
 
+'''
+---------------------------------------------------------------------------------------------------------------
+Since kernelPCA (kPCA) is an unsupervised learning algorithm, 
+there is no trivial performance index to help you choose the best kernel and high parameter values.
+---------------------------------------------------------------------------------------------------------------
+'''
+clf = Pipeline([
+        ("kpca", KernelPCA(n_components=2)),
+        ("log_reg", LogisticRegression(solver="liblinear"))
+    ])
+
+param_grid = [{
+        "kpca__gamma": np.linspace(0.03, 0.05, 10),
+        "kpca__kernel": ["rbf", "sigmoid"]
+    }]
+
+grid_search = GridSearchCV(clf, param_grid, cv=3)
+
+grid_search_fit = grid_search.fit(X, y)
+print('grid_search_fit = \n{0}\n'.format(grid_search_fit))
+
+# The best kernel and high parameter values are extracted from best_params_.
+print('grid_search.best_params_ = \n{0}\n'.format(grid_search.best_params_))
+
+'''
+-----------------------------------------------------------------------------------------------------------------
+A complete unsupervised learning method that selects kernels and high parameters with the least reconstruction error
+-----------------------------------------------------------------------------------------------------------------
+'''
 # preimage_plot
 plt.figure(figsize=(6, 5))
 
@@ -852,3 +903,69 @@ plt.title("space by reduced dimensions")
 plt.xlabel("$z_1$", fontsize=18)
 plt.ylabel("$z_2$", fontsize=18, rotation=0)
 plt.grid(True)
+plt.show()
+
+'''
+-------------------------------------------------------------------------------------------------------------------
+In order to perform reconstruction, 
+a supervised regression model may be trained using the projected instances as a training set 
+and the original instances as targets.
+-------------------------------------------------------------------------------------------------------------------
+'''
+rbf_pca = KernelPCA(n_components = 2, kernel="rbf", gamma=0.0433, fit_inverse_transform=True)
+X_reduced = rbf_pca.fit_transform(X)
+X_preimage = rbf_pca.inverse_transform(X_reduced)
+
+'''
+note:
+     By default, fit_inverse_trasform = false, so there is no inverse_transform () method.
+    Make sure fit_inverse_trasform = true.
+'''
+# Calculate the error of the reconstructed pre-image.
+print('mean_squared_error(X, X_preimage) = {0}\n'.format(mean_squared_error(X, X_preimage)))
+
+'''
+Using grid search and cross-validation, 
+kernels and high parameter values that minimize this reconstructed pre-image error are found.
+'''
+print('------------------------------------------------------------------------------------------------------\n'
+      '          8.5 LLE(locally linear embedding)                                                           \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# make swiss roll
+X, t = make_swiss_roll(n_samples=1000, noise=0.2, random_state=42)
+
+# plot swiss roll
+axes = [-11.5, 14, -2, 23, -12, 15]
+
+fig = plt.figure(figsize=(6, 5))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=t, cmap=plt.cm.hot)
+ax.view_init(10, -70)
+ax.set_title("Swiss roll")
+ax.set_xlabel("$x_1$", fontsize=18)
+ax.set_ylabel("$x_2$", fontsize=18)
+ax.set_zlabel("$x_3$", fontsize=18)
+ax.set_xlim(axes[0:2])
+ax.set_ylim(axes[2:4])
+ax.set_zlim(axes[4:6])
+plt.show()
+
+lle = LocallyLinearEmbedding(n_components=2, n_neighbors=10, random_state=42)
+X_reduced = lle.fit_transform(X)
+
+# plot swiss roll
+plt.title("Unrolled swiss roll using LLE", fontsize=14)
+plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=t, cmap=plt.cm.hot)
+plt.xlabel("$z_1$", fontsize=18)
+plt.ylabel("$z_2$", fontsize=18)
+plt.axis([-0.065, 0.055, -0.1, 0.12])
+plt.grid(True)
+
+save_fig("lle_unrolling_plot")
+plt.show()
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '    8.6 MDS(multidimensional scaling), Isomap and t-SNE(t-distributed stochastic neighbor embedding)  \n'
+      '------------------------------------------------------------------------------------------------------\n')
+
