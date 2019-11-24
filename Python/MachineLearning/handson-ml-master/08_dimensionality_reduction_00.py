@@ -932,7 +932,7 @@ print('-------------------------------------------------------------------------
       '          8.5 LLE(locally linear embedding)                                                           \n'
       '------------------------------------------------------------------------------------------------------\n')
 # make swiss roll
-X, t = make_swiss_roll(n_samples=1000, noise=0.2, random_state=42)
+X, t = make_swiss_roll(n_samples=1000, noise=0.2, random_state=41)
 
 # plot swiss roll
 axes = [-11.5, 14, -2, 23, -12, 15]
@@ -969,3 +969,42 @@ print('-------------------------------------------------------------------------
       '    8.6 MDS(multidimensional scaling), Isomap and t-SNE(t-distributed stochastic neighbor embedding)  \n'
       '------------------------------------------------------------------------------------------------------\n')
 
+# MDS(multidimensional scaling)
+mds = MDS(n_components=2, random_state=42)
+X_reduced_mds = mds.fit_transform(X)
+
+# Isomap
+isomap = Isomap(n_components=2)
+X_reduced_isomap = isomap.fit_transform(X)
+
+# t-SNE(t-distributed stochastic neighbor embedding)
+tsne = TSNE(n_components=2, random_state=42)
+X_reduced_tsne = tsne.fit_transform(X)
+
+# LinearDiscriminantAnalysis
+lda = LinearDiscriminantAnalysis(n_components=2)
+X_mnist = mnist["data"]
+y_mnist = mnist["target"]
+lda.fit(X_mnist, y_mnist)
+X_reduced_lda = lda.transform(X_mnist)
+
+# 
+titles = ["MDS", "Isomap", "t-SNE"]
+
+plt.figure(figsize=(11,4))
+
+for subplot, title, X_reduced in zip((131, 132, 133), titles, (X_reduced_mds, X_reduced_isomap, X_reduced_tsne)):
+    plt.subplot(subplot)
+    plt.title(title, fontsize=14)
+    plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=t, cmap=plt.cm.hot)
+    plt.xlabel("$z_1$", fontsize=18)
+    if subplot == 131:
+        plt.ylabel("$z_2$", fontsize=18, rotation=0)
+    plt.grid(True)
+
+save_fig("other_dim_reduction_plot")
+plt.show()
+
+def learned_parameters(model):
+    return [m for m in dir(model)
+            if m.endswith("_") and not m.startswith("_")]
