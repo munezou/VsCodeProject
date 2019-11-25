@@ -808,9 +808,3 @@ plt.title("Inertia = {:.1f}".format(kmeans_bad.inertia_), fontsize=14)
 
 save_fig("bad_kmeans_diagram")
 plt.show()
-
-
-
-
-
-
