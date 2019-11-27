@@ -18,6 +18,11 @@ import seaborn as sns
 
 from sklearn.datasets import load_iris
 from sklearn.datasets import make_blobs
+from sklearn.datasets import load_digits
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.linear_model import LogisticRegression
 
 from sklearn.mixture import GaussianMixture
 
@@ -92,3 +97,30 @@ save_fig('image_segmentation_diagram', tight_layout=False)
 plt.show()
 
 print()
+
+print('------------------------------------------------------------------------------------------------------\n'
+      '          Using Clustering for Preprocessing                                                          \n'
+      '------------------------------------------------------------------------------------------------------\n')
+# Let's tackle the digits dataset which is a simple MNIST-like dataset containing 1,797 grayscale 8×8 images representing digits 0 to 9.
+X_digits, y_digits = load_digits(return_X_y=True)
+
+# Let's split it into a training set and a test set:
+X_train, X_test, y_train, y_test = train_test_split(X_digits, y_digits, random_state=42)
+
+# Now let's fit a Logistic Regression model and evaluate it on the test set:
+log_reg = LogisticRegression(multi_class="ovr", solver="liblinear", random_state=42)
+
+log_reg_fit = log_reg.fit(X_train, y_train)
+print('log_reg_fit = \n{0}\n'.format(log_reg_fit))
+
+log_reg_score = log_reg.score(X_test, y_test)
+print('log_reg_score = {0}\n'.format(log_reg_score))
+
+'''
+--------------------------------------------------------------------------------------------------------------------------
+Okay, that's our baseline: 96.7% accuracy. 
+Let's see if we can do better by using K-Means as a preprocessing step. 
+We will create a pipeline that will first cluster the training set into 50 clusters 
+and replace the images with their distances to the 50 clusters, then apply a logistic regression model:
+--------------------------------------------------------------------------------------------------------------------------
+'''
