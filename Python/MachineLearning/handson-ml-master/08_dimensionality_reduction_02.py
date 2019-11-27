@@ -20,7 +20,10 @@ from sklearn.datasets import load_iris
 from sklearn.datasets import make_blobs
 from sklearn.datasets import load_digits
 
+from sklearn.pipeline import Pipeline
+
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
 
 from sklearn.linear_model import LogisticRegression
 
@@ -104,23 +107,70 @@ print('-------------------------------------------------------------------------
 # Let's tackle the digits dataset which is a simple MNIST-like dataset containing 1,797 grayscale 8×8 images representing digits 0 to 9.
 X_digits, y_digits = load_digits(return_X_y=True)
 
-# Let's split it into a training set and a test set:
+# Let's split it into a training set and a test set: test_size(default)=0.25
 X_train, X_test, y_train, y_test = train_test_split(X_digits, y_digits, random_state=42)
 
 # Now let's fit a Logistic Regression model and evaluate it on the test set:
 log_reg = LogisticRegression(multi_class="ovr", solver="liblinear", random_state=42)
-
 log_reg_fit = log_reg.fit(X_train, y_train)
-print('log_reg_fit = \n{0}\n'.format(log_reg_fit))
 
 log_reg_score = log_reg.score(X_test, y_test)
 print('log_reg_score = {0}\n'.format(log_reg_score))
 
 '''
---------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
 Okay, that's our baseline: 96.7% accuracy. 
 Let's see if we can do better by using K-Means as a preprocessing step. 
 We will create a pipeline that will first cluster the training set into 50 clusters 
 and replace the images with their distances to the 50 clusters, then apply a logistic regression model:
---------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
 '''
+pipeline = Pipeline([
+                    ("kmeans", KMeans(n_clusters=50, random_state=42)),
+                    ("log_reg", LogisticRegression(multi_class="ovr", solver="liblinear", random_state=42)),
+                    ])
+
+pipeline_fit = pipeline.fit(X_train, y_train)
+print('pipeline_fit = \n{0}\n'.format(pipeline_fit))
+
+pipeline_score = pipeline.score(X_test, y_test)
+print('pipeline_score = {0}\n'.format(pipeline_score))
+
+error_rate = 1 - (1 - 0.9822222) / (1 - 0.9666666)
+print('error_rate = {0}\n'.format(error_rate))
+
+'''
+-------------------------------------------------------------------------------------------------------------
+ How about that? 
+ We almost divided the error rate by a factor of 2!
+ But we chose the number of clusters  𝑘  completely arbitrarily, we can surely do better. 
+ Since K-Means is just a preprocessing step in a classification pipeline, 
+finding a good value for  𝑘  is much simpler than earlier: 
+
+ there's no need to perform silhouette analysis or minimize the inertia, 
+the best value of  𝑘  is simply the one that results in the best classification performance.
+-------------------------------------------------------------------------------------------------------------
+'''
+param_grid = dict(kmeans__n_clusters=range(2, 100))
+
+grid_clf = GridSearchCV(pipeline, param_grid, cv=3, verbose=2)
+
+print()
+print()
+grid_clf_fit = grid_clf.fit(X_train, y_train)
+print('grid_clf = \n{0}\n'.format(grid_clf_fit))
+
+grid_clf_best_parametrer = grid_clf.best_params_
+print('grid_clf_best_parametrer = {0}\n'.format(grid_clf_best_parametrer))
+
+grid_clf_score = grid_clf.score(X_test, y_test)
+print('grid_clf_score = {0}\n'.format(grid_clf_score))
+
+'''
+-------------------------------------------------------------------------------------------------------------
+The performance is slightly improved when  𝑘=90 , so 90 it is.
+-------------------------------------------------------------------------------------------------------------
+'''
+print('------------------------------------------------------------------------------------------------------\n'
+      '          Clustering for Semi-supervised Learning                                                     \n'
+      '------------------------------------------------------------------------------------------------------\n')
