@@ -25,6 +25,7 @@ from datetime import datetime
 import io
 import os
 import sys
+import platform
 import itertools
 from packaging import version
 from six.moves import range
@@ -40,6 +41,7 @@ print("TensorFlow version: ", tf.__version__)
 assert version.parse(tf.__version__).release[0] >= 2, \
     "This notebook requires TensorFlow 2.0 or above."
 
+pf = platform.system()
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
 
@@ -97,6 +99,21 @@ You're logging only one image, so batch_size is 1. The images are grayscale, so 
 img = np.reshape(train_images[0], (-1, 28, 28, 1))
 
 # You're now ready to log this image and view it in TensorBoard.
+pathLogs = os.path.join(PROJECT_ROOT_DIR, "logs")
+
+try:
+    if pf == 'Linux':
+        runcmd = subprocess.call(["rm", "-rf", pathLogs])
+    elif pf == 'Windows':
+        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+    
+    print(runcmd)
+    pass
+except Exception as ex:
+    print(ex)
+    pass
+finally:
+    pass
 
 # Sets up a timestamped log directory.
 logdir = os.path.join(PROJECT_ROOT_DIR, "logs", "train_data", datetime.now().strftime("%Y%m%d-%H%M%S"))
@@ -154,7 +171,22 @@ In the code below, you'll log the first 25 images as a nice grid using matplotli
 You'll then view the grid in TensorBoard:
 --------------------------------------------------------------------------------------
 '''
+# Clear out prior logging data.
+pathLogs = os.path.join(PROJECT_ROOT_DIR, "logs", "plots")
 
+try:
+    if pf == 'Linux':
+        runcmd = subprocess.call(["rm", "-rf", pathLogs])
+    elif pf == 'Windows':
+        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+    
+    print(runcmd)
+    pass
+except Exception as ex:
+    print(ex)
+    pass
+finally:
+    pass
 
 logdir = os.path.join(PROJECT_ROOT_DIR, "logs", "plots", datetime.now().strftime("%Y%m%d-%H%M%S"))
 file_writer = tf.summary.create_file_writer(logdir)
@@ -277,7 +309,22 @@ Here's what you'll do:
 As training progresses, scroll down to see TensorBoard start up.
 -------------------------------------------------------------------------------------
 '''
+# Clear out prior logging data.
+pathLogs = os.path.join(PROJECT_ROOT_DIR, "logs", "image")
 
+try:
+    if pf == 'Linux':
+        runcmd = subprocess.call(["rm", "-rf", pathLogs])
+    elif pf == 'Windows':
+        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+    
+    print(runcmd)
+    pass
+except Exception as ex:
+    print(ex)
+    pass
+finally:
+    pass
 
 logdir = os.path.join(PROJECT_ROOT_DIR, "logs", "image", datetime.now().strftime("%Y%m%d-%H%M%S"))
 

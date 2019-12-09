@@ -2,6 +2,23 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+'''
+---------------------------------------------------------------------------------------------
+TensorBoard Scalars: Logging training metrics in Keras
+
+Overview)
+Machine learning invariably involves understanding key metrics such as loss and how they change as training progresses. 
+These metrics can help you understand if you're overfitting, for example, or if you're unnecessarily training for too long. 
+You may want to compare these metrics across different training runs to help debug and improve your model.
+
+TensorBoard's Scalars Dashboard allows you to visualize these metrics using a simple API with very little effort. 
+This tutorial presents very basic examples to help you learn how to use these APIs with TensorBoard when developing your Keras model. 
+You will learn how to use the Keras TensorBoard callback and TensorFlow Summary APIs to visualize default and custom scalars.
+------------------------------------------------------------------------------------------------
+'''
+print(__doc__)
+
+
 from datetime import datetime
 from packaging import version
 
