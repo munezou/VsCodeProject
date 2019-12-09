@@ -27,6 +27,7 @@ import os
 import sys
 import platform
 import itertools
+import shutil
 from packaging import version
 from six.moves import range
 
@@ -105,7 +106,7 @@ try:
     if pf == 'Linux':
         runcmd = subprocess.call(["rm", "-rf", pathLogs])
     elif pf == 'Windows':
-        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+        runcmd = shutil.rmtree(pathLogs)
     
     print(runcmd)
     pass
@@ -178,7 +179,7 @@ try:
     if pf == 'Linux':
         runcmd = subprocess.call(["rm", "-rf", pathLogs])
     elif pf == 'Windows':
-        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+        runcmd = shutil.rmtree(pathLogs)
     
     print(runcmd)
     pass
@@ -316,7 +317,7 @@ try:
     if pf == 'Linux':
         runcmd = subprocess.call(["rm", "-rf", pathLogs])
     elif pf == 'Windows':
-        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+        runcmd = shutil.rmtree(pathLogs)
     
     print(runcmd)
     pass

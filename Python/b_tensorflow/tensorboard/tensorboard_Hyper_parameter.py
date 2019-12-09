@@ -34,6 +34,7 @@ import io
 import os
 import sys
 import platform
+import shutil
 from packaging import version
 
 import tensorflow as tf
@@ -53,7 +54,7 @@ try:
     if pf == 'Linux':
         runcmd = subprocess.call(["rm", "-rf", pathLogs])
     elif pf == 'Windows':
-        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+        runcmd = shutil.rmtree(pathLogs)
     
     print(runcmd)
     pass
@@ -229,3 +230,5 @@ and a scatter plot market can be clicked to see a plot of the metrics as a funct
 (although in this tutorial only one step is used for each run).
 
 To further explore the capabilities of the HParams dashboard, download a set of pregenerated logs with more experiments:
+-------------------------------------------------------------------------------------------------------------------
+'''

@@ -22,8 +22,10 @@ You will also use a tracing API to generate graph data for functions created usi
 print(__doc__)
 
 # common library
+import subprocess
 import os
 import platform
+import shutil
 from datetime import datetime
 from packaging import version
 
@@ -44,7 +46,7 @@ try:
     if pf == 'Linux':
         runcmd = subprocess.call(["rm", "-rf", pathLogs])
     elif pf == 'Windows':
-        runcmd = subprocess.call(["rd", "/s", "/q", pathLogs], shell=True)
+        runcmd = shutil.rmtree(pathLogs)
     
     print(runcmd)
     pass
