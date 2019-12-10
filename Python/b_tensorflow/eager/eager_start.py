@@ -335,7 +335,7 @@ checkpoint_dir = os.path.join(PROJECT_ROOT_DIR, "path", "to", "model_dir")
 if not os.path.exists(checkpoint_dir):
     os.makedirs(checkpoint_dir)
 
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt", "")
 root = tf.train.Checkpoint(optimizer=optimizer, model=model)
 
 root.save(checkpoint_prefix)
