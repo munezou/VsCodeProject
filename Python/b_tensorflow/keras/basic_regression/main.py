@@ -1,4 +1,6 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+import pathlib
+import os
+import platform
 
 import pandas as pd
 import seaborn as sns
@@ -6,23 +8,24 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers
 
 print(tf.__version__)
+
+pf = platform.system()
+PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
 '''
 ------------------------------------------------------------------------------------------------------------------------
 Acquisition of data
 ------------------------------------------------------------------------------------------------------------------------
 '''
-dataset_path = keras.utils.get_file("auto-mpg.data", "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data")
-print('dataset_path = {0}'.format(dataset_path))
-
 column_names = ['MPG','Cylinders','Displacement','Horsepower','Weight', 'Acceleration', 'Model Year', 'Origin']
-
-raw_dataset = pd.read_csv(dataset_path, names=column_names, na_values = "?", comment='\t', sep=" ", skipinitialspace=True)
+data_path = os.path.join(PROJECT_ROOT_DIR, "AI_data", "auto-mpg.data")
+raw_dataset = pd.read_csv(data_path, names=column_names, na_values = "?", comment='\t', sep=" ", skipinitialspace=True)
 
 dataset = raw_dataset.copy()
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 print(dataset.tail())
 
 print()
@@ -51,8 +54,8 @@ print()
 The "Origin" column is a category, not a number. Because of this, one hot encoding is done.
 
 one hot encoding:
- One-Hot, that is, one vector is a one (1) and the other is zero (vector).
- In economics and statistics, it is sometimes called "dummy variable".
+  One-Hot, that is, one vector is a one (1) and the other is zero (vector).
+  In economics and statistics, it is sometimes called "dummy variable".
 ------------------------------------------------------------------------------------------------------------------------
 '''
 origin = dataset.pop('Origin')
@@ -143,16 +146,19 @@ print()
 
 def build_model():
   model = keras.Sequential([
-    layers.Dense(64, activation=tf.nn.relu, input_shape=[len(train_dataset.keys())]),
-    layers.Dense(64, activation=tf.nn.relu),
-    layers.Dense(1)
+    keras.layers.Dense(64, activation=tf.nn.relu, input_shape=[len(train_dataset.keys())]),
+    keras.layers.Dense(64, activation=tf.nn.relu),
+    keras.layers.Dense(1)
   ])
 
   optimizer = tf.keras.optimizers.RMSprop(0.001)
 
-  model.compile(loss='mean_squared_error',
+  model.compile (
+                loss='mean_squared_error',
                 optimizer=optimizer,
-                metrics=['mean_absolute_error', 'mean_squared_error'])
+                metrics=['mean_absolute_error', 'mean_squared_error']
+                )
+  
   return model
 
 # model build
@@ -207,20 +213,16 @@ def plot_history(history):
   plt.figure()
   plt.xlabel('Epoch')
   plt.ylabel('Mean Abs Error [MPG]')
-  plt.plot(hist['epoch'], hist['mean_absolute_error'],
-           label='Train Error')
-  plt.plot(hist['epoch'], hist['val_mean_absolute_error'],
-           label = 'Val Error')
+  plt.plot(hist['epoch'], hist['mean_absolute_error'], label='Train Error')
+  plt.plot(hist['epoch'], hist['val_mean_absolute_error'], label = 'Val Error')
   plt.legend()
   plt.ylim([0,5])
 
   plt.figure()
   plt.xlabel('Epoch')
   plt.ylabel('Mean Square Error [$MPG^2$]')
-  plt.plot(hist['epoch'], hist['mean_squared_error'],
-           label='Train Error')
-  plt.plot(hist['epoch'], hist['val_mean_squared_error'],
-           label = 'Val Error')
+  plt.plot(hist['epoch'], hist['mean_squared_error'], label='Train Error')
+  plt.plot(hist['epoch'], hist['val_mean_squared_error'], label = 'Val Error')
   plt.legend()
   plt.ylim([0,20])
 
@@ -277,7 +279,3 @@ plt.hist(error, bins = 25)
 plt.xlabel("Prediction Error [MPG]")
 _ = plt.ylabel("Count")
 plt.show()
-
-
-
-
