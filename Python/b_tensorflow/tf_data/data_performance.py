@@ -117,3 +117,134 @@ print   (
         '       The naive approach                                                                             \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
+# Start with a naive pipeline using no tricks, iterating over the dataset as-is.
+benchmark(ArtificialDataset())
+
+'''
+---------------------------------------------------------------------------------------------------------------
+Under the hood, this is how your execution time was spent:
+'''
+im = Image.open(os.path.join(PROJECT_ROOT_DIR, "image", "naive.png"))
+im.show()
+
+'''
+You can see that performing a training step involves:
+
+* opening a file if it hasn't been opened yet,
+* fetching a data entry from the file,
+* using the data for training.
+
+However, in a naive synchronous implementation like here, while your pipeline is fetching the data, 
+your model is sitting idle. Conversely, while your model is training, the input pipeline is sitting idle. 
+The training step time is thus the sum of all, opening, reading and training time.
+
+The next sections build on this input pipeline, illustrating best practices for designing performant TensorFlow input pipelines.
+---------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Prefetching                                                                                    \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+----------------------------------------------------------------------------------------------------------------
+Prefetching overlaps the preprocessing and model execution of a training step. 
+While the model is executing training step s, the input pipeline is reading the data for step s+1. 
+Doing so reduces the step time to the maximum (as opposed to the sum) of the training and the time it takes to extract the data.
+
+The tf.data API provides the tf.data.Dataset.prefetch transformation. 
+It can be used to decouple the time when data is produced from the time when data is consumed. 
+In particular, 
+the transformation uses a background thread and an internal buffer to prefetch elements from the input dataset ahead of the time they are requested. 
+The number of elements to prefetch should be equal to (or possibly greater than) the number of batches consumed by a single training step. 
+You could either manually tune this value, or set it to tf.data.experimental.AUTOTUNE 
+which will prompt the tf.data runtime to tune the value dynamically at runtime.
+
+Note that the prefetch transformation provides benefits any time there is an opportunity to overlap the work of a "producer" with the work of a "consumer."
+------------------------------------------------------------------------------------------------------------------
+'''
+benchmark(
+    ArtificialDataset()
+    .prefetch(tf.data.experimental.AUTOTUNE)
+)
+
+im = Image.open(os.path.join(PROJECT_ROOT_DIR, "image", "prefetched.png"))
+im.show()
+'''
+--------------------------------------------------------------------------------------------------------------------
+This time you can see that while the training step is running for sample 0, 
+the input pipeline is reading the data for the sample 1, and so on.
+--------------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Parallelizing data extraction                                                                  \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+-------------------------------------------------------------------------------------------------------------------
+In a real-world setting, the input data may be stored remotely (for example, GCS or HDFS). 
+A dataset pipeline that works well when reading data locally might become bottlenecked on I/O when reading data remotely 
+because of the following differences between local and remote storage:
+
+* Time-to-first-byte: 
+    Reading the first byte of a file from remote storage can take orders of magnitude longer than from local storage.
+* Read throughput: 
+    While remote storage typically offers large aggregate bandwidth, reading a single file might only be able to utilize a small fraction of this bandwidth.
+
+In addition, once the raw bytes are loaded into memory, it may also be necessary to deserialize and/or decrypt the data (e.g. protobuf), 
+which requires additional computation. 
+This overhead is present irrespective of whether the data is stored locally or remotely, 
+but can be worse in the remote case if data is not prefetched effectively.
+
+To mitigate the impact of the various data extraction overheads, 
+the tf.data.Dataset.interleave transformation can be used to parallelize the data loading step, 
+interleaving the contents of other datasets (such as data file readers). 
+The number of datasets to overlap can be specified by the cycle_length argument, 
+while the level of parallelism can be specified by the num_parallel_calls argument. 
+Similar to the prefetch transformation, 
+the interleave transformation supports tf.data.experimental.AUTOTUNE which will delegate the decision 
+about what level of parallelism to use to the tf.data runtime.
+------------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Sequential interleave                                                                          \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+# The default arguments of the tf.data.Dataset.interleave transformation make it interleave single samples from two datasets sequentially.
+benchmark(
+    tf.data.Dataset.range(2)
+    .interleave(ArtificialDataset)
+)
+
+im = Image.open(os.path.join(PROJECT_ROOT_DIR, "image", "sequential_interleave.png"))
+im.show()
+
+'''
+---------------------------------------------------------------------------------------------------------------
+This plot allows to exhibit the behavior of the interleave transformation, 
+fetching samples alternatively from the two datasets available. 
+However, no performance improvement is involved here.
+---------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Parallel interleave                                                                            \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+# Now use the num_parallel_calls argument of the interleave transformation. 
+# This loads multiple datasets in parallel, reducing the time waiting for the files to be opened.
+benchmark(
+    tf.data.Dataset.range(2)
+    .interleave(ArtificialDataset, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+)
+
+im = Image.open(os.path.join(PROJECT_ROOT_DIR, "image", "parallel_interleave.png"))
+im.show()
+
+'''
+--------------------------------------------------------------------------------------------------------------
+Now, you can see on the plot that the pre-processing steps overlap, reducing the overall time for a single iteration.
+--------------------------------------------------------------------------------------------------------------
+'''
