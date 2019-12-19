@@ -508,3 +508,50 @@ titanic_slices = tf.data.Dataset.from_tensor_slices(dict(df))
 for feature_batch in titanic_slices.take(1):
   for key, value in feature_batch.items():
     print("  {!r:20s}: {}".format(key, value))
+
+'''
+-------------------------------------------------------------------------------------------------------------------
+A more scalable approach is to load from disk as necessary.
+
+The tf.data module provides methods to extract records from one or more CSV files that comply with RFC 4180.
+
+The experimental.make_csv_dataset function is the high level interface for reading sets of csv files. 
+It supports column type inference and many other features, like batching and shuffling, to make usage simple.
+-------------------------------------------------------------------------------------------------------------------
+'''
+titanic_batches = tf.data.experimental.make_csv_dataset(
+    titanic_file, batch_size=4,
+    label_name="survived"
+  )
+
+for feature_batch, label_batch in titanic_batches.take(1):
+  print("'survived': {}".format(label_batch))
+  print("features:")
+  for key, value in feature_batch.items():
+    print("  {!r:20s}: {}".format(key, value))
+
+# You can use the select_columns argument if you only need a subset of columns.
+titanic_batches = tf.data.experimental.make_csv_dataset(
+    titanic_file, batch_size=4,
+    label_name="survived", 
+    select_columns=['class', 'fare', 'survived']
+  )
+
+for feature_batch, label_batch in titanic_batches.take(1):
+  print("'survived': {}".format(label_batch))
+  for key, value in feature_batch.items():
+    print("  {!r:20s}: {}".format(key, value))
+
+'''
+--------------------------------------------------------------------------------------------------------------------
+There is also a lower-level experimental.CsvDataset class which provides finer grained control. 
+It does not support column type inference. Instead you must specify the type of each column.
+--------------------------------------------------------------------------------------------------------------------
+'''
+titanic_types  = [tf.int32, tf.string, tf.float32, tf.int32, tf.int32, tf.float32, tf.string, tf.string, tf.string, tf.string] 
+dataset = tf.data.experimental.CsvDataset(titanic_file, titanic_types , header=True)
+
+for line in dataset.take(10):
+  print([item.numpy() for item in line])
+
+# If some columns are empty, this low-level interface allows you to provide default values instead of column types.
