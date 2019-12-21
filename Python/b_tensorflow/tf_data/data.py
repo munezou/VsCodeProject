@@ -36,6 +36,7 @@ from packaging import version
 from PIL import Image
 import itertools
 from collections import defaultdict
+import csv
 
 import numpy as np
 import pandas as pd
@@ -68,6 +69,8 @@ import urllib
 proxy_support = urllib.request.ProxyHandler({'https': 'http://proxy.kanto.sony.co.jp:10080'})
 opener = urllib.request.build_opener(proxy_support)
 urllib.request.install_opener(opener)
+
+
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
@@ -555,3 +558,8 @@ for line in dataset.take(10):
   print([item.numpy() for item in line])
 
 # If some columns are empty, this low-level interface allows you to provide default values instead of column types.
+file_path = os.path.join(PROJECT_ROOT_DIR, "csv_data", "missing.csv")
+
+with open(file_path, 'w') as f:
+  writer = csv.writer(f, lineterminator='\n')
+  writer.writerow([1,2,3,4,2,3,4,1,0,3,4,1,2,8,4,1,2,3])
