@@ -1,2 +1,0 @@
-# VsCodeProject
-Vs Code Project
