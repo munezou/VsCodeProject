@@ -32,6 +32,7 @@ import os
 import platform
 import shutil
 import subprocess
+from pathlib import Path
 from packaging import version
 from PIL import Image
 import itertools
@@ -562,4 +563,83 @@ file_path = os.path.join(PROJECT_ROOT_DIR, "csv_data", "missing.csv")
 
 with open(file_path, 'w') as f:
   writer = csv.writer(f, lineterminator='\n')
-  writer.writerow([1,2,3,4,2,3,4,1,0,3,4,1,2,8,4,1,2,3])
+  writer.writerows([
+      [1,2,3,4],
+      [None,2,3,4],
+      [1,None,3,4],
+      [1,2,None,4],
+      [1,2,3,None],
+      [None,None,None,None]
+    ])
+
+# Creates a dataset that reads all of the records from two CSV files, each with
+# four float columns which may have missing values.
+
+record_defaults = [999,999,999,999]
+dataset = tf.data.experimental.CsvDataset(file_path, record_defaults)
+dataset = dataset.map(lambda *items: tf.stack(items))
+print('dataset = \n{0}\n'.format(dataset))
+
+for line in dataset:
+  print(line.numpy())
+
+'''
+-------------------------------------------------------------------------------------------------------
+By default, 
+a CsvDataset yields every column of every line of the file, which may not be desirable, 
+for example if the file starts with a header line that should be ignored, 
+or if some columns are not required in the input. 
+These lines and fields can be removed with the header and select_cols arguments respectively.
+--------------------------------------------------------------------------------------------------------
+'''
+# Creates a dataset that reads all of the records from two CSV files with
+# headers, extracting float data from columns 2 and 4.
+record_defaults = [999, 999] # Only provide defaults for the selected columns
+dataset = tf.data.experimental.CsvDataset(file_path, record_defaults, select_cols=[1, 3])
+dataset = dataset.map(lambda *items: tf.stack(items))
+print('dataset = \n{0}\n'.format(dataset))
+
+for line in dataset:
+  print(line.numpy())
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Consuming sets of files                                                                        \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+# There are many datasets distributed as a set of files, where each file is an example.
+flowers_root = tf.keras.utils.get_file(
+    'flower_photos',
+    'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
+    untar=True
+  )
+
+flowers_root = Path(flowers_root)
+
+'''
+--------------------------------------------------------------------------------------------------------------
+Note: these images are licensed CC-BY, see LICENSE.txt for details.
+--------------------------------------------------------------------------------------------------------------
+'''
+# The root directory contains a directory for each class:
+for item in flowers_root.glob("*"):
+  print(item.name)
+
+print('---< The files in each class directory are examples: >---') 
+list_ds = tf.data.Dataset.list_files(str(flowers_root/'*/*'))
+
+for f in list_ds.take(5):
+  print(f.numpy())
+
+# We can read the data using the tf.io.read_file function and extract the label from the path, 
+# returning (image, label) pairs:
+def process_path(file_path):
+  label = tf.strings.split(file_path, '/')[-1]
+  return tf.io.read_file(file_path), label
+
+labeled_ds = list_ds.map(process_path)
+
+for image_raw, label_text in labeled_ds.take(1):
+  print(repr(image_raw.numpy()[:100]))
+  print()
+  print(label_text.numpy())
