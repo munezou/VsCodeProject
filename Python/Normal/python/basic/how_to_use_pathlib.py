@@ -42,6 +42,13 @@ print   (
 PROJECT_ROOT_DIR = Path.cwd()
 print('current path = {0}\n'.format(PROJECT_ROOT_DIR))
 
+p_path = PROJECT_ROOT_DIR.joinpath('Python/Normal/python/basic/txt_data/')
+
+if p_path.exists() == False:
+    p_path.mkdir()
+else:
+    p_path.mkdir(exist_ok=True)
+    
 p_path = PROJECT_ROOT_DIR.joinpath('Python/Normal/python/basic/txt_data/ccc.txt')
 print('p = {0}\n'.format(p_path))
 
@@ -89,6 +96,58 @@ print('p_path.stem = {0}\n'.format(p_path.stem))
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       Get file name and extension                                                                    \n'
+        '       Delete files and directories, change permissions                                               \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
+# remove file
+p_path.unlink()
+
+p_dir = PROJECT_ROOT_DIR.joinpath('Python/Normal/python/basic/txt_data')
+
+# remove directory
+if pf == 'Linux':
+    p_dir.chmod(775)
+    p_dir.rmdir()
+elif pf == 'Windows':
+    if p_dir.is_dir() == True:
+        shutil.rmtree(p_dir)
+
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Path join                                                                                      \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+if pf == 'Linux':
+    print('Path(''a/b/c'') / ''d'' = {0}\n'.format(Path('a/b/c') / 'd'))
+elif pf == 'Windows':
+    print('Path(''a\\b\\c'') / ''d'' = {0}\n'.format(Path('a\\b\\c') / 'd'))
+
+print('---< By method >---')
+
+if pf == 'Linux':
+    print('Path(''a/b/c'').joinpath(''d'') = {0}\n'.format(Path('a/b/c').joinpath('d')))
+elif pf == 'Windows':
+    print('Path(''a\\b\\c'').joinpath(''d'')  = {0}\n'.format(Path('a\\b\\c').joinpath('d')))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       File list acquisition and search                                                               \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+p_code = PROJECT_ROOT_DIR.joinpath('Python/Normal/python/basic')
+
+# Returns a generator of files and directory listings in the path.
+print('p_code.iterdir() = {0}\n'.format(p_code.iterdir()))
+
+# Returns the list of files and directories in the path as a list.
+all_list = list(p_code.iterdir())
+print('all_list = \n{0}\n'.format(all_list))
+
+# Searches for .py files in the path and returns a generator.
+print('p_code.glob(''*.py'') = {0}\n'.format(p.glob('*.py')))
+
+# Searches for .py files in the path and returns a list.
+py_list = list(p.glob('*.py'))
+print('py_list = \n{0}\n'.format(py_list))
