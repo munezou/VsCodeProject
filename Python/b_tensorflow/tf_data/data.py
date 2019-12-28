@@ -66,11 +66,12 @@ PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
 np.set_printoptions(precision=4)
 
+'''
 import urllib
 proxy_support = urllib.request.ProxyHandler({'https': 'http://proxy.kanto.sony.co.jp:10080'})
 opener = urllib.request.build_opener(proxy_support)
 urllib.request.install_opener(opener)
-
+'''
 
 
 print   (
