@@ -1,7 +1,7 @@
 '''
 ------------------------------------------------------------------------------------------
 tf.data
-    text
+    text unicode
 ------------------------------------------------------------------------------------------
 '''
 # common library
@@ -308,3 +308,35 @@ model.fit(train_data, epochs=3, validation_data=test_data)
 eval_loss, eval_acc = model.evaluate(test_data)
 
 print('\nEval loss: {0}, Eval accuracy: {1}'.format(eval_loss, eval_acc))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Unicode strings                                                                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+Introduction
+
+Models that process natural language often handle different languages with different character sets. 
+Unicode is a standard encoding system that is used to represent character from almost all languages. 
+Each character is encoded using a unique integer code point between 0 and 0x10FFFF.
+A Unicode string is a sequence of zero or more code points.
+
+This tutorial shows how to represent Unicode strings in TensorFlow and manipulate them using Unicode equivalents of standard string ops. 
+It separates Unicode strings into tokens based on script detection.
+--------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       The tf.string data type                                                                        \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+The basic TensorFlow tf.string dtype allows you to build tensors of byte strings. 
+Unicode strings are utf-8 encoded by default.
+---------------------------------------------------------------------------------------------------------------
+'''
+tf_constant_thanks = tf.constant(u"Thanks 😊")
+print('tf_constant_thanks = \n{0}\n'.format(tf_constant_thanks))
