@@ -339,13 +339,16 @@ Using tf.py_function requires to specify the shape and type information that is 
 -------------------------------------------------------------------------------------------------------------
 '''
 
+
 def tf_serialize_example(f0,f1,f2,f3):
     tf_string = tf.py_function(
                     serialize_example,
-                    (f0,f1,f2,f3),  # pass these args to the above function.
-                    tf.string       # the return type is `tf.string`.
-                )      
+                    (f0,f1,f2,f3),
+                    tf.string
+                )
+    
     return tf.reshape(tf_string, ()) # The result is a scalar
+
 
 tf_serialize_example_print = tf_serialize_example(f0,f1,f2,f3)
 print('tf_serialize_example_print = \n{0}\n'.format(tf_serialize_example_print))
@@ -353,6 +356,7 @@ print('tf_serialize_example_print = \n{0}\n'.format(tf_serialize_example_print))
 # Apply this function to each element in the dataset:
 serialized_features_dataset = features_dataset.map(tf_serialize_example)
 print('serialized_features_dataset = \n{0}\n'.format(serialized_features_dataset))
+
 
 def generator():
     for features in features_dataset:
