@@ -37,18 +37,13 @@ import tensorflow as tf
 
 print(__doc__)
 
-import urllib
-proxy_support = urllib.request.ProxyHandler({'https': 'http://proxy.kanto.sony.co.jp:10080'})
-opener = urllib.request.build_opener(proxy_support)
-urllib.request.install_opener(opener)
-
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
