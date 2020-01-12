@@ -332,3 +332,14 @@ def plot_example(example):
     # Add feature values.
     _add_feature_values(dfeval.iloc[ID][sorted_ix], ax)
     return ax
+
+# Plot results.
+ID = 182
+example = df_dfc.iloc[ID]  # Choose ith example from evaluation set.
+TOP_N = 8  # View top 8 features.
+sorted_ix = example.abs().sort_values()[-TOP_N:].index
+ax = plot_example(example)
+ax.set_title('Feature contributions for example {}\n pred: {:1.2f}; label: {}'.format(ID, probs[ID], labels[ID]))
+ax.set_xlabel('Contribution to predicted probability', size=14)
+plt.show()
+
