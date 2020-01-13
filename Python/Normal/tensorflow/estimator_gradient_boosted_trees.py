@@ -343,3 +343,133 @@ ax.set_title('Feature contributions for example {}\n pred: {:1.2f}; label: {}'.f
 ax.set_xlabel('Contribution to predicted probability', size=14)
 plt.show()
 
+'''
+------------------------------------------------------------------------------------------------------------------
+The larger magnitude contributions have a larger impact on the model's prediction. 
+Negative contributions indicate the feature value for this given example reduced the model's prediction, 
+while positive values contribute an increase in the prediction.
+------------------------------------------------------------------------------------------------------------------
+'''
+
+# You can also plot the example's DFCs compare with the entire distribution using a voilin plot.
+# Boilerplate plotting code.
+def dist_violin_plot(df_dfc, ID):
+    # Initialize plot.
+    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+
+    # Create example dataframe.
+    TOP_N = 8  # View top 8 features.
+    example = df_dfc.iloc[ID]
+    ix = example.abs().sort_values()[-TOP_N:].index
+    example = example[ix]
+    example_df = example.to_frame(name='dfc')
+
+    # Add contributions of entire distribution.
+    parts=ax.violinplot([df_dfc[w] for w in ix],
+                    vert=False,
+                    showextrema=False,
+                    widths=0.7,
+                    positions=np.arange(len(ix)))
+    face_color = sns_colors[0]
+    alpha = 0.15
+    for pc in parts['bodies']:
+        pc.set_facecolor(face_color)
+        pc.set_alpha(alpha)
+
+    # Add feature values.
+    _add_feature_values(dfeval.iloc[ID][sorted_ix], ax)
+
+    # Add local contributions.
+    ax.scatter(example,
+                np.arange(example.shape[0]),
+                color=sns.color_palette()[2],
+                s=100,
+                marker="s",
+                label='contributions for example')
+
+    # Legend
+    # Proxy plot, to show violinplot dist on legend.
+    ax.plot([0,0], [1,1], label='eval set contributions\ndistributions',
+            color=face_color, alpha=alpha, linewidth=10)
+    legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large',
+                        frameon=True)
+    legend.get_frame().set_facecolor('white')
+
+    # Format plot.
+    ax.set_yticks(np.arange(example.shape[0]))
+    ax.set_yticklabels(example.index)
+    ax.grid(False, axis='y')
+    ax.set_xlabel('Contribution to predicted probability', size=14)
+
+# plot this example
+dist_violin_plot(df_dfc, ID)
+plt.title('Feature contributions for example {}\n pred: {:1.2f}; label: {}'.format(ID, probs[ID], labels[ID]))
+plt.show()
+
+'''
+---------------------------------------------------------------------------------------------------------------
+Finally, third-party tools, such as LIME and shap, can also help understand individual predictions for a model.
+---------------------------------------------------------------------------------------------------------------
+'''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Global feature importances                                                                     \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+Additionally, you might want to understand the model as a whole, rather than studying individual predictions. 
+Below, you will compute and use:
+
+     * Gain-based feature importances using est.experimental_feature_importances
+     * Permutation importances
+     * Aggregate DFCs using est.experimental_predict_with_explanations 
+
+Gain-based feature importances measure the loss change when splitting on a particular feature, 
+while permutation feature importances are computed by evaluating model performance on the evaluation 
+set by shuffling each feature one-by-one and attributing the change in model performance to the shuffled feature.
+
+In general, 
+permutation feature importance are preferred to gain-based feature importance, 
+though both methods can be unreliable in situations where potential predictor variables vary 
+in their scale of measurement or their number of categories and when features are correlated (source). 
+Check out this article for an in-depth overview and great discussion on different feature importance types.
+------------------------------------------------------------------------------------------------------------------
+'''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Gain-based feature importances                                                                 \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+# Gain-based feature importances are built into the TensorFlow Boosted Trees estimators using est.experimental_feature_importances.
+importances = est.experimental_feature_importances(normalize=True)
+df_imp = pd.Series(importances)
+
+# Visualize importances.
+N = 8
+ax = (
+        df_imp.iloc[0:N][::-1].plot(
+                                        kind='barh',
+                                        color=sns_colors[0],
+                                        title='Gain feature importances',
+                                        figsize=(10, 6)
+                                    )
+    )
+
+ax.grid(False, axis='y')
+plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Gain-based feature importances                                                                 \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+----------------------------------------------------------------------------------------------------------------
+You can also average the absolute values of DFCs to understand impact at a global level.
+----------------------------------------------------------------------------------------------------------------
+'''
+
