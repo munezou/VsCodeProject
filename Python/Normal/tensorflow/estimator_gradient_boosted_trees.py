@@ -25,10 +25,12 @@ from packaging import version
 from PIL import Image
 
 import numpy as np
+from numpy.random import seed, uniform
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.interpolate import griddata
 
 import tensorflow.compat.v2.feature_column as fc
 from sklearn.metrics import roc_curve
@@ -464,7 +466,7 @@ plt.show()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       Gain-based feature importances                                                                 \n'
+        '       Average absolute DFCs                                                                          \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 '''
@@ -472,4 +474,208 @@ print   (
 You can also average the absolute values of DFCs to understand impact at a global level.
 ----------------------------------------------------------------------------------------------------------------
 '''
+# Plot.
+dfc_mean = df_dfc.abs().mean()
+
+N = 8
+
+sorted_ix = dfc_mean.abs().sort_values()[-N:].index  # Average and sort by absolute.
+
+ax = dfc_mean[sorted_ix].plot(
+                                kind='barh',
+                                color=sns_colors[1],
+                                title='Mean |directional feature contributions|',
+                                figsize=(10, 6)
+                            )
+ax.grid(False, axis='y')
+
+# You can also see how DFCs vary as a feature value varies.
+FEATURE = 'fare'
+feature = pd.Series(df_dfc[FEATURE].values, index=dfeval[FEATURE].values).sort_index()
+ax = sns.regplot(feature.index.values, feature.values, lowess=True)
+ax.set_ylabel('contribution')
+ax.set_xlabel(FEATURE)
+ax.set_xlim(0, 100)
+ax.set_ylim(-0.4, 0.3)
+plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Permutation feature importance                                                                          \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+def permutation_importances(est, X_eval, y_eval, metric, features):
+    """Column by column, shuffle values and observe effect on eval set.
+
+    source: http://explained.ai/rf-importance/index.html
+    A similar approach can be done during training. See "Drop-column importance"
+    in the above article."""
+    baseline = metric(est, X_eval, y_eval)
+    imp = []
+    for col in features:
+        save = X_eval[col].copy()
+        X_eval[col] = np.random.permutation(X_eval[col])
+        m = metric(est, X_eval, y_eval)
+        X_eval[col] = save
+        imp.append(baseline - m)
+    return np.array(imp)
+
+def accuracy_metric(est, X, y):
+    """TensorFlow estimator accuracy."""
+    eval_input_fn = make_input_fn(
+                                    X,
+                                    y=y,
+                                    shuffle=False,
+                                    n_epochs=1
+                                )
+    
+    return est.evaluate(input_fn=eval_input_fn)['accuracy']
+
+features = CATEGORICAL_COLUMNS + NUMERIC_COLUMNS
+importances = permutation_importances(est, dfeval, y_eval, accuracy_metric, features)
+df_imp = pd.Series(importances, index=features)
+
+sorted_ix = df_imp.abs().sort_values().index
+ax = df_imp[sorted_ix][-5:].plot(kind='barh', color=sns_colors[2], figsize=(10, 6))
+ax.grid(False, axis='y')
+ax.set_title('Permutation feature importance')
+plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Visualizing model fitting                                                                      \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+'''
+---------------------------------------------------------------------------------------------------------------
+Lets first simulate/create training data using the following formula:
+
+𝑧=𝑥∗𝑒(−𝑥2−𝑦2)
+
+Where (z) is the dependent variable you are trying to predict and (x) and (y) are the features.
+--------------------------------------------------------------------------------------------------------------
+'''
+
+# Create fake data
+seed(0)
+npts = 5000
+x = uniform(-2, 2, npts)
+y = uniform(-2, 2, npts)
+z = x*np.exp(-x**2 - y**2)
+
+# Prep data for training.
+df = pd.DataFrame({'x': x, 'y': y, 'z': z})
+
+xi = np.linspace(-2.0, 2.0, 200),
+yi = np.linspace(-2.1, 2.1, 210),
+xi,yi = np.meshgrid(xi, yi)
+
+df_predict = pd.DataFrame(
+                            {
+                                'x' : xi.flatten(),
+                                'y' : yi.flatten(),
+                            }
+                        )
+
+predict_shape = xi.shape
+
+def plot_contour(x, y, z, **kwargs):
+    # Grid the data.
+    fig = plt.figure(figsize=(10, 8))
+    ax1 = fig.add_subplot(111)
+    # Contour the gridded data, plotting dots at the nonuniform data points.
+    plt.contour(x, y, z, 15, linewidths=1.0, colors='k')
+    CS = ax1.pcolormesh(x,y,z, cmap='RdBu_r')
+    pp = fig.colorbar(CS, ax=ax1, orientation="vertical")
+
+    pp.set_clim(-0.48, 0.48)
+    # Plot data points.
+    ax1.set_xlim(-2, 2)
+    ax1.set_ylim(-2, 2)
+
+# You can visualize the function. 
+# Redder colors correspond to larger function values.
+
+zi = griddata((x, y), z, (xi, yi), method='linear')
+plot_contour(xi, yi, zi)
+plt.scatter(df.x, df.y, color='b', marker='.')
+plt.title('Contour on training data')
+plt.show()
+
+fc = [
+        tf.feature_column.numeric_column('x'),
+        tf.feature_column.numeric_column('y')
+    ]
+
+def predict(est):
+    """Predictions from a given estimator."""
+    predict_input_fn = lambda: tf.data.Dataset.from_tensors(dict(df_predict))
+    preds = np.array([p['predictions'][0] for p in est.predict(predict_input_fn)])
+    return preds.reshape(predict_shape)
+
+# First let's try to fit a linear model to the data.
+train_input_fn = make_input_fn(df, df.z)
+est = tf.estimator.LinearRegressor(fc)
+est.train(train_input_fn, max_steps=500);
+
+plot_contour(xi, yi, predict(est))
+plt.show()
+
+'''
+-------------------------------------------------------------------------------------------
+It's not a very good fit. 
+Next let's try to fit a GBDT model to it and try to understand how the model fits the function.
+-------------------------------------------------------------------------------------------
+'''
+n_trees = 1 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+n_trees = 5 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+n_trees = 10 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+n_trees = 22 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+n_trees = 40 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+n_trees = 80 #@param {type: "slider", min: 1, max: 80, step: 1}
+
+est = tf.estimator.BoostedTreesRegressor(fc, n_batches_per_layer=1, n_trees=n_trees)
+est.train(train_input_fn, max_steps=500)
+plot_contour(xi, yi, predict(est))
+plt.text(-1.8, 2.1, '# trees: {}'.format(n_trees), color='w', backgroundcolor='black', size=20)
+plt.show()
+
+# As you increase the number of trees, the model's predictions better approximates the underlying function.
 
