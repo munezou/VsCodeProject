@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 from packaging import version
 from PIL import Image
+import tempfile
 
 import numpy as np
 import pandas as pd
@@ -188,3 +189,119 @@ The string ends with GPU:<N> if the tensor is placed on the N-th GPU on the host
 ---------------------------------------------------------------------------------------------------------------
 '''
 
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Explicit Device Placement                                                                      \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+'''
+----------------------------------------------------------------------------------------------------------------
+In TensorFlow, 
+placement refers to how individual operations are assigned (placed on) a device for execution. 
+As mentioned, when there is no explicit guidance provided, 
+TensorFlow automatically decides which device to execute an operation and copies tensors to that device, if needed. 
+However, 
+TensorFlow operations can be explicitly placed on specific devices using the tf.device context manager, for example:
+----------------------------------------------------------------------------------------------------------------
+'''
+def time_matmul(x):
+    start = time.time()
+    for loop in range(10):
+        tf.matmul(x, x)
+
+    result = time.time()-start
+
+    print("10 loops: {:0.2f}ms".format(1000*result))
+
+# Force execution on CPU
+print("On CPU:")
+with tf.device("CPU:0"):
+    x = tf.random.uniform([1000, 1000])
+    assert x.device.endswith("CPU:0")
+    time_matmul(x)
+
+# Force execution on GPU #0 if available
+if tf.config.experimental.list_physical_devices("GPU"):
+    print("On GPU:")
+    with tf.device("GPU:0"): # Or GPU:1 for the 2nd GPU, GPU:2 for the 3rd etc.
+        x = tf.random.uniform([1000, 1000])
+        assert x.device.endswith("GPU:0")
+        time_matmul(x)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Datasets                                                                                       \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+'''
+---------------------------------------------------------------------------------------------------------------
+This section uses the tf.data.Dataset API to build a pipeline for feeding data to your model. 
+The tf.data.Dataset API is used to build performant, 
+complex input pipelines from simple, re-usable pieces that will feed your model's training or evaluation loops.
+----------------------------------------------------------------------------------------------------------------
+'''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Create a source Dataset                                                                                       \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+
+'''
+---------------------------------------------------------------------------------------------------------------
+Create a source dataset using one of the factory functions like Dataset.from_tensors, Dataset.from_tensor_slices, 
+or using objects that read from files like TextLineDataset or TFRecordDataset. 
+See the TensorFlow Dataset guide for more information.
+----------------------------------------------------------------------------------------------------------------
+'''
+
+ds_tensors = tf.data.Dataset.from_tensor_slices([1, 2, 3, 4, 5, 6])
+
+for index, data in enumerate(ds_tensors):
+    print('data[{0}] = {1}'.format(index, data))
+
+# Create a CSV file
+_, filename = tempfile.mkstemp()
+
+with open(filename, 'w') as f:
+    f.write(
+                """Line 1
+                Line 2
+                Line 3
+                """
+    )
+
+ds_file = tf.data.TextLineDataset(filename)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Apply transformations                                                                          \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+# Use the transformations functions like map, batch, and shuffle to apply transformations to dataset records.
+ds_tensors = ds_tensors.map(tf.square).shuffle(2).batch(2)
+
+for index, data in enumerate(ds_tensors):
+    print('data[{0}] = {1}'.format(index, data))
+
+ds_file = ds_file.batch(2)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Iterate                                                                                        \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+tf.data.Dataset objects support iteration to loop over records:
+---------------------------------------------------------------------------------------------------------------
+'''
+print('Elements of ds_tensors:')
+for x in ds_tensors:
+    print(x)
+
+print('\nElements in ds_file:')
+for x in ds_file:
+    print(x)
