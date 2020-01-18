@@ -97,3 +97,25 @@ def input_fn():
 for features_batch, labels_batch in input_fn().take(1):
     print(features_batch)
     print(labels_batch)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Create an Estimator from the tf.keras model.                                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+----------------------------------------------------------------------------------------------------------------
+A tf.keras.Model can be trained with the tf.estimator API 
+by converting the model to an tf.estimator.Estimator object with tf.keras.estimator.model_to_estimator.
+----------------------------------------------------------------------------------------------------------------
+'''
+model_dir = "/tmp/tfkeras_example/"
+keras_estimator = tf.keras.estimator.model_to_estimator(
+                    keras_model=model, 
+                    model_dir=model_dir
+                )
+
+# Train and evaluate the estimator.
+keras_estimator.train(input_fn=input_fn, steps=25)
+eval_result = keras_estimator.evaluate(input_fn=input_fn, steps=10)
+print('Eval result: {}'.format(eval_result))
