@@ -183,7 +183,6 @@ For illustrative purposes, add a print callback to display the learning rate in 
 '''
 
 # Define the checkpoint directory to store the checkpoints
-
 checkpoint_dir = PROJECT_ROOT_DIR.joinpath('training_checkpoints')
 # Name of the checkpoint files
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
