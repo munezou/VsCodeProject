@@ -208,3 +208,61 @@ The tf.distribute.Strategy guide has more details about this strategy.
 ------------------------------------------------------------------------------------------
 '''
 strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Train and evaluate the model                                                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+------------------------------------------------------------------------------------------
+Next, specify the distribution strategy in the RunConfig for the estimator, 
+and train and evaluate by invoking tf.estimator.train_and_evaluate. 
+This tutorial distributes only the training by specifying the strategy via train_distribute. 
+It is also possible to distribute the evaluation via eval_distribute.
+------------------------------------------------------------------------------------------
+'''
+config = tf.estimator.RunConfig(train_distribute=strategy)
+
+file_path = str(PROJECT_ROOT_DIR.joinpath('tmp/multiworker'))
+
+classifier = tf.estimator.Estimator(
+                model_fn=model_fn, model_dir=file_path, config=config
+            )
+
+tf.estimator.train_and_evaluate(
+    classifier,
+    train_spec=tf.estimator.TrainSpec(input_fn=input_fn),
+    eval_spec=tf.estimator.EvalSpec(input_fn=input_fn)
+)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Optimize training performance                                                                  \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+-------------------------------------------------------------------------------------------------------
+You now have a model and a multi-worker capable Estimator powered by tf.distribute.Strategy. 
+You can try the following techniques to optimize performance of multi-worker training:
+
+	* Increase the batch size: 
+	The batch size specified here is per-GPU. In general, the largest batch size that fits the GPU memory is advisable.
+
+	* Cast variables: Cast the variables to tf.float if possible. 
+	The official ResNet model includes an example of how this can be done.
+
+	* Use collective communication: 
+	MultiWorkerMirroredStrategy provides multiple collective communication implementations.
+		# RING implements ring-based collectives using gRPC as the cross-host communication layer.
+		# NCCL uses Nvidia's NCCL to implement collectives.
+		# AUTO defers the choice to the runtime.
+		
+	The best choice of collective implementation depends upon the number and kind of GPUs, 
+	and the network interconnect in the cluster. 
+	To override the automatic choice, 
+	specify a valid value to the communication parameter of MultiWorkerMirroredStrategy's constructor, 
+	e.g. communication=tf.distribute.experimental.CollectiveCommunication.NCCL.
+---------------------------------------------------------------------------------------------------------
+'''
+
