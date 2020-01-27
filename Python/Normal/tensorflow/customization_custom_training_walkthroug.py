@@ -101,7 +101,7 @@ The Iris genus entails about 300 species, but our program will only classify the
 * Iris versicolor
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('image/iris_three_species.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images/iris_three_species.jpg'))
 im.show()
 
 '''
@@ -289,7 +289,7 @@ or fully-connected neural network: the neurons in one layer receive input connec
 For example, Figure 2 illustrates a dense neural network consisting of an input layer, two hidden layers, and an output layer:
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('image/Figure 2.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images/Figure 2.png'))
 im.show()
 
 '''
@@ -436,7 +436,7 @@ Gradually, the model will find the best combination of weights and bias to minim
 And the lower the loss, the better the model's predictions.
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('image/Figure 3. Optimization algorithms visualized over time in 3D space.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images/Figure 3. Optimization algorithms visualized over time in 3D space.jpg'))
 im.show()
 
 '''
