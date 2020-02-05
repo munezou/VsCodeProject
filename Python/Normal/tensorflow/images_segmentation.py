@@ -85,6 +85,7 @@ The segmentation masks are included in version 3.0.0, which is why this particul
 dataset, info = tfds.load(
                     'oxford_iiit_pet:3.0.0', 
                     data_dir=PROJECT_ROOT_DIR.joinpath('Data'),
+                    download=True,
                     with_info=True,
                     as_supervised=True
                 )
