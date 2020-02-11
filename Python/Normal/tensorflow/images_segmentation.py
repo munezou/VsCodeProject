@@ -82,6 +82,8 @@ The dataset is already included in TensorFlow datasets, all that is needed to do
 The segmentation masks are included in version 3.0.0, which is why this particular version is used.
 ---------------------------------------------------------------------------------------------------------------
 '''
+
+'''
 dataset, info = tfds.load(
                     'oxford_iiit_pet:3.0.0', 
                     data_dir=PROJECT_ROOT_DIR.joinpath('Data'),
@@ -89,8 +91,50 @@ dataset, info = tfds.load(
                     with_info=True,
                     as_supervised=True
                 )
+'''
+dataset = tf.keras.utils.get_file(
+            origin='http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz',
+            fname=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet/datasets/images'), 
+            untar=True,
+            extract=True,
+            cache_dir=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet')
+        )
 
-print('info = \n{0}\n'.format(info))
+dataset_root = Path(dataset)
+print('dataset_root = \n{0}\n'.format(dataset_root))
+
+for item in dataset_root.iterdir():
+    print(item)
+
+image_count = len(list(dataset_root.glob('*.jpg')))
+print('image_count = {0}\n'.format(image_count))
+
+info = tf.keras.utils.get_file(
+            origin='http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz',
+            fname=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet/datasets/annotations'), 
+            untar=True,
+            extract=True,
+            cache_dir=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet')
+        )
+
+info_root = Path(info)
+print('info_root = \n{0}\n'.format(info_root))
+
+for item in info_root.iterdir():
+    if 'trainval.txt' in str(item):
+        df = pd.read_table(item, header=None, delim_whitespace=True)
+        item = str(item).replace('.txt','.csv')
+        df.to_csv(item, index=False, header=['file name','class ids', 'species', 'breed id'])
+    if 'test.txt' in str(item):
+        df = pd.read_table(item, header=None, delim_whitespace=True)
+        item = str(item).replace('.txt','.csv')
+        df.to_csv(item, index=False, header=['file name','class ids', 'species', 'breed id'])
+    
+    print(item)
+
+
+
+
 
 '''
 ----------------------------------------------------------------------------------------------------------------
