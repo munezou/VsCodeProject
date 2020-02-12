@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import time
 import os
 import sys
+import io
 import pprint
 import contextlib
 from pathlib import Path
@@ -250,3 +251,168 @@ padded_shapes = ([None],())
 train_batches = train_data.shuffle(1000).padded_batch(10, padded_shapes = padded_shapes)
 test_batches = test_data.shuffle(1000).padded_batch(10, padded_shapes = padded_shapes)
 
+'''
+---------------------------------------------------------------------------------------------------------------
+As imported, 
+the text of reviews is integer-encoded 
+(each integer represents a specific word or word-part in the vocabulary).
+
+Note the trailing zeros, because the batch is padded to the longest example.
+--------------------------------------------------------------------------------------------------------------
+'''
+train_batch, train_labels = next(iter(train_batches))
+
+print('train_batch.numpy() = \n{0}\n'.format(train_batch.numpy()))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Create a simple model                                                                          \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+--------------------------------------------------------------------------------------------------------------
+We will use the Keras Sequential API to define our model. 
+In this case it is a "Continuous bag of words" style model.
+
+	* Next the Embedding layer takes the integer-encoded vocabulary and looks up the embedding vector for each word-index. 
+	These vectors are learned as the model trains. 
+	The vectors add a dimension to the output array. The resulting dimensions are: (batch, sequence, embedding).
+
+	* Next, a GlobalAveragePooling1D layer returns a fixed-length output vector for each example by averaging over the sequence dimension. 
+	This allows the model to handle input of variable length, in the simplest way possible.
+
+	* This fixed-length output vector is piped through a fully-connected (Dense) layer with 16 hidden units.
+
+	* The last layer is densely connected with a single output node. 
+	Using the sigmoid activation function, 
+	this value is a float between 0 and 1, representing a probability (or confidence level) that the review is positive.
+
+Caution: 
+This model doesn't use masking, so the zero-padding is used as part of the input, so the padding length may affect the output. 
+To fix this, see the masking and padding guide.
+---------------------------------------------------------------------------------------------------------------
+'''
+embedding_dim=16
+
+model = keras.Sequential([
+            layers.Embedding(encoder.vocab_size, embedding_dim),
+            layers.GlobalAveragePooling1D(),
+            layers.Dense(16, activation='relu'),
+            layers.Dense(1, activation='sigmoid')
+        ])
+
+model.summary()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Compile and train the model                                                                    \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+model.compile(optimizer='adam',
+                loss='binary_crossentropy',
+                metrics=['accuracy']
+            )
+
+history = model.fit(
+        train_batches,
+        epochs=10,
+        validation_data=test_batches, 
+        validation_steps=20
+    )
+
+'''
+----------------------------------------------------------------------------------------------------------------
+With this approach our model reaches a validation accuracy of around 88% 
+(note the model is overfitting, training accuracy is significantly higher).
+---------------------------------------------------------------------------------------------------------------
+'''
+history_dict = history.history
+
+acc = history_dict['accuracy']
+val_acc = history_dict['val_accuracy']
+loss = history_dict['loss']
+val_loss = history_dict['val_loss']
+
+epochs = range(1, len(acc) + 1)
+
+plt.figure(figsize=(12,9))
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(12,9))
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend(loc='lower right')
+plt.ylim((0.5,1))
+plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Retrieve the learned embeddings                                                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+Next, let's retrieve the word embeddings learned during training. 
+This will be a matrix of shape (vocab_size, embedding-dimension).
+---------------------------------------------------------------------------------------------------------------
+'''
+e = model.layers[0]
+weights = e.get_weights()[0]
+print('weights.shape = {0}\n'.format(weights.shape)) # shape: (vocab_size, embedding_dim)
+
+'''
+---------------------------------------------------------------------------------------------------------------
+We will now write the weights to disk. 
+To use the Embedding Projector, we will upload two files in tab separated format: 
+a file of vectors (containing the embedding), and a file of meta data (containing the words).
+---------------------------------------------------------------------------------------------------------------
+'''
+encoder = info.features['text'].encoder
+
+vecs_path = str(PROJECT_ROOT_DIR.joinpath('Data/imdb_reviews/subwords8k/vecs.tsv'))
+meta_path = str(PROJECT_ROOT_DIR.joinpath('Data/imdb_reviews/subwords8k/meta.tsv'))
+
+out_v = io.open(vecs_path, 'w', encoding='utf-8')
+out_m = io.open(meta_path, 'w', encoding='utf-8')
+
+for num, word in enumerate(encoder.subwords):
+    vec = weights[num+1] # skip 0, it's padding.
+    out_m.write(word + "\n")
+    out_v.write('\t'.join([str(x) for x in vec]) + "\n")
+out_v.close()
+out_m.close()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Visualize the embeddings                                                                       \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+---------------------------------------------------------------------------------------------------------------
+To visualize our embeddings we will upload them to the embedding projector.
+
+Open the Embedding Projector (this can also run in a local TensorBoard instance).
+
+* Click on "Load data".
+
+* Upload the two files we created above: vecs.tsv and meta.tsv.
+
+The embeddings you have trained will now be displayed. You can search for words to find their closest neighbors. 
+For example, try searching for "beautiful". You may see neighbors like "wonderful".
+
+Note: your results may be a bit different, depending on how weights were randomly initialized before training the embedding layer.
+
+Note: 
+experimentally, you may be able to produce more interpretable embeddings by using a simpler model. 
+Try deleting the Dense(16) layer, retraining the model, and visualizing the embeddings again.
+---------------------------------------------------------------------------------------------------------------
+'''
