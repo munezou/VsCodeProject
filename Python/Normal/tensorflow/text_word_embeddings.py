@@ -33,7 +33,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-
+import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
@@ -41,9 +41,7 @@ import tensorflow_datasets as tfds
 
 print(__doc__)
 
-from tensorflow_examples.models.pix2pix import pix2pix
 
-keras = tf.keras
 tfds.disable_progress_bar()
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -175,3 +173,80 @@ If you pass an integer to an embedding layer,
 the result replaces each integer with the vector from the embedding table:
 -------------------------------------------------------------------------------------------------------------
 '''
+result = embedding_layer(tf.constant([1,2,3]))
+
+print('result.numpy() = \n{0}\n'.format(result.numpy()))
+
+'''
+-------------------------------------------------------------------------------------------------------------
+For text or sequence problems, 
+the Embedding layer takes a 2D tensor of integers, of shape (samples, sequence_length), 
+where each entry is a sequence of integers. 
+It can embed sequences of variable lengths. 
+You could feed into the embedding layer 
+above batches with shapes (32, 10) (batch of 32 sequences of length 10) or (64, 15) (batch of 64 sequences of length 15).
+
+The returned tensor has one more axis than the input, the embedding vectors are aligned along the new last axis. 
+Pass it a (2, 3) input batch and the output is (2, 3, N)
+----------------------------------------------------------------------------------------------------------------
+'''
+result = embedding_layer(tf.constant([[0,1,2],[3,4,5]]))
+
+print('result.shape = \n{0}\n'.format(result.shape))
+
+'''
+----------------------------------------------------------------------------------------------------------------
+When given a batch of sequences as input, an embedding layer returns a 3D floating point tensor, 
+of shape (samples, sequence_length, embedding_dimensionality). 
+To convert from this sequence of variable length to a fixed representation there are a variety of standard approaches. 
+You could use an RNN, Attention, or pooling layer before passing it to a Dense layer. 
+This tutorial uses pooling because it's simplest. 
+The Text Classification with an RNN tutorial is a good next step.
+----------------------------------------------------------------------------------------------------------------
+'''
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       Learning embeddings from scratch                                                               \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+'''
+----------------------------------------------------------------------------------------------------------------
+In this tutorial you will train a sentiment classifier on IMDB movie reviews. 
+In the process, the model will learn embeddings from scratch. 
+We will use to a preprocessed dataset.
+
+To load a text dataset from scratch see the Loading text tutorial.
+----------------------------------------------------------------------------------------------------------------
+'''
+(train_data, test_data), info = tfds.load(
+                                    name='imdb_reviews/subwords8k', 
+                                    data_dir=PROJECT_ROOT_DIR.joinpath('Data'),
+                                    split = (tfds.Split.TRAIN, tfds.Split.TEST), 
+                                    with_info=True, 
+                                    as_supervised=True
+                                )
+
+'''
+----------------------------------------------------------------------------------------------------------------
+Get the encoder (tfds.features.text.SubwordTextEncoder), 
+and have a quick look at the vocabulary.
+
+The "_" in the vocabulary represent spaces. 
+Note how the vocabulary includes whole words (ending with "_") 
+and partial words which it can use to build larger words:
+----------------------------------------------------------------------------------------------------------------
+'''
+encoder = info.features['text'].encoder
+
+print('encoder.subwords[:20] = \n{0}\n'.format(encoder.subwords[:20]))
+
+'''
+----------------------------------------------------------------------------------------------------------------
+Movie reviews can be different lengths. 
+We will use the padded_batch method to standardize the lengths of the reviews.
+----------------------------------------------------------------------------------------------------------------
+'''
+padded_shapes = ([None],())
+train_batches = train_data.shuffle(1000).padded_batch(10, padded_shapes = padded_shapes)
+test_batches = test_data.shuffle(1000).padded_batch(10, padded_shapes = padded_shapes)
+
