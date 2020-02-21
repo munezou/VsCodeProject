@@ -45,7 +45,7 @@ The following is sample output when the model in this tutorial trained for 30 ep
     To stay him from the fatal of our country's bliss.
     His lordship pluck'd from this sentence then for prey,
     And then let us twain, being the moon,
-    were she such a case as fills m
+were she such a case as fills m
 
 While some of the sentences are grammatical, most do not make sense. 
 The model has not learned the meaning of words, but consider:
@@ -81,8 +81,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
 
 import tensorflow_datasets as tfds
 
