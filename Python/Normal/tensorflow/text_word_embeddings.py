@@ -35,8 +35,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
 
 import tensorflow_datasets as tfds
 
@@ -160,7 +158,7 @@ The dimensionality (or width) of the embedding is a parameter you can experiment
 much in the same way you would experiment with the number of neurons in a Dense layer.
 -------------------------------------------------------------------------------------------------------------
 '''
-embedding_layer = layers.Embedding(1000, 5)
+embedding_layer = tf.keras.layers.Embedding(1000, 5)
 
 '''
 ------------------------------------------------------------------------------------------------------------
@@ -294,11 +292,11 @@ To fix this, see the masking and padding guide.
 '''
 embedding_dim=16
 
-model = keras.Sequential([
-            layers.Embedding(encoder.vocab_size, embedding_dim),
-            layers.GlobalAveragePooling1D(),
-            layers.Dense(16, activation='relu'),
-            layers.Dense(1, activation='sigmoid')
+model = tf.keras.Sequential([
+            tf.keras.layers.Embedding(encoder.vocab_size, embedding_dim),
+            tf.keras.layers.GlobalAveragePooling1D(),
+            tf.keras.layers.Dense(16, activation='relu'),
+            tf.keras.layers.Dense(1, activation='sigmoid')
         ])
 
 model.summary()
