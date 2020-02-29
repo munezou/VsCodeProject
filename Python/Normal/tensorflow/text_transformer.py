@@ -83,7 +83,6 @@ This dataset contains approximately 50000 training examples, 1100 validation exa
 '''
 examples, metadata = tfds.load(
                         name='ted_hrlr_translate/pt_to_en',
-                        data_dir=str(PROJECT_ROOT_DIR.joinpath('Data')),
                         with_info=True,
                         as_supervised=True
                     )
