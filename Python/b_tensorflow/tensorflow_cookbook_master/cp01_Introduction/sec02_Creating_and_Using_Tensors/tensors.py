@@ -14,13 +14,14 @@ tensorflow 2.0
 '''
 print(__doc__)
 
-from pathlib import Path
+import os
+import numpy as np
+import math
 
 import tensorflow as tf
 
 # Display current path
-basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python\b_tensorflow\b_tensorflow_cookbook_master\N01_Introduction\n02_Creating_and_Using_Tensors')
+PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -68,21 +69,16 @@ print('linear_tensor = \n{0}\n'.format(linear_tensor))
 sequence_tensor = tf.range(start=6, limit=15, delta=3) # Generates [6, 9, 12] doesn't include the end
 print('sequence_tensor = \n{0}\n'.format(sequence_tensor))
 
-log_path = str(PROJECT_ROOT_DIR.joinpath('logs/tmp'))
+log_path = os.path.join(PROJECT_ROOT_DIR, 'logs\\tmp')
 
-writer = tf.summary.create_file_writer(log_path)
-with writer.as_default():
-    for step in range(100):
-        # other model code would go here
-        tf.summary.scalar("my_metric", 0.5, step=step)
-        writer.flush()
 
-'''
 # Random Numbers
 
 # Random Normal
 rnorm_tensor = tf.random_normal([row_dim, col_dim], mean=0.0, stddev=1.0)
 
+
+'''
 # Add summaries to tensorboard
 merged = tf.summary.merge_all()
 
