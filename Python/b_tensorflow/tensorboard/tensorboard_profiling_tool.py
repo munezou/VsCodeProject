@@ -29,12 +29,10 @@ from packaging import version
 import functools
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow.python.keras import backend
-from tensorflow.python.keras import layers
 
 import numpy as np
 
-print("TensorFlow version: ", tf.__version__)
+print("TensorFlow version: ", tf.version.VERSION)
 
 pf = platform.system()
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
@@ -66,8 +64,8 @@ def identity_building_block(input_tensor, kernel_size, filters, stage, block, tr
     filters: list of integers, the filters of 3 conv layer at main path
     stage: integer, current stage label, used for generating layer names
     block: current block label, used for generating layer names
-    training: Only used if training keras model with Estimator.  In other
-      scenarios it is handled automatically.
+    training: Only used if training keras model with Estimator.  
+    In other scenarios it is handled automatically.
 
     Returns:
         Output tensor for the block.

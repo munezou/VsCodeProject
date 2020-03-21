@@ -28,6 +28,7 @@ import sys
 import platform
 import itertools
 import shutil
+import traceback
 from packaging import version
 from six.moves import range
 
@@ -38,8 +39,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn.metrics
 
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
     "This notebook requires TensorFlow 2.0 or above."
 
 pf = platform.system()
@@ -185,6 +186,7 @@ try:
     pass
 except Exception as ex:
     print(ex)
+    print(traceback.format_exc())
     pass
 finally:
     pass

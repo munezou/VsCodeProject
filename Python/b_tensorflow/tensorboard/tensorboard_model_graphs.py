@@ -32,8 +32,8 @@ from packaging import version
 import tensorflow as tf
 from tensorflow import keras
 
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
     "This notebook requires TensorFlow 2.0 or above."
 
 pf = platform.system()
@@ -65,10 +65,10 @@ print   (
 # In this example, the classifier is a simple four-layer Sequential model.
 # Define the model.
 model = keras.models.Sequential ([
-                                keras.layers.Flatten(input_shape=(28, 28)),
-                                keras.layers.Dense(32, activation='relu'),
-                                keras.layers.Dropout(0.2),
-                                keras.layers.Dense(10, activation='softmax')
+                                tf.keras.layers.Flatten(input_shape=(28, 28)),
+                                tf.keras.layers.Dense(32, activation='relu'),
+                                tf.keras.layers.Dropout(0.2),
+                                tf.keras.layers.Dense(10, activation='softmax')
                                 ])
 
 model.compile(

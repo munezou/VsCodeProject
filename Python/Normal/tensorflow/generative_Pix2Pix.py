@@ -329,7 +329,7 @@ tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
 gen_output = generator(inp[tf.newaxis,...], training=False)
 plt.imshow(gen_output[0,...])
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/pix2pix_3.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images/pix2pix_3.jpg'))
 im.show()
 
 '''
@@ -521,10 +521,13 @@ Then log the losses to TensorBoard.
 '''
 EPOCHS = 150
 
-log_dir=PROJECT_ROOT_DIR.joinpath("logs/")
+log_dir=PROJECT_ROOT_DIR.joinpath("logs/fit")
 
-summary_writer = tf.summary.create_file_writer(
-    log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+file_name = log_dir + ’/’ ＋ current_time
+
+summary_writer = tf.summary.create_file_writer(file_name)
 
 @tf.function
 def train_step(input_image, target, epoch):

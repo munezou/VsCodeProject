@@ -33,8 +33,8 @@ import os
 
 import matplotlib.pyplot as plt
 
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
     "This notebook requires TensorFlow 2.0 or above."
 
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
