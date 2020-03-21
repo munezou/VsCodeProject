@@ -20,7 +20,7 @@ import tensorflow as tf
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python\b_tensorflow\b_tensorflow_cookbook_master\01_Introduction\02_Creating_and_Using_Tensors')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python\b_tensorflow\b_tensorflow_cookbook_master\N01_Introduction\n02_Creating_and_Using_Tensors')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
