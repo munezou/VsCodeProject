@@ -95,12 +95,12 @@ with writer.as_default():
         profiler_outdir=logdir)
 
 
-'''
 # Random Numbers
 
 # Random Normal
-rnorm_tensor = tf.random_normal([row_dim, col_dim], mean=0.0, stddev=1.0)
+rnorm_tensor = tf.random.normal([row_dim, col_dim], mean=0.0, stddev=1.0)
 
+'''
 # Add summaries to tensorboard
 merged = tf.summary.merge_all()
 
