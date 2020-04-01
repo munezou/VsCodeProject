@@ -9,11 +9,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import time
 import os
-import platform
-import shutil
-import subprocess
-import random
-from pathlib import Path
 from packaging import version
 from PIL import Image
 import itertools
@@ -26,8 +21,8 @@ import tensorflow as tf
 print(__doc__)
 
 # Display current path
-basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
