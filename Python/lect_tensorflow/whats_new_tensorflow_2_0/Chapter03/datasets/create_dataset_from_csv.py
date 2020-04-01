@@ -1,7 +1,7 @@
 '''
 ------------------------------------------------------------------------------------------
 chapter03/datasets
-    Illustration of tf.data.Dataset.from_tensors(...) and tf.data.Dataset.from_tensor_slices(...) APIs
+    Example to show creation of tf.data.Dataset using csv
 ------------------------------------------------------------------------------------------
 '''
 # common library
@@ -14,6 +14,7 @@ from PIL import Image
 import itertools
 
 import numpy as np
+import pandas as pd
 
 import tensorflow as tf
 
@@ -32,59 +33,16 @@ assert version.parse(tf.version.VERSION).release[0] >= 2, \
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       Load csv file using tf.data.                                                                  \n'
+        ' Read a csv file having three columns. We will name them to 'square_ft', 'house_type', and 'price'    \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 
-aa = np.array([1, 2, 3])
-bb = np.array([2, 3, 4])
-cc = np.array([3, 4, 5])
-dd = np.array([4, 5, 6])
+csv_file = os.path.join(PROJECT_ROOT_DIR, "curated_data/train.csv")
+csv_columns = ['square_ft', 'house_type', 'price']
 
-features = [aa, bb, cc, dd]
+dataset = tf.data.experimental.make_csv_dataset(csv_file, column_names=csv_columns, batch_size=8)
 
-print('features = \n{0}\n'.format(features))
+print('dataset = \n{0}\n'.format(dataset))
 
-labels = ['aa', 'bb', 'cc', 'dd']
-
-print('labels = {0}\n'.format(labels))
-
-print   (
-        '------------------------------------------------------------------------------------------------------\n'
-        'tf.data.Dataset.from_tensors(...) creates a Dataset with a single element comprising the given tensors\n'
-        '------------------------------------------------------------------------------------------------------\n'
-        )
-
-dataset1 = tf.data.Dataset.from_tensors((features, labels))
-
-print('dataset1 = \n{0}\n'.format(dataset1))
-
-print   (
-        '------------------------------------------------------------------------------------------------------\n'
-        '       Iterate dataset1                                                                               \n'
-        '------------------------------------------------------------------------------------------------------\n'
-        )
-
-for data in dataset1:
+for data in dataset.take(4):
     print(data)
-
-print   (
-        '------------------------------------------------------------------------------------------------------\n'
-        '      tf.data.Dataset.from_tensors_slices(...) creates a Dataset                                      \n' 
-        '                           whose elements are slices from the given tensor(s)                         \n'
-        '------------------------------------------------------------------------------------------------------\n'
-        )
-
-dataset2 = tf.data.Dataset.from_tensor_slices((features, labels))
-
-print('dataset2 = \n{0}\n'.format(dataset2))
-
-print   (
-        '------------------------------------------------------------------------------------------------------\n'
-        '       Iterate dataset2                                                                               \n'
-        '------------------------------------------------------------------------------------------------------\n'
-        )
-
-for data in dataset2:
-    print(data)
-

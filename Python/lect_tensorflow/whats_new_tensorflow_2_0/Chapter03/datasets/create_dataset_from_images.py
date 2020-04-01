@@ -60,3 +60,11 @@ except Exception as ex:
 
 print('image_files = \n{0}'.format(image_files))
 print('labels = \n{0}\n'.format(labels))
+
+image_path_dataset = tf.data.Dataset.from_tensor_slices((image_files, labels))
+
+print('image_path_dataset = \n{0}\n'.format(image_path_dataset))
+
+image_dataset = image_path_dataset.map(preprocess_image)
+
+print('image_dataset = \n{0}\n'.format(image_dataset))
