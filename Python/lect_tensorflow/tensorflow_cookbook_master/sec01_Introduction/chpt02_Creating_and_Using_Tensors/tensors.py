@@ -22,7 +22,7 @@ from datetime import datetime
 import tensorflow as tf
 
 # Display current path
-PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
