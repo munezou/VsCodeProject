@@ -3,7 +3,7 @@
 import argparse
 import tensorflow as tf
 
-from .Cifar10Classification import Cifar10Classification
+from .cifar10_classification import Cifar10Classification
 
 def main(argv):
     """ main routing """
