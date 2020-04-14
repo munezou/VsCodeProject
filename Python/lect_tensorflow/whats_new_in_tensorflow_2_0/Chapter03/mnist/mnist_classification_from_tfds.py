@@ -61,4 +61,51 @@ mnist_train, mnist_validate, mnist_test = load_mnist()
 
 BUFFER_SIZE = 10 # Use a much larger value for real code.
 BATCH_SIZE = 64
-NUM_EPOCHS = 5
+NUM_EPOCHS = 3
+
+def scale(image, label):
+    image = tf.cast(image, tf.float32)
+    image /= 255
+
+    return image, label
+
+train_data = mnist_train.map(scale).shuffle(BUFFER_SIZE).batch(BATCH_SIZE).take(5)
+validation_data = mnist_validate.map(scale).batch(BATCH_SIZE).take(5)
+test_data = mnist_test.map(scale).batch(BATCH_SIZE).take(5)
+
+STEPS_PER_EPOCH = 5
+
+train_data = train_data.take(STEPS_PER_EPOCH)
+validation_data = validation_data.take(STEPS_PER_EPOCH)
+test_data = test_data.take(STEPS_PER_EPOCH)
+
+image_batch, label_batch = next(iter(train_data))
+print(image_batch.shape)
+
+print()
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(
+        32, 3, activation='relu',
+        kernel_regularizer=tf.keras.regularizers.l2(0.02),
+        input_shape=(28, 28, 1)
+    ),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dropout(0.1),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+# Model is the full model w/o custom layers
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+model.fit(train_data, validation_data=validation_data, epochs=NUM_EPOCHS)
+
+loss, acc = model.evaluate(test_data)
+print("Loss {}, Accuracy {}\n".format(loss, acc))
