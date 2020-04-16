@@ -7,10 +7,12 @@ import matplotlib.pyplot as plt
 
 print(tf.__version__)
 
+'''
 import urllib
 proxy_support = urllib.request.ProxyHandler({'https': 'http://proxy.kanto.sony.co.jp:10080'})
 opener = urllib.request.build_opener(proxy_support)
 urllib.request.install_opener(opener)
+'''
 
 mnist = tf.keras.datasets.mnist
 

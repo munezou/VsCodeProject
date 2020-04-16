@@ -1,24 +1,49 @@
-# Placeholders
-#----------------------------------
-#
-# This function introduces how to 
-# use placeholders in TensorFlow
+'''
+-----------------------------------------------------------------
+Placeholders
 
+This function introduces how to use placeholders in TensorFlow
+-----------------------------------------------------------------
+'''
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+import sys
+import datetime
+from packaging import version
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Using Placeholders
-sess = tf.Session()
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
-x = tf.placeholder(tf.float32, shape=(4, 4))
-y = tf.identity(x)
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
+"This notebook requires TensorFlow 2.0 or above."
 
-rand_array = np.random.rand(4, 4)
+# The function to be traced
+@tf.function
+def my_func():
+    x = tf.Variable(np.random.rand(4, 4))
+    y = tf.identity(x)
+    return y
 
-merged = tf.summary.merge_all()
+# set up logging
+stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir = os.path.join(PROJECT_ROOT_DIR, 'log/{}'.format(stamp))
+writer = tf.summary.create_file_writer(logdir)
 
-writer = tf.summary.FileWriter("/tmp/variable_logs", sess.graph)
+# Bracket the function call with
+# tf.summary.trace_on() and tf.summary.trace_export().
+tf.summary.trace_on(graph=True, profiler=True)
 
-print(sess.run(y, feed_dict={x: rand_array}))
+# Call only one tf.function when tracing.
+z = my_func()
+
+with writer.as_default:
+    tf.summary.trace_export(
+        name = "my_func_trace",
+        step = 0,
+        profiler_outdir=logdir
+    )

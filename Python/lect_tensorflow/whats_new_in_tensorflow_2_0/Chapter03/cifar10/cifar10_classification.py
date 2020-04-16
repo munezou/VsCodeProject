@@ -1,9 +1,14 @@
 """ Cifar10 classification model """
 # coding: utf-8
+# common library
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import sys
 import os
 import shutil
 import tensorflow as tf
+
+sys.path.append(r'/home/munezou/VsCodeProject/Python/lect_tensorflow/whats_new_in_tensorflow_2_0/Chapter03/cifar10/')
 
 from .cifar10_data_prep import Cifar10Data
 
@@ -87,7 +92,7 @@ def main(argv):
     learning_rate = 0.002
     steps_per_epoch = 30
 
-    cifar_classification = Cifar10Classification(batch_size)
+    cifar_classification = Cifar10Classification(batch_size, conv=True)
     cifar_classification.build_model(model_dir='models/Cifar10ConvModel',
         learning_rate=learning_rate, dropout_rate=0.8)
 

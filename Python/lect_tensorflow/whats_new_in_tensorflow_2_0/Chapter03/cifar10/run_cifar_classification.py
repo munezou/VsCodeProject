@@ -1,7 +1,14 @@
 # coding: utf-8
 """ CustomEstimator"""
+# common library
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import sys
+import os
 import argparse
 import tensorflow as tf
+
+sys.path.append(r'/home/munezou/VsCodeProject/Python/lect_tensorflow/whats_new_in_tensorflow_2_0/Chapter03/cifar10/')
 
 from .cifar10_classification import Cifar10Classification
 
@@ -31,13 +38,13 @@ def main(argv):
     learning_rate = args.learning_rate
     dropout_rate = args.dropout_rate
 
-    cifar_classification = Cifar10Classification(batch_size, conv=True)
-    cifar_classification.build_conv_model(model_dir='models/Cifar10ConvModel', 
+    cifar_classification = Cifar10Classification(batch_size)
+    cifar_classification.build_model(model_dir='models/Cifar10ConvModel', 
         learning_rate=learning_rate, dropout_rate=dropout_rate)
 
     cifar_classification.train(num_epochs, steps_per_epoch)
     cifar_classification.check_test_accuracy()
 
 if __name__ == '__main__':
-    tf.compat.v1.logging.set_verbosity(tf.logging.INFO)
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
     tf.compat.v1.app.run(main)
