@@ -22,12 +22,15 @@ print("TensorFlow version: ", tf.version.VERSION)
 assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
-# The function to be traced
 @tf.function
-def my_func():
-    x = tf.Variable(np.random.rand(4, 4))
-    y = tf.identity(x)
-    return y
+def simple_func(arg):
+    a = tf.constant(7.9)
+    b = tf.constant(6.3)
+    c = arg + a
+    d = a * b
+    ret = c + d
+
+    return ret
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -39,11 +42,14 @@ writer = tf.summary.create_file_writer(logdir)
 tf.summary.trace_on(graph=True, profiler=True)
 
 # Call only one tf.function when tracing.
-z = my_func()
+arg = tf.constant(8.9)
+print(simple_func(arg))
 
-with writer.as_default:
+with writer.as_default():
     tf.summary.trace_export(
-        name = "my_func_trace",
+        name = "Simple_fun",
         step = 0,
         profiler_outdir=logdir
     )
+
+tf.summary.trace_off()
