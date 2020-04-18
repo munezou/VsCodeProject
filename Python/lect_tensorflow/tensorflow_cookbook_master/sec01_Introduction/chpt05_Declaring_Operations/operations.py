@@ -1,22 +1,44 @@
-# Operations
-#----------------------------------
-#
-# This function introduces various operations
-# in TensorFlow
+'''
+**************************************************
+Operations
+----------------------------------
 
+    This function introduces various operations
+    in TensorFlow
+**************************************************
+'''
 # Declaring Operations
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+import sys
+import datetime
+from packaging import version
 import tensorflow as tf
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Open graph session
-sess = tf.Session()
+print(__doc__)
 
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
+
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
+"This notebook requires TensorFlow 2.0 or above."
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       function                                                                                       \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
 # div() vs truediv() vs floordiv()
-print(sess.run(tf.div(3, 4)))
-print(sess.run(tf.truediv(3, 4)))
-print(sess.run(tf.floordiv(3.0, 4.0)))
+print('tf.math.divide(3, 4) = {0}'.format(tf.math.divide(3, 4)))
+print('tf.math.truediv = {0}'.format(tf.math.truediv(3, 4)))
+print('tf.math.floordiv = {0}\n'.format(tf.math.floordiv((3, 4))))
 
+# Mod function
+
+'''
 # Mod function
 print(sess.run(tf.mod(22.0, 5.0)))
 
@@ -45,3 +67,4 @@ print(expected_output)
 # TensorFlow custom function output
 for num in test_nums:
     print(sess.run(custom_polynomial(num)))
+'''
