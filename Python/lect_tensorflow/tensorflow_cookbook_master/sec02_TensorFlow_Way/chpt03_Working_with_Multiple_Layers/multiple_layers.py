@@ -1,53 +1,114 @@
-# Working with Multiple Layers
+'''
+-----------------------------------
+Working with Multiple Layers
+-----------------------------------
+'''
+# First we start with loading the necessary libraries and resetting the computational graph.
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
+import os
+import sys
+import io
+import datetime
+from packaging import version
 import numpy as np
 import tensorflow as tf
-import os
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Create graph
-sess = tf.Session()
+print(__doc__)
 
-# Create tensors
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
-# Create a small random 'image' of size 4x4
-x_shape = [1, 4, 4, 1]
-x_val = np.random.uniform(size=x_shape)
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
+"This notebook requires TensorFlow 2.0 or above."
 
-x_data = tf.placeholder(tf.float32, shape=x_shape)
+@tf.function
+def first_layer():
+    # Create tensors
+    # Create a small random 'image' of size 4x4
+    x_shape = [1, 4, 4, 1]
+    x_val = np.random.uniform(size=x_shape)
 
-# Create a layer that takes a spatial moving window average
-# Our window will be 2x2 with a stride of 2 for height and width
-# The filter value will be 0.25 because we want the average of the 2x2 window
-my_filter = tf.constant(0.25, shape=[2, 2, 1, 1])
-my_strides = [1, 2, 2, 1]
-mov_avg_layer= tf.nn.conv2d(x_data, my_filter, my_strides,
-                            padding='SAME', name='Moving_Avg_Window')
+    # Create a layer that takes a spatial moving window average
+    # Our window will be 2x2 with a stride of 2 for height and width
+    # The filter value will be 0.25 because we want the average of the 2x2 window
+    my_filter = tf.constant(0.25, shape=[2, 2, 1, 1])
+    my_strides = [1, 2, 2, 1]
+    
+    x_val = tf.dtypes.cast(x_val, tf.float32)
+    mov_avg_layer= tf.nn.conv2d(x_val, my_filter, my_strides,
+                        padding='SAME', name='Moving_Avg_Window')
+    
+    return mov_avg_layer
 
-# Define a custom layer which will be sigmoid(Ax+b) where
-# x is a 2x2 matrix and A and b are 2x2 matrices
-def custom_layer(input_matrix):
-    input_matrix_sqeezed = tf.squeeze(input_matrix)
+# set up logging
+stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir1 = os.path.join(PROJECT_ROOT_DIR, 'logs', 'first_layer', '{}'.format(stamp))
+writer = tf.summary.create_file_writer(logdir1)
+
+# Bracket the function call with
+# tf.summary.trace_on() and tf.summary.trace_export().
+tf.summary.trace_on(graph=True, profiler=True)
+
+calc_result = first_layer()
+print('calcu_result = \n{0}'.format(calc_result))
+
+with writer.as_default():
+    tf.summary.trace_export(
+        name = "first_layer",
+        step = 0,
+        profiler_outdir=logdir1
+    )
+
+tf.summary.trace_off()
+
+@tf.function
+def second_layer():
+    # Create tensors
+    # Create a small random 'image' of size 4x4
+    x_shape = [1, 4, 4, 1]
+    x_val = np.random.uniform(size=x_shape)
+
+    # Create a layer that takes a spatial moving window average
+    # Our window will be 2x2 with a stride of 2 for height and width
+    # The filter value will be 0.25 because we want the average of the 2x2 window
+    my_filter = tf.constant(0.25, shape=[2, 2, 1, 1])
+    my_strides = [1, 2, 2, 1]
+    
+    x_val = tf.dtypes.cast(x_val, tf.float32)
+    mov_avg_layer= tf.nn.conv2d(x_val, my_filter, my_strides,
+                        padding='SAME', name='Moving_Avg_Window')
+    
+    input_matrix_sqeezed = tf.squeeze(mov_avg_layer)
     A = tf.constant([[1., 2.], [-1., 3.]])
     b = tf.constant(1., shape=[2, 2])
-    temp1 = tf.matmul(A, input_matrix_sqeezed)
-    temp = tf.add(temp1, b) # Ax + b
-    return(tf.sigmoid(temp))
+    temp1 = tf.linalg.matmul(A, input_matrix_sqeezed)
+    temp = tf.math.add(temp1, b)
+    custom_layer1 = tf.sigmoid(temp)
+    return custom_layer1
 
-# Add custom layer to graph
-with tf.name_scope('Custom_Layer') as scope:
-    custom_layer1 = custom_layer(mov_avg_layer)
+# set up logging
+stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir2 = os.path.join(PROJECT_ROOT_DIR, 'logs', '2nd_layer', '{}'.format(stamp))
+writer = tf.summary.create_file_writer(logdir2)
 
-# The output should be an array that is 2x2, but size (1,2,2,1)
-print(sess.run(mov_avg_layer, feed_dict={x_data: x_val}))
+# Bracket the function call with
+# tf.summary.trace_on() and tf.summary.trace_export().
+tf.summary.trace_on(graph=True, profiler=True)
 
-# After custom operation, size is now 2x2 (squeezed out size 1 dims)
-print(sess.run(custom_layer1, feed_dict={x_data: x_val}))
+calc_result = second_layer()
+print('calcu_result = \n{0}'.format(calc_result))
 
-merged = tf.summary.merge_all(key='summaries')
+with writer.as_default():
+    tf.summary.trace_export(
+        name = "first_layer",
+        step = 0,
+        profiler_outdir=logdir2
+    )
 
-if not os.path.exists('tensorboard_logs/'):
-    os.makedirs('tensorboard_logs/')
-
-my_writer = tf.summary.FileWriter('tensorboard_logs/', sess.graph)
+tf.summary.trace_off()
