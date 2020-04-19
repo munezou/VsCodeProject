@@ -323,7 +323,7 @@ eng_ger_data = [x.split('\t') for x in eng_ger_data if len(x)>=1]
 [english_sentence, german_sentence] = [list(x) for x in zip(*eng_ger_data)]
 --------------------------------------------------------------
 '''
-file_path = str(os.path.join(PROJECT_ROOT_DIR, 'deu_eng\\deu.txt'))
+file_path = str(os.path.join(PROJECT_ROOT_DIR, 'deu_eng', 'deu.txt'))
 
 with open(file_path, encoding='utf-8') as f:
     eng_ger_data = f.readlines()
