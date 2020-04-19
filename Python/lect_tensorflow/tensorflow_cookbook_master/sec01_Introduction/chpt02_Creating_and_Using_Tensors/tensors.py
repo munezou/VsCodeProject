@@ -94,22 +94,11 @@ with writer.as_default():
         step=3,
         profiler_outdir=logdir)
 
+tf.summary.trace_off()
 
 # Random Numbers
 
 # Random Normal
 rnorm_tensor = tf.random.normal([row_dim, col_dim], mean=0.0, stddev=1.0)
 
-'''
-# Add summaries to tensorboard
-merged = tf.summary.merge_all()
-
-# Initialize graph writer:
-writer = tf.summary.FileWriter("/tmp/variable_logs", graph=sess.graph)
-
-# Initialize operation
-initialize_op = tf.global_variables_initializer()
-
-# Run initialization of variable
-sess.run(initialize_op)
-'''
+print('rnorm_tensor = \n{0}'.format(rnorm_tensor))

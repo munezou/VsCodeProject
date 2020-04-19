@@ -34,7 +34,7 @@ def simple_func(arg):
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir = os.path.join(PROJECT_ROOT_DIR, 'log/{}'.format(stamp))
+logdir = os.path.join(PROJECT_ROOT_DIR, 'log', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir)
 
 # Bracket the function call with

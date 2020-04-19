@@ -1,30 +1,62 @@
-# Operations on a Computational Graph
+'''
+-----------------------------------------
+Operations on a Computational Graph
+-----------------------------------------
+'''
+from __future__ import absolute_import, division, print_function, unicode_literals
 import os
+import sys
+import io
+import datetime
+from packaging import version
+
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Create graph
-sess = tf.Session()
+print(__doc__)
 
-# Create tensors
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
-# Create data to feed in
-x_vals = np.array([1., 3., 5., 7., 9.])
-x_data = tf.placeholder(tf.float32)
-m_const = tf.constant(3.)
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
+"This notebook requires TensorFlow 2.0 or above."
 
-# Multiplication
-my_product = tf.multiply(x_data, m_const)
-for x_val in x_vals:
-    print(sess.run(my_product, feed_dict={x_data: x_val}))
+@tf.function
+def simple_func():
+    # Call only one tf.function when tracing.
+    # Create data to feed in the placeholder
+    x_vals = np.array([1., 3., 5., 7., 9.])
+    # Constant for multilication
+    m = tf.constant(3.)
 
-# View the tensorboard graph by running the following code and then
-#    going to the terminal and typing:
-#    $ tensorboard --logdir=tensorboard_logs
-merged = tf.summary.merge_all()
-if not os.path.exists('tensorboard_logs/'):
-    os.makedirs('tensorboard_logs/')
+    x_data = []
+    for x_val in x_vals:
+        x_val = tf.dtypes.cast(x_val, tf.float32)
+        x_data.append(tf.math.multiply(x_val, m))
 
-my_writer = tf.summary.FileWriter('tensorboard_logs/', sess.graph)
+    return x_data
+
+# set up logging
+stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir = os.path.join(PROJECT_ROOT_DIR, 'logs', '{}'.format(stamp))
+writer = tf.summary.create_file_writer(logdir)
+
+# Bracket the function call with
+# tf.summary.trace_on() and tf.summary.trace_export().
+tf.summary.trace_on(graph=True, profiler=True)
+
+z = simple_func()
+for data in z:
+    print('data = {0}'.format(data))
+
+with writer.as_default():
+    tf.summary.trace_export(
+        name = "Simple_fun",
+        step = 0,
+        profiler_outdir=logdir
+    )
+
+tf.summary.trace_off()

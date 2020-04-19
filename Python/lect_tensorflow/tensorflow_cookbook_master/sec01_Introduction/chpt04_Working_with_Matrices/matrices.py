@@ -43,7 +43,7 @@ def  identity_matrix():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir1 = os.path.join(PROJECT_ROOT_DIR, 'log/ident/{}'.format(stamp))
+logdir1 = os.path.join(PROJECT_ROOT_DIR, 'log', 'ident', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir1)
 
 # Bracket the function call with
@@ -74,7 +74,7 @@ def random_norm_matrix():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir2 = os.path.join(PROJECT_ROOT_DIR, 'log/randam/{}'.format(stamp))
+logdir2 = os.path.join(PROJECT_ROOT_DIR, 'log', 'randam', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir2)
 
 # Bracket the function call with
@@ -104,7 +104,7 @@ def fill_const_matrix():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir3 = os.path.join(PROJECT_ROOT_DIR, 'log/fill/{}'.format(stamp))
+logdir3 = os.path.join(PROJECT_ROOT_DIR, 'log', 'fill', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir3)
 
 # Bracket the function call with
@@ -136,7 +136,7 @@ def create_matrix_np_array():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir4 = os.path.join(PROJECT_ROOT_DIR, 'log/create_tensor/{}'.format(stamp))
+logdir4 = os.path.join(PROJECT_ROOT_DIR, 'log', 'create_tensor', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir4)
 
 # Bracket the function call with
@@ -168,7 +168,7 @@ def matrix_addition():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir5 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_addition/{}'.format(stamp))
+logdir5 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_addition', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir5)
 
 # Bracket the function call with
@@ -200,7 +200,7 @@ def matrix_subtraction():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir6 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_subtraction/{}'.format(stamp))
+logdir6 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_subtraction', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir6)
 
 # Bracket the function call with
@@ -233,7 +233,7 @@ def multiplication_matrix():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir7 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_multiplication/{}'.format(stamp))
+logdir7 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_multiplication', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir7)
 
 # Bracket the function call with
@@ -264,7 +264,7 @@ def matrix_transpose():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir8 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_transpose/{}'.format(stamp))
+logdir8 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_transpose', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir8)
 
 # Bracket the function call with
@@ -295,7 +295,7 @@ def matrix_determinant():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir9 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_determinant/{}'.format(stamp))
+logdir9 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_determinant', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir9)
 
 # Bracket the function call with
@@ -326,7 +326,7 @@ def matrix_inverse():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir10 = os.path.join(PROJECT_ROOT_DIR, 'log/matrix_inverse/{}'.format(stamp))
+logdir10 = os.path.join(PROJECT_ROOT_DIR, 'log', 'matrix_inverse', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir10)
 
 # Bracket the function call with
@@ -358,7 +358,7 @@ def cholesky_decomposition():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir11 = os.path.join(PROJECT_ROOT_DIR, 'log/cholesky_decomposition/{}'.format(stamp))
+logdir11 = os.path.join(PROJECT_ROOT_DIR, 'log', 'cholesky_decomposition', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir11)
 
 # Bracket the function call with
@@ -389,7 +389,7 @@ def Eigenvalues_Eigenvectors():
 
 # set up logging
 stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir12 = os.path.join(PROJECT_ROOT_DIR, 'log/Eigenvalues_Eigenvectors/{}'.format(stamp))
+logdir12 = os.path.join(PROJECT_ROOT_DIR, 'log', 'Eigenvalues_Eigenvectors', '{}'.format(stamp))
 writer = tf.summary.create_file_writer(logdir12)
 
 # Bracket the function call with
