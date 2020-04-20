@@ -1,16 +1,22 @@
+'''
+*****************************************************************
 # Back Propagation
-#----------------------------------
+#----------------------------------------------------------------
 #
 # This python function shows how to implement back propagation
 # in regression and classification models.
-
+****************************************************************
+'''
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import os
+import sys
+import io
+import datetime
+from packaging import version
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
-
-# Create graph
-sess = tf.Session()
 
 # Regression Example:
 # We will create sample data as follows:
@@ -23,35 +29,29 @@ sess = tf.Session()
 # Create data
 x_vals = np.random.normal(1, 0.1, 100)
 y_vals = np.repeat(10., 100)
-x_data = tf.placeholder(shape=[1], dtype=tf.float32)
-y_target = tf.placeholder(shape=[1], dtype=tf.float32)
-
-# Create variable (one model parameter = A)
-A = tf.Variable(tf.random_normal(shape=[1]))
-
-# Add operation to graph
-my_output = tf.multiply(x_data, A)
-
-# Add L2 loss operation to graph
-loss = tf.square(my_output - y_target)
-
-# Create Optimizer
-my_opt = tf.train.GradientDescentOptimizer(0.02)
-train_step = my_opt.minimize(loss)
-
-# Initialize variables
-init = tf.global_variables_initializer()
-sess.run(init)
 
 # Run Loop
 for i in range(100):
     rand_index = np.random.choice(100)
     rand_x = [x_vals[rand_index]]
     rand_y = [y_vals[rand_index]]
-    sess.run(train_step, feed_dict={x_data: rand_x, y_target: rand_y})
+    
+    # Create variable (one model parameter = A)
+    A = tf.Variable(tf.random_normal(shape=[1]))
+
+    # Add operation to graph
+    my_output = tf.math.multiply(x_data, A)
+
+    # Add L2 loss operation to graph
+    loss = tf.square(my_output - y_target)
+
+    # Create Optimizer
+    my_opt = tf.train.GradientDescentOptimizer(0.02)
+    train_step = my_opt.minimize(loss)
+    
     if (i+1)%25==0:
-        print('Step #' + str(i+1) + ' A = ' + str(sess.run(A)))
-        print('Loss = ' + str(sess.run(loss, feed_dict={x_data: rand_x, y_target: rand_y})))
+        print('Step #' + str(i+1) + ' A = ' + str(A))
+        print('Loss = ' + str(loss)
 
 # Classification Example
 # We will create sample data as follows:
@@ -63,11 +63,7 @@ for i in range(100):
 # If sigmoid(x+A) < 0.5 -> 0 else 1
 # Theoretically, A should be -(mean1 + mean2)/2
 
-ops.reset_default_graph()
-
-# Create graph
-sess = tf.Session()
-
+'''
 # Create data
 x_vals = np.concatenate((np.random.normal(-1, 1, 50), np.random.normal(3, 1, 50)))
 y_vals = np.concatenate((np.repeat(0., 50), np.repeat(1., 50)))
@@ -117,3 +113,4 @@ for i in range(len(x_vals)):
     
 accuracy = sum(x==y for x,y in zip(predictions, y_vals))/100.
 print('Ending Accuracy = ' + str(np.round(accuracy, 2)))
+'''
