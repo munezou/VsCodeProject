@@ -34,25 +34,35 @@ y_vals = np.repeat(10., 100)
 for i in range(100):
     rand_index = np.random.choice(100)
     rand_x = [x_vals[rand_index]]
+    rand_x = tf.cast(rand_x, dtype=tf.float32)
     rand_y = [y_vals[rand_index]]
+    rand_y = tf.cast(rand_y, dtype=tf.float32)
     
     # Create variable (one model parameter = A)
-    A = tf.Variable(tf.random_normal(shape=[1]))
+    A = tf.Variable(tf.random.normal(shape=[1]))
+    A = tf.cast(A, dtype=tf.float32)
 
     # Add operation to graph
-    my_output = tf.math.multiply(x_data, A)
+    my_output = tf.math.multiply(rand_x, A)
 
+    print('my_output = {0}, rand_y = {1}\n'.format(my_output, rand_x))
+    
     # Add L2 loss operation to graph
-    loss = tf.square(my_output - y_target)
+    loss = tf.square(my_output - rand_y)
+    
+    print('loss = {0}\n'.format(loss))
 
     # Create Optimizer
-    my_opt = tf.train.GradientDescentOptimizer(0.02)
-    train_step = my_opt.minimize(loss)
+    opt_a = tf.keras.optimizers.SGD(learning_rate=0.02)
+    
+    train_step = opt_a.minimize(loss, var_list=[my_output, rand_y])
     
     if (i+1)%25==0:
         print('Step #' + str(i+1) + ' A = ' + str(A))
-        print('Loss = ' + str(loss)
+        print('Loss = ' + str(loss))
 
+
+'''
 # Classification Example
 # We will create sample data as follows:
 # x-data: sample 50 random values from a normal = N(-1, 1)
@@ -63,7 +73,6 @@ for i in range(100):
 # If sigmoid(x+A) < 0.5 -> 0 else 1
 # Theoretically, A should be -(mean1 + mean2)/2
 
-'''
 # Create data
 x_vals = np.concatenate((np.random.normal(-1, 1, 50), np.random.normal(3, 1, 50)))
 y_vals = np.concatenate((np.repeat(0., 50), np.repeat(1., 50)))
