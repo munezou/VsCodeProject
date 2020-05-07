@@ -112,6 +112,7 @@ def get_moves_from_csv(csv_file):
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
             play_moves.append(([int(x) for x in row[0:9]], int(row[9])))
+    
     return play_moves
 
 
@@ -130,7 +131,7 @@ def get_rand_move(play_moves, rand_transforms=2):
     return board, play_response
 
 # Get list of optimal moves w/ responses
-moves = get_moves_from_csv('base_tic_tac_toe_moves.csv')
+moves = get_moves_from_csv('Python/lect_tensorflow/tensorflow_cookbook_master/sec06_Neural_Networks/chpt08_Learning_Tic_Tac_Toe/base_tic_tac_toe_moves.csv')
 
 # Create a train set:
 train_length = 500

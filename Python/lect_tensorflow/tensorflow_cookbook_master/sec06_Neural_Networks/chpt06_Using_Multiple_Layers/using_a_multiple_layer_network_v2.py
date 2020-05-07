@@ -34,7 +34,7 @@ import requests
 from tensorflow.python.framework import ops
 
 # name of data file
-birth_weight_file = 'birth_weight.csv'
+birth_weight_file = 'Python/lect_tensorflow/tensorflow_cookbook_master/sec06_Neural_Networks/chpt06_Using_Multiple_Layers/birth_weight.csv'
 birthdata_url = 'https://github.com/nfmcclure/tensorflow_cookbook/raw/master' \
                 '/01_Introduction/07_Working_with_Data_Sources/birthweight_data/birthweight.dat'
 

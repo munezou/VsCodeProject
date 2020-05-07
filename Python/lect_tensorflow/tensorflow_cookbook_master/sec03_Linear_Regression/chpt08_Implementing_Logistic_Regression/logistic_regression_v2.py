@@ -29,7 +29,7 @@ sess = tf.compat.v1.Session()
 ###
 
 # Set name of data file
-birth_weight_file = 'birth_weight.csv'
+birth_weight_file = 'Python/lect_tensorflow/tensorflow_cookbook_master/sec03_Linear_Regression/chpt08_Implementing_Logistic_Regression/birth_weight.csv'
 
 # Download data and create data file if file does not exist in current directory
 if not os.path.exists(birth_weight_file):
