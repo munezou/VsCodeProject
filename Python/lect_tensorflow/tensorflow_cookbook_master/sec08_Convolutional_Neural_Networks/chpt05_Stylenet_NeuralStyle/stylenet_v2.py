@@ -19,8 +19,17 @@ from operator import mul
 from functools import reduce
 import numpy as np
 import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+# Change Directory
+try:
+    abspath = os.path.abspath(__file__)
+except NameError:
+    abspath = os.getcwd()
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 # Image Files
 original_image_file = 'images/book_cover.jpg'

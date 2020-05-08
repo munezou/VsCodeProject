@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import PIL.Image
 import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 from io import BytesIO
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
@@ -30,7 +31,14 @@ ops.reset_default_graph()
 graph = tf.Graph()
 sess = tf.compat.v1.InteractiveSession(graph=graph)
 
-os.chdir('~/Documents/tensorflow/inception-v1-model/')
+#os.chdir('~/Documents/tensorflow/inception-v1-model/')
+# Change Directory
+try:
+    abspath = os.path.abspath(__file__)
+except NameError:
+    abspath = os.getcwd()
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 # Model filename
 model_fn = 'tensorflow_inception_graph.pb'
@@ -73,7 +81,7 @@ def showarray(a, fmt='jpeg'):
     f = BytesIO()
     # Create the in memory image
     PIL.Image.fromarray(a).save(f, fmt, save_format='h5')
-)
+
     # Show image
     plt.imshow(a)
 
@@ -102,7 +110,7 @@ def tffunc(*argtypes):
 def resize(img, size):
     img = tf.expand_dims(img, 0)
     # Change 'img' size by linear interpolation
-    return tf.image.resize(img, size, method=tf.image.ResizeMethod.BILINEAR)[0, :, :, :]
+    return tf.image.resize(img, size)[0, :, :, :]
 
 
 def calc_grad_tiled(img, t_grad, tile_size=512):
