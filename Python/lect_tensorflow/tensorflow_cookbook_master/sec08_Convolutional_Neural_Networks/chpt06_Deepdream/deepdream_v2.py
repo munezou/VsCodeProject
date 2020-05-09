@@ -108,9 +108,13 @@ def tffunc(*argtypes):
 
 # Helper function that uses TF to resize an image
 def resize(img, size):
-    img = tf.expand_dims(img, 0)
-    # Change 'img' size by linear interpolation
-    return tf.image.resize(img, size)[0, :, :, :]
+    try:
+        img = tf.expand_dims(img, 0)
+        # Change 'img' size by linear interpolation
+        return tf.image.resize(img, size)[0, :, :, :]
+    except Exception as ex:
+        print(ex)
+        pass
 
 
 def calc_grad_tiled(img, t_grad, tile_size=512):
