@@ -9,6 +9,7 @@
 #   x = Petal Width
 
 # import required libraries
+import os
 import matplotlib.pyplot as plt
 import sys
 import numpy as np
@@ -17,6 +18,7 @@ tf.compat.v1.disable_eager_execution()
 from sklearn import datasets
 from tensorflow.python.framework import ops
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Specify 'Ridge' or 'LASSO'
 #regression_type = 'LASSO'

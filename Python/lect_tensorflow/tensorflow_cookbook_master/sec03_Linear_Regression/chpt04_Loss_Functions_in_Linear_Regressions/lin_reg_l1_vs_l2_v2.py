@@ -3,7 +3,7 @@
 #
 # This function shows how to use TensorFlow to
 # solve linear regression via the matrix inverse.
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -11,6 +11,8 @@ tf.compat.v1.disable_eager_execution()
 from sklearn import datasets
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Create graph
 sess = tf.compat.v1.Session()

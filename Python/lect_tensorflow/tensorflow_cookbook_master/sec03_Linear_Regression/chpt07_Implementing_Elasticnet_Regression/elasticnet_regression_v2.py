@@ -8,13 +8,15 @@
 # We will use the iris data, specifically:
 #  y = Sepal Length
 #  x = Pedal Length, Petal Width, Sepal Width
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 from sklearn import datasets
 from tensorflow.python.framework import ops
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 ###
 # Set up for TensorFlow

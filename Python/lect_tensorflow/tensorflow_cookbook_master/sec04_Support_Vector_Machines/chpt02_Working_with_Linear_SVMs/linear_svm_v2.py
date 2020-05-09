@@ -12,7 +12,7 @@
 #
 # We know here that x and y are linearly seperable
 # for I. setosa classification.
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -20,6 +20,8 @@ tf.compat.v1.disable_eager_execution()
 from sklearn import datasets
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Set random seeds
 np.random.seed(7)

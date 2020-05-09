@@ -7,13 +7,15 @@
 # Given Ax=b, solving for x:
 #  x = (t(A) * A)^(-1) * t(A) * b
 #  where t(A) is the transpose of A
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Create graph
 sess = tf.compat.v1.Session()

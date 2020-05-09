@@ -10,7 +10,7 @@
 #
 # We will use batch training, but this can be easily
 # adapted to stochastic training.
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
@@ -18,6 +18,8 @@ import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Load the iris data
 # iris.target = {0, 1, 2}, where '0' is setosa
