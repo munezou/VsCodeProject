@@ -10,7 +10,7 @@
 #
 # Integer images are represented as 28x8 matrices
 # of floating point numbers
-
+import os
 import random
 import numpy as np
 import tensorflow as tf
@@ -21,12 +21,18 @@ from PIL import Image
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 # Create graph
 sess = tf.compat.v1.Session()
 
 # Load the data
 #mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
-(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+y_train = tf.one_hot(y_train, 10)
+y_test = tf.one_hot(y_test, 10)
 
 # Random sample
 np.random.seed(13)  # set seed for reproducibility

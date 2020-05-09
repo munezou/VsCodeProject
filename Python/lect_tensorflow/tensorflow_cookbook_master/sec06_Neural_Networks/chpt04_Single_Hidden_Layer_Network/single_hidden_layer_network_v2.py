@@ -9,7 +9,7 @@ We will build a one-hidden layer neural network
  to predict the fourth attribute, Petal Width from
  the other three (Sepal length, Sepal width, Petal length).
 """
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -17,6 +17,8 @@ tf.compat.v1.disable_eager_execution()
 from sklearn import datasets
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 iris = datasets.load_iris()
 x_vals = np.array([x[0:3] for x in iris.data])

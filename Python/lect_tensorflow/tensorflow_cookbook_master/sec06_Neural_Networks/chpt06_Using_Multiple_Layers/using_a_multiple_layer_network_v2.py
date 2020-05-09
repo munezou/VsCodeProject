@@ -24,6 +24,7 @@ The multiple neural network layer we will create will be composed of
 three fully connected hidden layers, with node sizes 50, 25, and 5
 
 """
+import os
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 import matplotlib.pyplot as plt
@@ -33,8 +34,10 @@ import numpy as np
 import requests
 from tensorflow.python.framework import ops
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 # name of data file
-birth_weight_file = 'Python/lect_tensorflow/tensorflow_cookbook_master/sec06_Neural_Networks/chpt06_Using_Multiple_Layers/birth_weight.csv'
+birth_weight_file = 'birth_weight.csv'
 birthdata_url = 'https://github.com/nfmcclure/tensorflow_cookbook/raw/master' \
                 '/01_Introduction/07_Working_with_Data_Sources/birthweight_data/birthweight.dat'
 

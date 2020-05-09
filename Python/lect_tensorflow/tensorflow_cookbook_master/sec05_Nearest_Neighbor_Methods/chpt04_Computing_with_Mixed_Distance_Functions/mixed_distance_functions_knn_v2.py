@@ -22,7 +22,7 @@
 #------------y-value-----------
 # MEDV   : Median Value of homes in $1,000's
 
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -30,6 +30,8 @@ tf.compat.v1.disable_eager_execution()
 import requests
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Create graph
 sess = tf.compat.v1.Session()

@@ -13,12 +13,14 @@ We will generate two different data sets for this
  script, a 1-D data set (row of data) and
  a 2-D data set (similar to picture)
 """
-
+import os
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 import numpy as np
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # ---------------------------------------------------|
 # -------------------1D-data-------------------------|

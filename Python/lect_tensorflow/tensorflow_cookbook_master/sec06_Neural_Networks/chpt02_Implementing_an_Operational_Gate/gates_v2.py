@@ -8,11 +8,13 @@
 # a variable and a placeholder.
 # We will ask TensorFlow to change the
 # variable based on our loss function
-
+import os
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Start Graph Session
 sess = tf.compat.v1.Session()

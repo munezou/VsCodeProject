@@ -10,7 +10,7 @@
 # We will consider two distance functions:
 # 1) Edit distance for street number/name and
 # 2) Euclidian distance (L2) for the zip codes
-
+import os
 import random
 import string
 import numpy as np
@@ -18,6 +18,8 @@ import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # First we generate the data sets we will need
 # n = Size of created data sets

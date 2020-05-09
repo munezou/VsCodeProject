@@ -9,13 +9,15 @@ This function is an extension of the
 prior gates, but with various activation
 functions.
 """
-
+import os
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Start Graph Session
 sess = tf.compat.v1.Session()

@@ -4,9 +4,11 @@
 # This function illustrates how to use
 # the Levenstein distance (edit distance)
 # in TensorFlow.
-
+import os
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 sess = tf.compat.v1.Session()
 
