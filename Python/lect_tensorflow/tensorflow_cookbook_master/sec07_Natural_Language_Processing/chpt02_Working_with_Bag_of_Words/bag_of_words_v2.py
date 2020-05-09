@@ -22,6 +22,8 @@ from tensorflow.contrib import learn
 from tensorflow.python.framework import ops
 ops.reset_default_graph()
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 # Start a graph session
 sess = tf.compat.v1.Session()
 
