@@ -32,6 +32,10 @@ print("TensorFlow version: ", tf.version.VERSION)
 my_tensor = tf.zeros([1,20])
 print('my_tensor = \n{0}\n'.format(my_tensor))
 
+my_var = tf.Variable(tf.zeros([1, 20]))
+print('my_var = {0}\n'.format(my_var))
+
+
 # Different kinds of variables
 row_dim = 2
 col_dim = 3 
