@@ -63,7 +63,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -79,7 +79,7 @@ print   (
 
 _URL = 'https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip'
 
-fName = PROJECT_ROOT_DIR.joinpath('Data/cats_and_dog.zip')
+fName = PROJECT_ROOT_DIR.joinpath('Data', 'cats_and_dog.zip')
 
 cacheDir = PROJECT_ROOT_DIR.joinpath('Data')
 
@@ -90,7 +90,7 @@ path_to_zip = tf.keras.utils.get_file(
                                         cache_dir=cacheDir
                                     )
 
-PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets\\cats_and_dogs_filtered')
+PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets', 'cats_and_dogs_filtered')
 
 '''
 --------------------------------------------------------------------------------------------------------------
