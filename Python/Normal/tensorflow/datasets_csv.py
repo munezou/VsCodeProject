@@ -34,7 +34,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -53,13 +53,13 @@ TEST_DATA_URL = "https://storage.googleapis.com/tf-datasets/titanic/eval.csv"
 
 train_file_path = tf.keras.utils.get_file(
         origin=TRAIN_DATA_URL,
-        fname=PROJECT_ROOT_DIR.joinpath('original_data/titanic/train.csv')
+        fname=PROJECT_ROOT_DIR.joinpath('original_data', 'titanic', 'train.csv')
     )
 
 
 test_file_path = tf.keras.utils.get_file(
         origin=TEST_DATA_URL,
-        fname=PROJECT_ROOT_DIR.joinpath('original_data/titanic/eval.csv')
+        fname=PROJECT_ROOT_DIR.joinpath('original_data', 'titanic', 'eval.csv')
     )
 
 # Make numpy values easier to read.

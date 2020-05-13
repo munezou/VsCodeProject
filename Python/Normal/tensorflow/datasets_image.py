@@ -34,7 +34,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -49,10 +49,11 @@ print   (
         )
 data_root_orig = tf.keras.utils.get_file(
         origin='https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
-        fname=PROJECT_ROOT_DIR.joinpath('original_data/flower_photos'), 
+        fname=PROJECT_ROOT_DIR.joinpath('original_data', 'datasets', 'flower_photos'), 
         untar=True,
         cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
     )
+
 data_root = Path(data_root_orig)
 print(data_root)
 
@@ -488,7 +489,7 @@ If the data does not fit in memory, use a cache file.
 ---------------------------------------------------------------------------------------------------------------
 '''
 print('---< using cash file 1st try >---')
-cash_path = str(PROJECT_ROOT_DIR.joinpath("cache.tf-data"))
+cash_path = str(PROJECT_ROOT_DIR.joinpath('cache', 'cache.tf-data'))
 
 ds = image_label_ds.cache(filename=cash_path)
 ds = ds.apply(

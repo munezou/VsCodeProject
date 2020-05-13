@@ -532,7 +532,7 @@ print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 
-example_image_path = PROJECT_ROOT_DIR.joinpath('original_data/example_images')
+example_image_path = PROJECT_ROOT_DIR.joinpath('original_data', 'example_images')
 
 cat_in_snow  = tf.keras.utils.get_file(
                     str(example_image_path.joinpath('320px-Felis_catus-cat_on_snow.jpg')), 
