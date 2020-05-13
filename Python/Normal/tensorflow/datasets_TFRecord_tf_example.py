@@ -58,7 +58,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -342,9 +342,9 @@ Using tf.py_function requires to specify the shape and type information that is 
 
 def tf_serialize_example(f0,f1,f2,f3):
     tf_string = tf.py_function(
-                    serialize_example,
-                    (f0,f1,f2,f3),
-                    tf.string
+                    func=serialize_example,
+                    inp=(f0,f1,f2,f3),
+                    Tout=tf.string
                 )
     
     return tf.reshape(tf_string, ()) # The result is a scalar
@@ -603,7 +603,7 @@ Next, functionalize the code above and write the example messages to a file name
 # Write the raw image files to `images.tfrecords`.
 # First, process the two images into `tf.Example` messages.
 # Then, write to a `.tfrecords` file.
-record_file = str(PROJECT_ROOT_DIR.joinpath('tf_record/images.tfrecords'))
+record_file = str(PROJECT_ROOT_DIR.joinpath('tf_record', 'images.tfrecords'))
 
 with tf.io.TFRecordWriter(record_file) as writer:
     for filename, label in image_labels.items():
