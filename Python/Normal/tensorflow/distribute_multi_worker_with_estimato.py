@@ -49,7 +49,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -224,7 +224,7 @@ It is also possible to distribute the evaluation via eval_distribute.
 '''
 config = tf.estimator.RunConfig(train_distribute=strategy)
 
-file_path = str(PROJECT_ROOT_DIR.joinpath('tmp/multiworker'))
+file_path = str(PROJECT_ROOT_DIR.joinpath('tmp', 'multiworker'))
 
 classifier = tf.estimator.Estimator(
                 model_fn=model_fn, model_dir=file_path, config=config
