@@ -43,7 +43,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -324,9 +324,10 @@ The callback will store the checkpoint and training state in the directory corre
 # Replace the `filepath` argument with a path in the file system
 # accessible by all workers.
 #callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath='/tmp/keras-ckpt')]
-file_path = str(PROJECT_ROOT_DIR.joinpath('tmp/keras-ckpt'))
+file_path = str(PROJECT_ROOT_DIR.joinpath('tmp', 'keras-ckpt'))
 callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=file_path)]
 
 with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
+
 multi_worker_model.fit(x=train_datasets, epochs=3, callbacks=callbacks)

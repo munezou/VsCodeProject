@@ -44,7 +44,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -126,7 +126,7 @@ print   (
 Here is an example of saving and loading a model with the Keras APIs:
 ---------------------------------------------------------------------------------------------------------------
 '''
-keras_model_path = str(PROJECT_ROOT_DIR.joinpath('tmp/keras_save'))
+keras_model_path = str(PROJECT_ROOT_DIR.joinpath('tmp', 'keras_save'))
 model.save(keras_model_path)  # save() should be called out of strategy scope
 
 '''
@@ -174,7 +174,7 @@ Saving the model is similar to the keras API:
 ----------------------------------------------------------------------------------------------------------------
 '''
 model = get_model()  # get a fresh model
-saved_model_path = str(PROJECT_ROOT_DIR.joinpath('tmp/tf_save'))
+saved_model_path = str(PROJECT_ROOT_DIR.joinpath('tmp', 'tf_save'))
 tf.saved_model.save(model, saved_model_path)
 
 '''
