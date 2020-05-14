@@ -55,7 +55,7 @@ mpl.rcParams['axes.grid'] = False
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -66,7 +66,7 @@ print("TensorFlow version: ", tf.version.VERSION)
 For example, let’s take an image of this dog and Wassily Kandinsky's Composition 7:
 ------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/YellowLabradorLooking_new.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'YellowLabradorLooking_new.jpg'))
 im.show()
 
 '''
@@ -74,7 +74,7 @@ im.show()
 Yellow Labrador Looking, from Wikimedia Commons
 -----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/Vassily_Kandinsky_1913_-_Composition_7.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'Vassily_Kandinsky_1913_-_Composition_7.jpg'))
 im.show()
 
 '''
@@ -83,7 +83,7 @@ Now how would it look like if Kandinsky decided
 to paint the picture of this Dog exclusively with this style? Something like this?
 ----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/stylized-image.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'stylized-image.png'))
 im.show()
 
 print   (
@@ -104,14 +104,14 @@ def tensor_to_image(tensor):
 Download images and choose a style image and a content image:
 ----------------------------------------------------------------------------------------
 '''
-file_path_00 = PROJECT_ROOT_DIR.joinpath('images/YellowLabradorLooking_new.jpg')
+file_path_00 = PROJECT_ROOT_DIR.joinpath('images', 'YellowLabradorLooking_new.jpg')
 content_path = tf.keras.utils.get_file(
                     origin='https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg',
                     fname=file_path_00
                 )
 
 # https://commons.wikimedia.org/wiki/File:Vassily_Kandinsky,_1913_-_Composition_7.jpg
-file_path_01 = PROJECT_ROOT_DIR.joinpath('images/kandinsky5.jpg')
+file_path_01 = PROJECT_ROOT_DIR.joinpath('images', 'kandinsky5.jpg')
 style_path = tf.keras.utils.get_file(
                     origin='https://storage.googleapis.com/download.tensorflow.org/example_images/Vassily_Kandinsky%2C_1913_-_Composition_7.jpg',
                     fname=file_path_01
@@ -330,7 +330,7 @@ and averaging that outer product over all locations.
 This Gram matrix can be calcualted for a particular layer as:
 ------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/generative_calculate.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'generative_calculate.jpg'))
 im.show()
 '''
 ------------------------------------------------------------------------------------------

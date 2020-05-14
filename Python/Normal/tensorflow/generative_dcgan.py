@@ -36,7 +36,7 @@ mpl.rcParams['axes.grid'] = False
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -57,7 +57,7 @@ A generator ("the artist") learns to create images that look real,
 while a discriminator ("the art critic") learns to tell real images apart from fakes.
 ------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/genarative_dcgan_01.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'genarative_dcgan_01.jpg'))
 im.show()
 
 '''
@@ -67,7 +67,7 @@ while the discriminator becomes better at telling them apart.
 The process reaches equilibrium when the discriminator can no longer distinguish real images from fakes.
 ------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/genarative_dcgan_02.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'genarative_dcgan_02.jpg'))
 im.show()
 
 '''
@@ -77,7 +77,7 @@ The following animation shows a series of images produced by the generator as it
 The images begin as random noise, and increasingly resemble hand written digits over time.
 -----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/genarative_dcgan_03.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'genarative_dcgan_03.jpg'))
 im.show()
 
 '''
@@ -428,5 +428,3 @@ with imageio.get_writer(anim_file, mode='I') as writer:
         writer.append_data(image)
     image = imageio.imread(filename)
     writer.append_data(image)
-    
-    

@@ -36,29 +36,25 @@ from PIL import Image
 import tempfile
 from six.moves.urllib.request import urlopen
 from six import BytesIO
-
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 from PIL import Image
 from PIL import ImageColor
 from PIL import ImageDraw
 from PIL import ImageFont
 from PIL import ImageOps
-
-
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
-
 from tensorflow.keras import layers
-print(__doc__)
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from tensorflow_examples.models.pix2pix import pix2pix
+
+os.chdir(os.path.join(os.path.dirname(__file__)))
+
+print(__doc__)
 
 keras = tf.keras
 tfds.disable_progress_bar()

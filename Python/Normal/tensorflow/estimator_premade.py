@@ -44,12 +44,12 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
 print   (
@@ -79,7 +79,7 @@ SPECIES = ['Setosa', 'Versicolor', 'Virginica']
 
 # Next, download and parse the Iris data set using Keras and Pandas. 
 # Note that you keep distinct datasets for training and testing.
-iris_folder_path = PROJECT_ROOT_DIR.joinpath('csv_data/iris')
+iris_folder_path = PROJECT_ROOT_DIR.joinpath('csv_data', 'iris')
 train_path = tf.keras.utils.get_file(
         str(iris_folder_path.joinpath('iris_training.csv')), 
         "https://storage.googleapis.com/download.tensorflow.org/data/iris_training.csv"

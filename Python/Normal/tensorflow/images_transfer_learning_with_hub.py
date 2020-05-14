@@ -42,7 +42,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -150,7 +150,7 @@ For this example you will use the TensorFlow flowers dataset:
 
 data_root = tf.keras.utils.get_file(
                 origin='https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
-                fname=PROJECT_ROOT_DIR.joinpath('original_data/flower_photos'), 
+                fname=PROJECT_ROOT_DIR.joinpath('original_data', 'flower_photos'), 
                 untar=True,
                 cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
             )
@@ -394,7 +394,7 @@ Now that you've trained the model, export it as a saved model:
 ---------------------------------------------------------------------------------------------------------------
 '''
 t = str(time.time())
-file_name = PROJECT_ROOT_DIR.joinpath('tmp/saved_models')
+file_name = PROJECT_ROOT_DIR.joinpath('tmp', 'saved_models')
 
 export_path = str(file_name.joinpath(t))
 model.save(export_path, save_format='tf')

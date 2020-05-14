@@ -24,6 +24,7 @@ import pprint
 import contextlib
 import tempfile
 import functools
+import time
 from pathlib import Path
 from PIL import Image
 
@@ -44,7 +45,7 @@ mpl.rcParams['axes.grid'] = False
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -55,7 +56,7 @@ print("TensorFlow version: ", tf.version.VERSION)
 Let's demonstrate how you can make a neural network "dream" and enhance the surreal patterns it sees in an image.
 ------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/dogception.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'dogception.png'))
 im.show()
 
 print   (
@@ -243,12 +244,10 @@ def run_deep_dream_simple(img, steps=100, step_size=0.01):
 
         loss, img = deepdream(img, run_steps, tf.constant(step_size))
         
-        display.clear_output(wait=True)
         show(deprocess(img))
         print ("Step {}, loss {}".format(step, loss))
 
     result = deprocess(img)
-    display.clear_output(wait=True)
     show(result)
 
     return result
@@ -292,7 +291,6 @@ for n in range(-2, 3):
 
     img = run_deep_dream_simple(img=img, steps=50, step_size=0.01)
 
-display.clear_output(wait=True)
 img = tf.image.resize(img, base_shape)
 img = tf.image.convert_image_dtype(img/255.0, dtype=tf.uint8)
 show(img)
@@ -406,7 +404,6 @@ def run_deep_dream_with_octaves(img, steps_per_octave=100, step_size=0.01,
             img = tf.clip_by_value(img, -1, 1)
 
             if step % 10 == 0:
-                display.clear_output(wait=True)
                 show(deprocess(img))
                 print ("Octave {}, Step {}".format(octave, step))
         
@@ -415,7 +412,6 @@ def run_deep_dream_with_octaves(img, steps_per_octave=100, step_size=0.01,
 
 img = run_deep_dream_with_octaves(img=original_img, step_size=0.01)
 
-display.clear_output(wait=True)
 img = tf.image.resize(img, base_shape)
 img = tf.image.convert_image_dtype(img/255.0, dtype=tf.uint8)
 show(img)

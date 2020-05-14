@@ -40,17 +40,14 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
 
 from tensorflow.keras import layers
-print(__doc__)
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 from tensorflow_examples.models.pix2pix import pix2pix
+
+print(__doc__)
 
 keras = tf.keras
 tfds.disable_progress_bar()
@@ -61,7 +58,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -92,12 +89,15 @@ dataset, info = tfds.load(
                     as_supervised=True
                 )
 '''
+file_path = PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet', 'datasets', 'images')
+dir_path = PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet')
+
 dataset = tf.keras.utils.get_file(
             origin='http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz',
-            fname=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet/datasets/images'), 
+            fname= file_path,
             untar=True,
             extract=True,
-            cache_dir=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet')
+            cache_dir=dir_path
         )
 
 dataset_root = Path(dataset)
@@ -111,10 +111,10 @@ print('image_count = {0}\n'.format(image_count))
 
 info = tf.keras.utils.get_file(
             origin='http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz',
-            fname=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet/datasets/annotations'), 
+            fname=PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet', 'datasets', 'annotations'), 
             untar=True,
             extract=True,
-            cache_dir=PROJECT_ROOT_DIR.joinpath('Data/oxford_iiit_pet')
+            cache_dir=PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet')
         )
 
 info_root = Path(info)
@@ -131,10 +131,6 @@ for item in info_root.iterdir():
         df.to_csv(item, index=False, header=['file name','class ids', 'species', 'breed id'])
     
     print(item)
-
-
-
-
 
 '''
 ----------------------------------------------------------------------------------------------------------------

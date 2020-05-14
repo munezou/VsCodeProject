@@ -25,6 +25,7 @@ import contextlib
 import tempfile
 import functools
 import datetime
+import time
 from pathlib import Path
 from PIL import Image
 
@@ -45,7 +46,7 @@ mpl.rcParams['axes.grid'] = False
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -56,10 +57,10 @@ print("TensorFlow version: ", tf.version.VERSION)
 Below is the output generated after training the model for 200 epochs.
 -----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/pix2pix_1.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'pix2pix_1.png'))
 im.show()
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/pix2pix_2.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'pix2pix_2.png'))
 im.show()
 
 
@@ -81,12 +82,12 @@ _URL = 'https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/fac
 
 path_to_zip = tf.keras.utils.get_file(
                     origin=_URL,
-                    fname=PROJECT_ROOT_DIR.joinpath('original_data/facades.tar.gz'),
+                    fname=PROJECT_ROOT_DIR.joinpath('original_data', 'facades.tar.gz'),
                     extract=True,
                     cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
                 )
 
-PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets/facades/')
+PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets', 'facades/')
 
 BUFFER_SIZE = 400
 BATCH_SIZE = 1
@@ -329,7 +330,7 @@ tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
 gen_output = generator(inp[tf.newaxis,...], training=False)
 plt.imshow(gen_output[0,...])
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/pix2pix_3.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'pix2pix_3.jpg'))
 im.show()
 
 '''
@@ -361,7 +362,7 @@ def generator_loss(disc_generated_output, gen_output, target):
 
     return total_gen_loss, gan_loss, l1_loss
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/gen.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'gen.png'))
 im.show()
 
 print   (
@@ -449,7 +450,7 @@ The training procedure for the discriminator is shown below.
 To learn more about the architecture and the hyperparameters you can refer the paper.
 ---------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/dis.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'dis.png'))
 im.show()
 
 print   (
@@ -521,11 +522,11 @@ Then log the losses to TensorBoard.
 '''
 EPOCHS = 150
 
-log_dir=PROJECT_ROOT_DIR.joinpath("logs/fit")
+log_dir=PROJECT_ROOT_DIR.joinpath('logs', 'fit')
 
 current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
-file_name = log_dir + ’/’ ＋ current_time
+file_name = str(log_dir.joinpath(current_time))
 
 summary_writer = tf.summary.create_file_writer(file_name)
 
@@ -571,8 +572,6 @@ def fit(train_ds, epochs, test_ds):
     for epoch in range(epochs):
         start = time.time()
 
-        display.clear_output(wait=True)
-
         for example_input, example_target in test_ds.take(1):
             generate_images(generator, example_input, example_target)
         print("Epoch: ", epoch)
@@ -602,8 +601,8 @@ In a notebook, if you want to monitor with TensorBoard it's easiest to launch th
 To launch the viewer paste the following into a code-cell:
 ---------------------------------------------------------------------------
 '''
-os.system("load_ext tensorboard")
-os.system("tensorboard --logdir {log_dir}")
+#os.system("load_ext tensorboard")
+#os.system("tensorboard --logdir {log_dir}")
 
 '''
 ---------------------------------------------------------------------------
@@ -620,7 +619,7 @@ you can upload the logs to TensorBoard.dev by copying the following into a code-
 Note: This requires a Google account.
 --------------------------------------------------------------------------
 '''
-os.system("tensorboard dev upload --logdir  {log_dir}")
+#os.system("tensorboard dev upload --logdir  {log_dir}")
 
 '''
 --------------------------------------------------------------------------
