@@ -447,3 +447,12 @@ but to demonstrate the mechanics of working with structured data,
 so you have code to use as a starting point when working with your own datasets in the future.
 ------------------------------------------------------------------------------
 '''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        struct_feature_column.py                     　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

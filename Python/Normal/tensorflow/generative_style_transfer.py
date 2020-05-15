@@ -664,3 +664,12 @@ Finally, save the result:
 '''
 file_name = 'stylized-image.png'
 tensor_to_image(image).save(file_name)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        generative_style_transfer.py   　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -428,3 +428,12 @@ with imageio.get_writer(anim_file, mode='I') as writer:
         writer.append_data(image)
     image = imageio.imread(filename)
     writer.append_data(image)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        generative_dcgan.py       　　 　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

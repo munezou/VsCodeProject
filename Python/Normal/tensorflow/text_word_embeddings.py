@@ -414,3 +414,12 @@ experimentally, you may be able to produce more interpretable embeddings by usin
 Try deleting the Dense(16) layer, retraining the model, and visualizing the embeddings again.
 ---------------------------------------------------------------------------------------------------------------
 '''
+
+rint   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_word_embeddings.py                      　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

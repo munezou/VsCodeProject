@@ -119,3 +119,12 @@ keras_estimator = tf.keras.estimator.model_to_estimator(
 keras_estimator.train(input_fn=input_fn, steps=25)
 eval_result = keras_estimator.evaluate(input_fn=input_fn, steps=10)
 print('Eval result: {}'.format(eval_result))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        estimator_from_keras_model.py             　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

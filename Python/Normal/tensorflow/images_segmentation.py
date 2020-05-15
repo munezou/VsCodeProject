@@ -176,3 +176,12 @@ TRAIN_LENGTH = info.splits['train'].num_examples
 BATCH_SIZE = 64
 BUFFER_SIZE = 1000
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        images_segmentation.py         　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -958,3 +958,12 @@ plot_roc("Train Resampled", train_labels, train_predictions_resampled,  color=co
 plot_roc("Test Resampled", test_labels, test_predictions_resampled,  color=colors[2], linestyle='--')
 plt.legend(loc='lower right')
 plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        struct_imbalanced_data.py                    　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

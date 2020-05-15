@@ -678,3 +678,12 @@ plot_attention(image_path, result, attention_plot)
 # opening the image
 im = Image.open(image_path)
 im.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_image_captioning.py                     　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

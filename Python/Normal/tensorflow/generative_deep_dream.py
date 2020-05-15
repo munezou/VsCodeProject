@@ -425,3 +425,12 @@ Readers might also be interested in TensorFlow Lucid which expands on ideas intr
 in this tutorial to visualize and interpret neural networks.
 ---------------------------------------------------------------------------------------
 '''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        generative_deep_dream.py  　　 　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

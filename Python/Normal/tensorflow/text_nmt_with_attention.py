@@ -592,3 +592,12 @@ translate(u'¿todavia estan en casa?')
 
 # wrong translation
 translate(u'trata de averiguarlo.')
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_nmt_with_attention.py                   　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -1282,3 +1282,12 @@ You can pass different layers and attention blocks of the decoder to the plot pa
 '''
 translate("este é o primeiro livro que eu fiz.", plot='decoder_layer4_block2')
 print ("Real translation: this is the first book i've ever done.")
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_transformer.py                          　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

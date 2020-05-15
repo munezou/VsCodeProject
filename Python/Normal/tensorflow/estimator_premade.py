@@ -351,3 +351,12 @@ for pred_dict, expec in zip(predictions, expected):
 
     print('Prediction is "{}" ({:.1f}%), expected "{}"'.format(
         SPECIES[class_id], 100 * probability, expec))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        estimator_premade.py     　　　　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

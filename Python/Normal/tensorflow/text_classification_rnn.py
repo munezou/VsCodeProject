@@ -286,3 +286,12 @@ Check out other existing recurrent layers such as GRU layers.
 If you're interestied in building custom RNNs, see the Keras RNN Guide.
 ------------------------------------------------------------------------------------
 '''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_classification_rnn.py                   　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

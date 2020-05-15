@@ -183,3 +183,12 @@ plt.legend(loc='lower right')
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
 print('test_loss = {0}, test_acc = {0}\n'.format(test_loss, test_acc))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        images_cnn.py                  　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -635,3 +635,12 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        images_classification.py       　　       　                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

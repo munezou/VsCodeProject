@@ -529,3 +529,12 @@ In this case, you tuned your weights such that your model learned high-level fea
 This technique is usually recommended when the training dataset is large and very similar to the original dataset that the pre-trained model was trained on.
 ----------------------------------------------------------------------------------------------------------------
 '''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        images_transfer_learning.py                  　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

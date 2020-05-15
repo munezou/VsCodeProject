@@ -667,3 +667,13 @@ for epoch in range(EPOCHS):
         print ('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
 
 model.save_weights(checkpoint_prefix.format(epoch=epoch))
+
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        text_generation.py                           　                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()
