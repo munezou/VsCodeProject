@@ -789,3 +789,12 @@ def concat_with_padding():
 print('concat_with_padding() = \n{0}\n'.format(concat_with_padding()))
 print('concat_with_padding().shape = \n{0}\n'.format(concat_with_padding().shape))
 print('concat_with_padding().dtype = \n{0}\n'.format(concat_with_padding().dtype))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished         customization_Better_performance_with_tf_function.py                          \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

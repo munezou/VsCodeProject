@@ -449,3 +449,12 @@ which results in total/count = 1.75 when result() is called on the metric.
 Loss calculated with tf.keras.Metrics is scaled by an additional factor that is equal to the number of replicas in sync.
 ---------------------------------------------------------------------------------------------------------------------
 '''
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        distribute_custom_training.py                                                  \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

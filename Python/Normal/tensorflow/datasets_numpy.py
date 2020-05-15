@@ -116,3 +116,12 @@ model_fit = model.fit(train_dataset, epochs=10)
 
 print('---< Evaluate the model. >---')
 model.evaluate(test_dataset)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_numpy.py                                                              \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

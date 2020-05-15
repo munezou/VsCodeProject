@@ -331,3 +331,12 @@ with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
 
 multi_worker_model.fit(x=train_datasets, epochs=3, callbacks=callbacks)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished         distribute_multi_worker_with_keras.py                                         \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -333,3 +333,12 @@ my_model = SubclassedModel()
 
 # my_model.save(keras_model_path)  # ERROR! 
 tf.saved_model.save(my_model, saved_model_path)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        distribute_save_and_load.py                                                    \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

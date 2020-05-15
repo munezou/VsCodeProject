@@ -340,3 +340,12 @@ Unicode strings are utf-8 encoded by default.
 '''
 tf_constant_thanks = tf.constant(u"Thanks 😊")
 print('tf_constant_thanks = \n{0}\n'.format(tf_constant_thanks))
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_text.py                                                               \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

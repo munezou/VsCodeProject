@@ -349,3 +349,13 @@ for prediction, survived in zip(predictions[:10], list(test_data)[0][1][:10]):
     print("Predicted survival: {:.2%}".format(prediction[0]),
     " | Actual outcome: ",
     ("SURVIVED" if bool(survived) else "DIED"))
+
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_csv.py                                                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -285,3 +285,11 @@ with strategy.scope():
     eval_loss, eval_acc = replicated_model.evaluate(eval_dataset)
     print ('Eval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
 
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        distribute_keras.py                                                            \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

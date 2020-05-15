@@ -450,3 +450,13 @@ To make the final result easier to read, we can encode it back into UTF-8 string
 tf_strings_unicode_encode_to_list = tf.strings.unicode_encode(sentence_word_char_codepoint, 'UTF-8').to_list()
 
 print('tf_strings_unicode_encode_to_list = \n{0}\n'.format(tf_strings_unicode_encode_to_list))
+
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_unicode.py                                                            \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

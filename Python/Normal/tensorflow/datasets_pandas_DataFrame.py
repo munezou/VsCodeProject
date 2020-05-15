@@ -177,3 +177,12 @@ for dict_slice in dict_slices.take(1):
     print ('dict_slice = \n{0}\n'.format(dict_slice))
 
 model_func.fit(dict_slices, epochs=15)
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_pandas_DataFrame.py                                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

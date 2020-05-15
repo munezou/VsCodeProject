@@ -650,3 +650,12 @@ for image_features in parsed_image_dataset:
     image_raw = image_features['image_raw'].numpy()
     im = Image.open(image_raw)
     im.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished        datasets_TFRecord_tf_example.py                                                \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()

@@ -544,3 +544,12 @@ axes[1].set_ylabel("Accuracy", fontsize=14)
 axes[1].set_xlabel("Epoch", fontsize=14)
 axes[1].plot(train_accuracy_results)
 plt.show()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished         customization_custom_training_walkthroug.py                                   \n'
+        '------------------------------------------------------------------------------------------------------\n'
+        )
+print()
+print()
+print()
