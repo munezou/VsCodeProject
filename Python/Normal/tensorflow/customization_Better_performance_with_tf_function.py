@@ -792,7 +792,7 @@ print('concat_with_padding().dtype = \n{0}\n'.format(concat_with_padding().dtype
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_Better_performance_with_tf_function.py                          \n'
+        '       finished         customization_Better_performance_with_tf_function.py        (2020/05/16)      \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
