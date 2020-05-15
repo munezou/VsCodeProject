@@ -547,7 +547,7 @@ plt.show()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_custom_training_walkthroug.py                                   \n'
+        '       finished         customization_custom_training_walkthroug.py            (2020/05/16)           \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
