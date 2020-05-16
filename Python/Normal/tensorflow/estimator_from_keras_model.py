@@ -109,7 +109,8 @@ A tf.keras.Model can be trained with the tf.estimator API
 by converting the model to an tf.estimator.Estimator object with tf.keras.estimator.model_to_estimator.
 ----------------------------------------------------------------------------------------------------------------
 '''
-model_dir = "/tmp/tfkeras_example/"
+model_dir = PROJECT_ROOT_DIR.joinpath('tmp', 'tfkeras_example')
+
 keras_estimator = tf.keras.estimator.model_to_estimator(
                     keras_model=model, 
                     model_dir=model_dir
@@ -122,7 +123,7 @@ print('Eval result: {}'.format(eval_result))
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        estimator_from_keras_model.py             　                                   \n'
+        '       finished        estimator_from_keras_model.py             　        (2020/05/16)               \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

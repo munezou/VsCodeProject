@@ -268,7 +268,7 @@ You can try the following techniques to optimize performance of multi-worker tra
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        distribute_multi_worker_with_estimato.py                                       \n'
+        '       finished        distribute_multi_worker_with_estimato.py               (2020/05/16)            \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

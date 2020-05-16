@@ -90,7 +90,7 @@ Please review the ragged tensor guide if you are unfamiliar with them. https://w
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_tf_text.py                                                            \n'
+        '       finished        datasets_tf_text.py                          (2020/05/16)                      \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

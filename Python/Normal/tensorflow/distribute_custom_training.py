@@ -452,7 +452,7 @@ Loss calculated with tf.keras.Metrics is scaled by an additional factor that is 
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        distribute_custom_training.py                                                  \n'
+        '       finished        distribute_custom_training.py                     (2020/05/16)                 \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -334,7 +334,7 @@ multi_worker_model.fit(x=train_datasets, epochs=3, callbacks=callbacks)
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         distribute_multi_worker_with_keras.py                                         \n'
+        '       finished         distribute_multi_worker_with_keras.py                    (2020/05/16)         \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

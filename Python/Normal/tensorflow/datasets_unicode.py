@@ -454,7 +454,7 @@ print('tf_strings_unicode_encode_to_list = \n{0}\n'.format(tf_strings_unicode_en
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_unicode.py                                                            \n'
+        '       finished        datasets_unicode.py                           (2020/05/16)                     \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
