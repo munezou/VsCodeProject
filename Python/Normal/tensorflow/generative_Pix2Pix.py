@@ -87,7 +87,7 @@ path_to_zip = tf.keras.utils.get_file(
                     cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
                 )
 
-PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets', 'facades')
+PATH = PROJECT_ROOT_DIR.joinpath('original_data', 'datasets', 'facades')
 
 BUFFER_SIZE = 400
 BATCH_SIZE = 1
@@ -109,7 +109,7 @@ def load(image_file):
 
     return input_image, real_image
 
-inp, re = load(PATH+'train/100.jpg')
+inp, re = load(str(PATH.joinpath('train', '100.jpg')))
 # casting to int for matplotlib to show the image
 plt.figure()
 plt.imshow(inp/255.0)
@@ -197,7 +197,8 @@ print   (
         '      Input Pipeline                                                             \n'
         '---------------------------------------------------------------------------------\n'
         )
-train_dataset = tf.data.Dataset.list_files(PATH+'train/*.jpg')
+        
+train_dataset = tf.data.Dataset.list_files(str(PATH.joinpath('train', '*.jpg')))
 train_dataset = train_dataset.map(
                     load_image_train,
                     num_parallel_calls=tf.data.experimental.AUTOTUNE
@@ -205,7 +206,7 @@ train_dataset = train_dataset.map(
 train_dataset = train_dataset.shuffle(BUFFER_SIZE)
 train_dataset = train_dataset.batch(BATCH_SIZE)
 
-test_dataset = tf.data.Dataset.list_files(PATH+'test/*.jpg')
+test_dataset = tf.data.Dataset.list_files(str(PATH.joinpath('test', '*.jpg')))
 test_dataset = test_dataset.map(load_image_test)
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
@@ -522,13 +523,11 @@ Then log the losses to TensorBoard.
 '''
 EPOCHS = 150
 
-log_dir=PROJECT_ROOT_DIR.joinpath('logs', 'fit')
+log_dir=str(PROJECT_ROOT_DIR.joinpath('logs', 'fit', datetime.datetime.now().strftime("%Y%m%d-%H%M%S")))
 
-current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+print('log_dir = {0}\n'.format(log_dir))
 
-file_name = str(log_dir.joinpath(current_time))
-
-summary_writer = tf.summary.create_file_writer(file_name)
+summary_writer = tf.summary.create_file_writer(log_dir)
 
 @tf.function
 def train_step(input_image, target, epoch):

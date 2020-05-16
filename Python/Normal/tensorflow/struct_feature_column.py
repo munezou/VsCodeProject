@@ -41,7 +41,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -64,7 +64,7 @@ Following is a description of this dataset.
 Notice there are both numeric and categorical columns.
 -----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/structed_datasets_00.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'structed_datasets_00.jpg'))
 im.show()
 
 print   (

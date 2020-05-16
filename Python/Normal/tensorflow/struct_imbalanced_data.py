@@ -52,7 +52,7 @@ colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -273,7 +273,7 @@ def make_model(metrics = METRICS, output_bias=None):
 
     return model
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/struct_imbalanced_data_00.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'struct_imbalanced_data_00.jpg'))
 im.show()
 
 print   (
@@ -333,7 +333,7 @@ With the default bias initialization the loss should be about math.log(2) = 0.69
 results = model.evaluate(train_features, train_labels, batch_size=BATCH_SIZE, verbose=0)
 print("Loss: {:0.4f}".format(results[0]))
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/struct_imbalanced_data_01.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'struct_imbalanced_data_01.jpg'))
 im.show()
 
 initial_bias = np.log([pos/neg])
@@ -349,7 +349,7 @@ It should be near: pos/total = 0.0018
 model = make_model(output_bias = initial_bias)
 model.predict(train_features[:10])
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/struct_imbalanced_data_02.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'struct_imbalanced_data_02.jpg'))
 im.show()
 
 results = model.evaluate(train_features, train_labels, batch_size=BATCH_SIZE, verbose=0)
@@ -961,7 +961,7 @@ plt.show()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        struct_imbalanced_data.py                    　                                \n'
+        '       finished         struct_imbalanced_data.py                       (2020/05/16)                  \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

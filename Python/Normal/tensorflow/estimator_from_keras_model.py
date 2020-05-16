@@ -95,8 +95,10 @@ def input_fn():
 
 # Test out your input_fn
 for features_batch, labels_batch in input_fn().take(1):
-    print(features_batch)
-    print(labels_batch)
+    print('features_batch = {0}'.format(features_batch))
+    print('labels_batch = {0}'.format(labels_batch))
+
+print()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'

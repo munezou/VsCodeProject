@@ -60,13 +60,13 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
 print("TensorFlow version: ", tf.version.VERSION)
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/attention_map_portuguese.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'attention_map_portuguese.png'))
 im.show()
 
 print   (
@@ -81,8 +81,10 @@ Use TFDS to load the Portugese-English translation dataset from the TED Talks Op
 This dataset contains approximately 50000 training examples, 1100 validation examples, and 2000 test examples.
 ------------------------------------------------------------------------------------------
 '''
+name_path = os.path.join('ted_hrlr_translate', 'pt_to_en')
+
 examples, metadata = tfds.load(
-                        name='ted_hrlr_translate/pt_to_en',
+                        name=name_path,
                         with_info=True,
                         as_supervised=True
                     )
@@ -203,7 +205,7 @@ So after adding the positional encoding, words will be closer to each other base
 See the notebook on positional encoding to learn more about it. The formula for calculating the positional encoding is as follows:
 --------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/positional_encording.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'positional_encording.jpg'))
 im.show()
 
 def get_angles(pos, i, d_model):
@@ -291,7 +293,7 @@ The attention function used by the transformer takes three inputs: Q (query), K 
 The equation used to calculate the attention weights is:
 -----------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/attention_equation_01.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'attention_equation_01.jpg'))
 im.show()
 
 '''
@@ -431,7 +433,7 @@ print   (
         '      Multi-head attention                                                       \n'
         '---------------------------------------------------------------------------------\n'
         )
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/multi_head_attention.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'multi_head_attention.png'))
 im.show()
 
 '''
@@ -545,7 +547,7 @@ print   (
         '      Encoder and decoder                                                        \n'
         '---------------------------------------------------------------------------------\n'
         )
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/transformer.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'transformer.png'))
 im.show()
 
 '''
@@ -947,7 +949,7 @@ print   (
         '      Optimizer                                                                  \n'
         '---------------------------------------------------------------------------------\n'
         )
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/transformer_equation_00.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'transformer_equation_00.jpg'))
 im.show()
 
 class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
@@ -1046,7 +1048,7 @@ Create the checkpoint path and the checkpoint manager.
 This will be used to save checkpoints every n epochs.
 --------------------------------------------------------------------------
 '''
-checkpoint_path = str(PROJECT_ROOT_DIR.joinpath('training_checkpoints/train'))
+checkpoint_path = str(PROJECT_ROOT_DIR.joinpath('training_checkpoints', 'train'))
 
 ckpt = tf.train.Checkpoint(
 			transformer=transformer,
@@ -1285,7 +1287,7 @@ print ("Real translation: this is the first book i've ever done.")
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        text_transformer.py                          　                                \n'
+        '       finished         text_transformer.py                                                           \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

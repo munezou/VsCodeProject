@@ -7,9 +7,9 @@ TensorFlow Hub is a way to share pretrained model components.
 See the TensorFlow Module Hub for a searchable listing of pre-trained models. 
 This tutorial demonstrates:
 
-	1. How to use TensorFlow Hub with tf.keras.
-	2. How to do image classification using TensorFlow Hub.
-	3. How to do simple transfer learning.
+        1. How to use TensorFlow Hub with tf.keras.
+        2. How to do image classification using TensorFlow Hub.
+        3. How to do simple transfer learning.
 ------------------------------------------------------------------------------------------
 '''
 # common library
@@ -150,7 +150,7 @@ For this example you will use the TensorFlow flowers dataset:
 
 data_root = tf.keras.utils.get_file(
                 origin='https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
-                fname=PROJECT_ROOT_DIR.joinpath('original_data', 'flower_photos'), 
+                fname=PROJECT_ROOT_DIR.joinpath('original_data', 'datasets', 'flower_photos'), 
                 untar=True,
                 cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
             )
@@ -421,7 +421,7 @@ This saved model can loaded for inference later, or converted to TFLite or TFjs.
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        images_transfer_learning_with_hub.py         　                                \n'
+        '       finished         images_transfer_learning_with_hub.py                  (2020/05/16)            \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

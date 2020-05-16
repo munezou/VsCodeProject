@@ -31,7 +31,7 @@ import matplotlib as mpl
 
 import matplotlib.pyplot as plt
 
-import tensorflow.compat.v2.feature_column as fc
+#import tensorflow.compat.v2.feature_column as fc
 from sklearn.metrics import roc_curve
 
 import tensorflow as tf
@@ -238,7 +238,7 @@ linear_est.train(train_input_fn, max_steps=100)
 # Evaluation.
 result = linear_est.evaluate(eval_input_fn)
 
-print(pd.Series(result))
+print('pd.Series(result) = \n{0}\n'.format(pd.Series(result)))
 
 '''
 -----------------------------------------------------------------------------------------------------------------
@@ -259,7 +259,7 @@ est.train(train_input_fn, max_steps=100)
 
 # Eval.
 result = est.evaluate(eval_input_fn)
-print(pd.Series(result))
+print('pd.Series(result) = \n{0}\n'.format(pd.Series(result)))
 
 '''
 ------------------------------------------------------------------------------------------------------------------

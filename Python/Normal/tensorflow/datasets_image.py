@@ -38,8 +38,8 @@ PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
 print   (

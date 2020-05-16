@@ -49,7 +49,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Pytho', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -57,7 +57,7 @@ print("TensorFlow version: ", tf.version.VERSION)
 assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/embedding.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'embedding.jpg'))
 im.show()
 
 '''
@@ -80,7 +80,7 @@ One-hot encodings
     This approach is shown in the following diagram.
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/one-hot.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'one-hot.png'))
 im.show()
 
 '''
@@ -129,7 +129,7 @@ It is common to see word embeddings that are 8-dimensional (for small datasets),
 A higher dimensional embedding can capture fine-grained relationships between words, but takes more data to learn.
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/embedding2.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'embedding2.png'))
 im.show()
 
 '''
@@ -217,8 +217,9 @@ We will use to a preprocessed dataset.
 To load a text dataset from scratch see the Loading text tutorial.
 ----------------------------------------------------------------------------------------------------------------
 '''
+name_path = os.path.join('imdb_reviews', 'subwords8k')
 (train_data, test_data), info = tfds.load(
-                                    name='imdb_reviews/subwords8k', 
+                                    name=name_path, 
                                     data_dir=PROJECT_ROOT_DIR.joinpath('Data'),
                                     split = (tfds.Split.TRAIN, tfds.Split.TEST), 
                                     with_info=True, 
@@ -376,8 +377,8 @@ a file of vectors (containing the embedding), and a file of meta data (containin
 '''
 encoder = info.features['text'].encoder
 
-vecs_path = str(PROJECT_ROOT_DIR.joinpath('Data/imdb_reviews/subwords8k/vecs.tsv'))
-meta_path = str(PROJECT_ROOT_DIR.joinpath('Data/imdb_reviews/subwords8k/meta.tsv'))
+vecs_path = str(PROJECT_ROOT_DIR.joinpath('Data', 'imdb_reviews', 'subwords8k', 'vecs.tsv'))
+meta_path = str(PROJECT_ROOT_DIR.joinpath('Data', 'imdb_reviews', 'subwords8k', 'meta.tsv'))
 
 out_v = io.open(vecs_path, 'w', encoding='utf-8')
 out_m = io.open(meta_path, 'w', encoding='utf-8')
@@ -415,9 +416,9 @@ Try deleting the Dense(16) layer, retraining the model, and visualizing the embe
 ---------------------------------------------------------------------------------------------------------------
 '''
 
-rint   (
+print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        text_word_embeddings.py                      　                                \n'
+        '       finished         text_word_embeddings.py                                                       \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -34,12 +34,12 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
-print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
 print   (
@@ -70,7 +70,7 @@ print   (
 DATA_URL = 'https://storage.googleapis.com/applied-dl/heart.csv'
 
 csv_file = tf.keras.utils.get_file(
-        PROJECT_ROOT_DIR.joinpath('original_data/datasets/Heart/heart.csv'),
+        PROJECT_ROOT_DIR.joinpath('original_data', 'datasets', 'Heart', 'heart.csv'),
         DATA_URL
     )
 

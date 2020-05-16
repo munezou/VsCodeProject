@@ -40,14 +40,17 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
 
 from tensorflow.keras import layers
-from tensorflow_examples.models.pix2pix import pix2pix
-
 print(__doc__)
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from tensorflow_examples.models.pix2pix import pix2pix
 
 keras = tf.keras
 tfds.disable_progress_bar()
@@ -89,15 +92,12 @@ dataset, info = tfds.load(
                     as_supervised=True
                 )
 '''
-file_path = PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet', 'datasets', 'images')
-dir_path = PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet')
-
 dataset = tf.keras.utils.get_file(
             origin='http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz',
-            fname= file_path,
+            fname=PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet', 'datasets', 'images'), 
             untar=True,
             extract=True,
-            cache_dir=dir_path
+            cache_dir=PROJECT_ROOT_DIR.joinpath('Data', 'oxford_iiit_pet')
         )
 
 dataset_root = Path(dataset)
@@ -131,6 +131,10 @@ for item in info_root.iterdir():
         df.to_csv(item, index=False, header=['file name','class ids', 'species', 'breed id'])
     
     print(item)
+
+
+
+
 
 '''
 ----------------------------------------------------------------------------------------------------------------

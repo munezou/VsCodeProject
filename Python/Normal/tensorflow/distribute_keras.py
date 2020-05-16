@@ -264,7 +264,8 @@ unreplicated_model.compile(
 
 eval_loss, eval_acc = unreplicated_model.evaluate(eval_dataset)
 
-print('Eval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
+print()
+print('Eval loss: {}, Eval Accuracy: {}\n\n'.format(eval_loss, eval_acc))
 
 '''
 ---------------------------------------------------------------------------------------------------------------
@@ -283,7 +284,7 @@ with strategy.scope():
                             )
 
     eval_loss, eval_acc = replicated_model.evaluate(eval_dataset)
-    print ('Eval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
+    print ('Eval loss: {}, Eval Accuracy: {}\n\n'.format(eval_loss, eval_acc))
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'

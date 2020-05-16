@@ -205,7 +205,7 @@ The model will be trained to output positive values for real images, and negativ
 '''
 discriminator = make_discriminator_model()
 decision = discriminator(generated_image)
-print ('decision = {0}\n'.format(decision))
+print ('decisio = {0}\n'.format(decision))
 
 print   (
         '---------------------------------------------------------------------------------\n'
@@ -369,7 +369,7 @@ def generate_and_save_images(model, epoch, test_input):
         plt.imshow(predictions[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
         plt.axis('off')
 
-    plt.savefig('image_at_epoch_{:04d}.png'.format(epoch))
+    plt.savefig(PROJECT_ROOT_DIR.joinpath('images', 'image_at_epoch_{:04d}.png'.format(epoch)))
     plt.show()
 
 print   (
@@ -404,7 +404,7 @@ print   (
         )
 # Display a single image using the epoch number
 def display_image(epoch_no):
-    return Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
+    return Image.open(PROJECT_ROOT_DIR.joinpath('images', 'image_at_epoch_{:04d}.png'.format(epoch_no)))
 
 display_image(EPOCHS)
 
@@ -413,10 +413,10 @@ display_image(EPOCHS)
 Use imageio to create an animated gif using the images saved during training.
 --------------------------------------------------------------------
 '''
-anim_file = 'dcgan.gif'
+anim_file = str(PROJECT_ROOT_DIR.joinpath('images', 'dcgan.gif'))
 
 with imageio.get_writer(anim_file, mode='I') as writer:
-    filenames = glob.glob('image*.png')
+    filenames = glob.glob(str(PROJECT_ROOT_DIR.joinpath('images', 'image*.png')))
     filenames = sorted(filenames)
     last = -1
     for i,filename in enumerate(filenames):

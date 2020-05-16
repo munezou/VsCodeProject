@@ -129,15 +129,15 @@ print(raw_test)
 get_label_name = metadata.features['label'].int2str
 
 for image, label in raw_train.take(2):
-	plt.figure()
-	plt.imshow(image)
-	plt.title(get_label_name(label))
+    plt.figure()
+    plt.imshow(image)
+    plt.title(get_label_name(label))
 
-print   (
+print (
         '------------------------------------------------------------------------------------------------------\n'
         '       Format the Data                                                                                \n'
         '------------------------------------------------------------------------------------------------------\n'
-        )
+    )
 '''
 ---------------------------------------------------------------------------------------------------------------
 Use the tf.image module to format the images for the task.
@@ -148,10 +148,10 @@ Resize the images to a fixes input size, and rescale the input channels to a ran
 IMG_SIZE = 160 # All images will be resized to 160x160
 
 def format_example(image, label):
-	image = tf.cast(image, tf.float32)
-	image = (image/127.5) - 1
-	image = tf.image.resize(image, (IMG_SIZE, IMG_SIZE))
-	return image, label
+    image = tf.cast(image, tf.float32)
+    image = (image/127.5) - 1
+    image = tf.image.resize(image, (IMG_SIZE, IMG_SIZE))
+    return image, label
 
 # Apply this function to each item in the dataset using the map method:
 train = raw_train.map(format_example)
@@ -168,7 +168,7 @@ test_batches = test.batch(BATCH_SIZE)
 
 # Inspect a batch of data:
 for image_batch, label_batch in train_batches.take(1):
-	pass
+    pass
 
 image_batch.shape
 
@@ -532,7 +532,7 @@ This technique is usually recommended when the training dataset is large and ver
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        images_transfer_learning.py                  　                                \n'
+        '       finished         images_transfer_learning.py                       (2020/05/16)                \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

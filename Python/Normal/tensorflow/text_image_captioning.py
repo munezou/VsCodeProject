@@ -38,7 +38,7 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -46,7 +46,7 @@ print("TensorFlow version: ", tf.version.VERSION)
 assert version.parse(tf.version.VERSION).release[0] >= 2, \
 "This notebook requires TensorFlow 2.0 or above."
 
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/Surfing_in_Hawaii.jpg'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'Surfing_in_Hawaii.jpg'))
 im.show()
 '''
 ---------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ To accomplish this, you'll use an attention-based model,
 which enables us to see what parts of the image the model focuses on as it generates a caption.
 ---------------------------------------------------------------------------------------------------------------
 '''
-im = Image.open(PROJECT_ROOT_DIR.joinpath('images/imcap_prediction.png'))
+im = Image.open(PROJECT_ROOT_DIR.joinpath('images', 'imcap_prediction.png'))
 im.show()
 
 '''
@@ -89,25 +89,25 @@ large download ahead. You'll use the training set, which is a 13GB file.
 --------------------------------------------------------------------------------------------------------------
 '''
 annotation_zip = tf.keras.utils.get_file(
-                    fname=str(PROJECT_ROOT_DIR.joinpath('Data/caption_data/captions.zip')),
-                    cache_subdir=str(PROJECT_ROOT_DIR.joinpath('Data/caption_data')),
+                    fname=str(PROJECT_ROOT_DIR.joinpath('Data', 'caption_data', 'captions.zip')),
+                    cache_subdir=str(PROJECT_ROOT_DIR.joinpath('Data', 'caption_data')),
                     origin = 'http://images.cocodataset.org/annotations/annotations_trainval2014.zip',
                     extract = True
                 )
 
-annotation_file = str(PROJECT_ROOT_DIR.joinpath('Data/caption_data/annotations/captions_train2014.json'))
+annotation_file = str(PROJECT_ROOT_DIR.joinpath('Data', 'caption_data', 'annotations', 'captions_train2014.json'))
 
-name_of_zip = str(PROJECT_ROOT_DIR.joinpath('Data/caption_data/train2014.zip'))
+name_of_zip = str(PROJECT_ROOT_DIR.joinpath('Data', 'caption_data', 'train2014.zip'))
 
 if not os.path.exists(name_of_zip):
     image_zip = tf.keras.utils.get_file(
                     fname=name_of_zip,
-                    cache_subdir=str(PROJECT_ROOT_DIR.joinpath('Data/caption_data')),
+                    cache_subdir=str(PROJECT_ROOT_DIR.joinpath('Data', 'caption_data')),
                     origin = 'http://images.cocodataset.org/zips/train2014.zip',
                     extract = True
                 )
 
-PATH = str(PROJECT_ROOT_DIR.joinpath('Data/caption_data/train2014/'))
+PATH = PROJECT_ROOT_DIR.joinpath('Data', 'caption_data', 'train2014')
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
@@ -132,7 +132,8 @@ all_img_name_vector = []
 for annot in annotations['annotations']:
     caption = '<start> ' + annot['caption'] + ' <end>'
     image_id = annot['image_id']
-    full_coco_image_path = PATH + 'COCO_train2014_' + '%012d.jpg' % (image_id)
+    image_name = 'COCO_train2014_' + '%012d.jpg' % (image_id)
+    full_coco_image_path = str(PATH.joinpath(image_name))
 
     all_img_name_vector.append(full_coco_image_path)
     all_captions.append(caption)
@@ -488,7 +489,7 @@ print   (
         '      Checkpoint                                                                                      \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
-checkpoint_path = str(PROJECT_ROOT_DIR.joinpath('checkpoints/train'))
+checkpoint_path = str(PROJECT_ROOT_DIR.joinpath('checkpoints', 'train'))
 ckpt = tf.train.Checkpoint(
         encoder=encoder,
         decoder=decoder,
@@ -681,7 +682,7 @@ im.show()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        text_image_captioning.py                     　                                \n'
+        '       finished         text_image_captioning.py                                                      \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

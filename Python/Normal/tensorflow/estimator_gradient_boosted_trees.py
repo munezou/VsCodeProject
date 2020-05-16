@@ -166,18 +166,13 @@ print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 
-params = {
-            'n_trees': 50,
-            'max_depth': 3,
-            'n_batches_per_layer': 1,
-            # You must enable center_bias = True to get DFCs. This will force the model to
-            # make an initial prediction before using any features (e.g. use the mean of
-            # the training labels for regression or log odds for classification when
-            # using cross entropy loss).
-            'center_bias': True
-        }
+est = tf.estimator.BoostedTreesClassifier(
+            n_batches_per_layer=1,
+            n_trees=50,
+            max_depth=3,
+            center_bias=True
+        )
 
-est = tf.estimator.BoostedTreesClassifier(feature_columns, **params)
 # Train model.
 est.train(train_input_fn, max_steps=100)
 print()
@@ -218,7 +213,8 @@ est = tf.estimator.BoostedTreesClassifier(
         )
 
 est.train(train_input_fn)
-print(est.evaluate(eval_input_fn))
+
+print('est.evaluate(eval_input_fn) = {0}\n\n'.format(est.evaluate(eval_input_fn)))
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'

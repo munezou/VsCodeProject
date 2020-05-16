@@ -34,6 +34,7 @@ import pprint
 import contextlib
 import tempfile
 import functools
+import time
 from pathlib import Path
 from PIL import Image
 
@@ -166,7 +167,11 @@ imshow(content_image, 'Content Image')
 plt.subplot(1, 2, 2)
 imshow(style_image, 'Style Image')
 
-plt.show()
+plt.show(block=False)
+
+plt.pause(5)
+
+plt.close()
 
 print   (
         '---------------------------------------------------------------------------------\n'
@@ -518,8 +523,14 @@ for n in range(epochs):
         step += 1
         train_step(image)
         print(".", end='')
-    display.clear_output(wait=True)
-    display.display(tensor_to_image(image))
+    
+    tensor_to_image(image)
+    plt.show(block=False)
+
+    plt.pause(5)
+
+    plt.close()
+
     print("Train step: {}".format(step))
 
 end = time.time()
@@ -650,8 +661,14 @@ for n in range(epochs):
         step += 1
         train_step(image)
         print(".", end='')
-    display.clear_output(wait=True)
-    display.display(tensor_to_image(image))
+
+    tensor_to_image(image)
+    plt.show(block=False)
+
+    plt.pause(5)
+
+    plt.close()
+
     print("Train step: {}".format(step))
 
 end = time.time()
@@ -662,12 +679,12 @@ print("Total time: {:.1f}".format(end-start))
 Finally, save the result:
 -----------------------------------------------------------------------------------------
 '''
-file_name = 'stylized-image.png'
+file_name = str(PROJECT_ROOT_DIR.joinpath('images', 'stylized-image.png'))
 tensor_to_image(image).save(file_name)
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        generative_style_transfer.py   　　       　                                   \n'
+        '       finished         generative_style_transfer.py                  (2020/05/16)                    \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
