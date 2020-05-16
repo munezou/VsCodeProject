@@ -87,7 +87,7 @@ path_to_zip = tf.keras.utils.get_file(
                     cache_dir=PROJECT_ROOT_DIR.joinpath('original_data')
                 )
 
-PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets', 'facades/')
+PATH = os.path.join(os.path.dirname(path_to_zip), 'datasets', 'facades')
 
 BUFFER_SIZE = 400
 BATCH_SIZE = 1

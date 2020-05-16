@@ -8,22 +8,22 @@ It builds an image classifier using a tf.keras.Sequential model
 and load data using tf.keras.preprocessing.image.ImageDataGenerator. 
 You will get some practical experience and develop intuition for the following concepts:
 
-	* Building data input pipelines using the tf.keras.preprocessing.image.ImageDataGenerator class 
-	to efficiently work with data on disk to use with the model.
-	
-	* Overfitting —How to identify and prevent it.
-	
-	* Data augmentation and dropout —Key techniques to fight overfitting in computer vision tasks 
-	to incorporate into the data pipeline and image classifier model.
-	
+        * Building data input pipelines using the tf.keras.preprocessing.image.ImageDataGenerator class 
+        to efficiently work with data on disk to use with the model.
+        
+        * Overfitting —How to identify and prevent it.
+        
+        * Data augmentation and dropout —Key techniques to fight overfitting in computer vision tasks 
+        to incorporate into the data pipeline and image classifier model.
+        
 This tutorial follows a basic machine learning workflow:
 
-	1. Examine and understand data
-	2. Build an input pipeline
-	3. Build the model
-	4. Train the model
-	5. Test the model
-	6. Improve the model and repeat the process
+        1. Examine and understand data
+        2. Build an input pipeline
+        3. Build the model
+        4. Train the model
+        5. Test the model
+        6. Improve the model and repeat the process
 
 Import packages
 
@@ -51,9 +51,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 print(__doc__)
 
@@ -162,16 +159,16 @@ print   (
 Format the images into appropriately pre-processed floating point tensors 
 before feeding to the network:
 
-	* Read images from the disk.
-	
-	* Decode contents of these images and convert it into proper grid format 
-	as per their RGB content.
-	
-	* Convert them into floating point tensors.
-	
-	* Rescale the tensors from values between 0 and 255 to values between 0 and 1, 
-	as neural networks prefer to deal with small input values.
-	
+        * Read images from the disk.
+        
+        * Decode contents of these images and convert it into proper grid format 
+        as per their RGB content.
+        
+        * Convert them into floating point tensors.
+        
+        * Rescale the tensors from values between 0 and 255 to values between 0 and 1, 
+        as neural networks prefer to deal with small input values.
+        
 Fortunately, 
 all these tasks can be done with the ImageDataGenerator class provided by tf.keras. 
 It can read images from disk and preprocess them into proper tensors. 
@@ -179,8 +176,8 @@ It will also set up generators that convert these images into batches of tensors
 when training the network.
 ------------------------------------------------------------------------------------------------------------------
 '''
-train_image_generator = ImageDataGenerator(rescale=1./255) # Generator for our training data
-validation_image_generator = ImageDataGenerator(rescale=1./255) # Generator for our validation data
+train_image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255) # Generator for our training data
+validation_image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255) # Generator for our validation data
 
 '''
 ------------------------------------------------------------------------------------------------------------------
@@ -250,16 +247,16 @@ There's a fully connected layer with 512 units on top of it that is activated by
 The model outputs class probabilities based on binary classification by the sigmoid activation function.
 --------------------------------------------------------------------------------------------------------------
 '''
-model = Sequential([
-            Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
-            MaxPooling2D(),
-            Conv2D(32, 3, padding='same', activation='relu'),
-            MaxPooling2D(),
-            Conv2D(64, 3, padding='same', activation='relu'),
-            MaxPooling2D(),
-            Flatten(),
-            Dense(512, activation='relu'),
-            Dense(1, activation='sigmoid')
+model = tf.keras.Sequential([
+            tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(512, activation='relu'),
+            tf.keras.layers.Dense(1, activation='sigmoid')
         ])
 
 print   (
@@ -416,7 +413,7 @@ print   (
 Pass horizontal_flip as an argument to the ImageDataGenerator class and set it to True to apply this augmentation.
 ---------------------------------------------------------------------------------------------------------------
 '''
-image_gen = ImageDataGenerator(rescale=1./255, horizontal_flip=True)
+image_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255, horizontal_flip=True)
 
 train_data_gen = image_gen.flow_from_directory(
                     batch_size=batch_size,
@@ -443,7 +440,7 @@ print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 # Let's take a look at a different augmentation called rotation and apply 45 degrees of rotation randomly to the training examples.
-image_gen = ImageDataGenerator(rescale=1./255, rotation_range=45)
+image_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255, rotation_range=45)
 
 train_data_gen = image_gen.flow_from_directory(
                     batch_size=batch_size,
@@ -463,7 +460,7 @@ print   (
         )
 # Apply a zoom augmentation to the dataset to zoom images up to 50% randomly.
 # zoom_range from 0 - 1 where 1 = 100%.
-image_gen = ImageDataGenerator(rescale=1./255, zoom_range=0.5)
+image_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255, zoom_range=0.5)
 
 train_data_gen = image_gen.flow_from_directory(
                     batch_size=batch_size,
@@ -484,7 +481,7 @@ print   (
 # Apply all the previous augmentations. 
 # Here, you applied rescale, 45 degree rotation, width shift, height shift, horizontal flip 
 # and zoom augmentation to the training images.
-image_gen_train = ImageDataGenerator(
+image_gen_train = tf.keras.preprocessing.image.ImageDataGenerator(
                         rescale=1./255,
                         rotation_range=45,
                         width_shift_range=.15,
@@ -493,7 +490,7 @@ image_gen_train = ImageDataGenerator(
                         zoom_range=0.5
                     )
 
-train_data_gen = image_gen_train.flow_from_directory(
+train_data_gen = tf.keras.preprocessing.image.image_gen_train.flow_from_directory(
                     batch_size=batch_size,
                     directory=train_dir,
                     shuffle=True,
@@ -522,7 +519,7 @@ Generally, only apply data augmentation to the training examples.
 In this case, only rescale the validation images and convert them into batches using ImageDataGenerator.
 --------------------------------------------------------------------------------------------------------------
 '''
-image_gen_val = ImageDataGenerator(rescale=1./255)
+image_gen_val = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
 
 val_data_gen = image_gen_val.flow_from_directory(
                     batch_size=batch_size,
@@ -564,18 +561,18 @@ Applying dropout will randomly set 20% of the neurons to zero during each traini
 This helps to avoid overfitting on the training dataset.
 ---------------------------------------------------------------------------------------------------------------
 '''
-model_new = Sequential([
-            Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
-            MaxPooling2D(),
-            Dropout(0.2),
-            Conv2D(32, 3, padding='same', activation='relu'),
-            MaxPooling2D(),
-            Conv2D(64, 3, padding='same', activation='relu'),
-            MaxPooling2D(),
-            Dropout(0.2),
-            Flatten(),
-            Dense(512, activation='relu'),
-            Dense(1, activation='sigmoid')
+model_new = tf.keras.Sequential([
+            tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Dropout(0.2),
+            tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
+            tf.keras.layers.MaxPooling2D(),
+            tf.keras.layers.ropout(0.2),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(512, activation='relu'),
+            tf.keras.layers.Dense(1, activation='sigmoid')
         ])
 
 print   (

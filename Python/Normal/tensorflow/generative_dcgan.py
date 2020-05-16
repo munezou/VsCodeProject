@@ -13,9 +13,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import os
 import pprint
+import time
+import datetime
 import contextlib
 import tempfile
 import functools
+import imageio
+import glob
 from pathlib import Path
 from PIL import Image
 
@@ -31,6 +35,7 @@ print(__doc__)
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 pd.options.display.max_rows = None
+
 mpl.rcParams['figure.figsize'] = (12,12)
 mpl.rcParams['axes.grid'] = False
 
@@ -131,24 +136,24 @@ Notice the tf.keras.layers.LeakyReLU activation for each layer, except the outpu
 '''
 def make_generator_model():
     model = tf.keras.Sequential()
-    model.add(layers.Dense(7*7*256, use_bias=False, input_shape=(100,)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
+    model.add(tf.keras.layers.Dense(7*7*256, use_bias=False, input_shape=(100,)))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
 
-    model.add(layers.Reshape((7, 7, 256)))
+    model.add(tf.keras.layers.Reshape((7, 7, 256)))
     assert model.output_shape == (None, 7, 7, 256) # Note: None is the batch size
 
-    model.add(layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
+    model.add(tf.keras.layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
     assert model.output_shape == (None, 7, 7, 128)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
 
-    model.add(layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False))
+    model.add(tf.keras.layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False))
     assert model.output_shape == (None, 14, 14, 64)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.LeakyReLU())
 
-    model.add(layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh'))
+    model.add(tf.keras.layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh'))
     assert model.output_shape == (None, 28, 28, 1)
 
     return model
@@ -178,17 +183,17 @@ The discriminator is a CNN-based image classifier.
 def make_discriminator_model():
     model = tf.keras.Sequential()
     model.add(
-        layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same', input_shape=[28, 28, 1])
+        tf.keras.layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same', input_shape=[28, 28, 1])
     )
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
+    model.add(tf.keras.layers.LeakyReLU())
+    model.add(tf.keras.layers.Dropout(0.3))
 
-    model.add(layers.Conv2D(128, (5, 5), strides=(2, 2), padding='same'))
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
+    model.add(tf.keras.layers.Conv2D(128, (5, 5), strides=(2, 2), padding='same'))
+    model.add(tf.keras.layers.LeakyReLU())
+    model.add(tf.keras.layers.Dropout(0.3))
 
-    model.add(layers.Flatten())
-    model.add(layers.Dense(1))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(1))
 
     return model
 
@@ -200,9 +205,7 @@ The model will be trained to output positive values for real images, and negativ
 '''
 discriminator = make_discriminator_model()
 decision = discriminator(generated_image)
-print (decision)
-
-tf.Tensor([[0.00019826]], shape=(1, 1), dtype=float32)
+print ('decision = {0}\n'.format(decision))
 
 print   (
         '---------------------------------------------------------------------------------\n'
@@ -330,7 +333,6 @@ def train(dataset, epochs):
         train_step(image_batch)
 
     # Produce images for the GIF as we go
-    display.clear_output(wait=True)
     generate_and_save_images(
         generator,
         epoch + 1,
@@ -344,7 +346,6 @@ def train(dataset, epochs):
     print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
     # Generate after the final epoch
-    display.clear_output(wait=True)
     generate_and_save_images(
         generator,
         epochs,
@@ -403,7 +404,7 @@ print   (
         )
 # Display a single image using the epoch number
 def display_image(epoch_no):
-    return PIL.Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
+    return Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
 
 display_image(EPOCHS)
 
@@ -431,7 +432,7 @@ with imageio.get_writer(anim_file, mode='I') as writer:
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        generative_dcgan.py       　　 　　       　                                   \n'
+        '       finished        generative_dcgan.py       　　 　　       　(2020/05/16)                       \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -428,7 +428,7 @@ in this tutorial to visualize and interpret neural networks.
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        generative_deep_dream.py  　　 　　       　                                   \n'
+        '       finished        generative_deep_dream.py  　　 　　       　   (2020/05/16)                    \n'
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
