@@ -13,6 +13,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -34,7 +35,7 @@ pd.options.display.max_rows = None
 
 # Display current path
 basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Python/Normal/tensorflow')
+PROJECT_ROOT_DIR = basic_path.joinpath('Python', 'Normal', 'tensorflow')
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
@@ -50,7 +51,7 @@ print   (
 DATA_URL = 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz'
 
 path = tf.keras.utils.get_file(
-        PROJECT_ROOT_DIR.joinpath('original_data/datasets/Mnist/mnist.npz'),
+        PROJECT_ROOT_DIR.joinpath('original_data', 'datasets', 'Mnist', 'mnist.npz'),
         DATA_URL
     )
 
@@ -117,9 +118,17 @@ model_fit = model.fit(train_dataset, epochs=10)
 print('---< Evaluate the model. >---')
 model.evaluate(test_dataset)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_numpy.py                         (2020/05/16)                         \n'
+    )
+
+print(
+        '       finished        datasets_numpy.py                                    ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

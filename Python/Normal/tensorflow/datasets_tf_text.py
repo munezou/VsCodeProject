@@ -23,6 +23,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -88,9 +89,17 @@ Please review the ragged tensor guide if you are unfamiliar with them. https://w
 --------------------------------------------------------------------------------------------------------------
 '''
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_tf_text.py                          (2020/05/16)                      \n'
+    )
+
+print(
+        '       finished       datasets_tf_text.py                          ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

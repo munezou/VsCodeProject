@@ -15,12 +15,14 @@ as they can achieve impressive performance with minimal hyperparameter tuning.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+from time import sleep
 import os
 import sys
 import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -290,9 +292,17 @@ plt.xlim(0,)
 plt.ylim(0,)
 plt.show()
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        estimator_boosted_tree.py             　         (2020/05/16)                  \n'
+    )
+
+print(
+    '       finished        estimator_boosted_tree.py                            ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

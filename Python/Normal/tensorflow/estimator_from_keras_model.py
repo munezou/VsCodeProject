@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import time
 import os
 import sys
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -123,9 +124,17 @@ keras_estimator.train(input_fn=input_fn, steps=25)
 eval_result = keras_estimator.evaluate(input_fn=input_fn, steps=10)
 print('Eval result: {}'.format(eval_result))
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        estimator_from_keras_model.py             　        (2020/05/16)               \n'
+    )
+
+print(
+    '       finished        estimator_from_keras_model.py                          ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

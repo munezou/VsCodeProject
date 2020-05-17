@@ -8,6 +8,7 @@ tf.data
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+import datetime
 import os
 import platform
 import shutil
@@ -351,9 +352,17 @@ for prediction, survived in zip(predictions[:10], list(test_data)[0][1][:10]):
     ("SURVIVED" if bool(survived) else "DIED"))
 
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_csv.py                            (2020/05/16)                        \n'
+    )
+
+print(
+        '       finished        datasets_csv.py                        ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

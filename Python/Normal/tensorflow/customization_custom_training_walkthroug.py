@@ -20,6 +20,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import tempfile
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -545,9 +546,17 @@ axes[1].set_xlabel("Epoch", fontsize=14)
 axes[1].plot(train_accuracy_results)
 plt.show()
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_custom_training_walkthroug.py            (2020/05/16)           \n'
+    )
+
+print(
+        '       finished        customization_custom_training_walkthroug.py                ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

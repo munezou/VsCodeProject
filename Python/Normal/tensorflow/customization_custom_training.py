@@ -16,6 +16,7 @@ However, in this short tutorial you will learn how to train a neural network fro
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+import datetime
 import os
 import sys
 from pathlib import Path
@@ -247,9 +248,17 @@ plt.plot(
 plt.legend(['W', 'b', 'True W', 'True b'])
 plt.show()
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_custom_training.py                (2020/05/16)                  \n'
+    )
+
+print(
+        '       finished        customization_custom_training.py                         ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

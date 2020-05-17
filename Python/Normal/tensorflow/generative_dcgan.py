@@ -20,6 +20,7 @@ import tempfile
 import functools
 import imageio
 import glob
+import datetime
 from pathlib import Path
 from PIL import Image
 
@@ -430,9 +431,17 @@ with imageio.get_writer(anim_file, mode='I') as writer:
     image = imageio.imread(filename)
     writer.append_data(image)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        generative_dcgan.py       　　 　　       　(2020/05/16)                       \n'
+    )
+
+print   (
+        '       finished        generative_dcgan.py                        ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

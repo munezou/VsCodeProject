@@ -22,6 +22,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import tempfile
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -450,9 +451,17 @@ Loss calculated with tf.keras.Metrics is scaled by an additional factor that is 
 ---------------------------------------------------------------------------------------------------------------------
 '''
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        distribute_custom_training.py                     (2020/05/16)                 \n'
+    )
+
+print(
+        '       finished       distribute_custom_training.py                     ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

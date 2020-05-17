@@ -26,6 +26,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import tempfile
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -286,9 +287,18 @@ with strategy.scope():
     eval_loss, eval_acc = replicated_model.evaluate(eval_dataset)
     print ('Eval loss: {}, Eval Accuracy: {}\n\n'.format(eval_loss, eval_acc))
 
+
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        distribute_keras.py                              (2020/05/16)                  \n'
+    )
+
+print(
+        '       finished       distribute_keras.py                               ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -20,6 +20,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -674,9 +675,17 @@ plt.show()
 
 # As you increase the number of trees, the model's predictions better approximates the underlying function.
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        estimator_gradient_boosted_trees.py       　          (2020/05/16)             \n'
+    )
+
+print(
+    '       finished        estimator_gradient_boosted_trees.py                      ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -13,6 +13,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -452,9 +453,18 @@ tf_strings_unicode_encode_to_list = tf.strings.unicode_encode(sentence_word_char
 print('tf_strings_unicode_encode_to_list = \n{0}\n'.format(tf_strings_unicode_encode_to_list))
 
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_unicode.py                           (2020/05/16)                     \n'
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+        '       finished       datasets_unicode.py                            ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

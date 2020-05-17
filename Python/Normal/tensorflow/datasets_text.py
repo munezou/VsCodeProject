@@ -13,6 +13,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -341,9 +342,17 @@ Unicode strings are utf-8 encoded by default.
 tf_constant_thanks = tf.constant(u"Thanks 😊")
 print('tf_constant_thanks = \n{0}\n'.format(tf_constant_thanks))
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_text.py                         (2020/05/16)                          \n'
+    )
+
+print(
+        '       finished       datasets_text.py                          ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

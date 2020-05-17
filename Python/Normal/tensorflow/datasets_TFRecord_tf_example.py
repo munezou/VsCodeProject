@@ -41,6 +41,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import itertools
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -651,9 +652,17 @@ for image_features in parsed_image_dataset:
     im = Image.open(image_raw)
     im.show()
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_TFRecord_tf_example.py                                                \n'
+    )
+
+print(
+        '       finished       datasets_TFRecord_tf_example.py                       ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

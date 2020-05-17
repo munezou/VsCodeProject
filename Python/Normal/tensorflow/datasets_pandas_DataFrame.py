@@ -13,6 +13,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -178,9 +179,17 @@ for dict_slice in dict_slices.take(1):
 
 model_func.fit(dict_slices, epochs=15)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_pandas_DataFrame.py                      (2020/01/16)                 \n'
+    )
+
+print(
+        '       finished        datasets_pandas_DataFrame.py                      ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

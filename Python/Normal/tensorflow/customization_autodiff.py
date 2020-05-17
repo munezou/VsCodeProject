@@ -12,6 +12,7 @@ a key technique for optimizing machine learning models.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+import datetime
 import os
 import sys
 from pathlib import Path
@@ -166,9 +167,17 @@ d2y_dx2 = t.gradient(dy_dx, x)
 assert dy_dx.numpy() == 3.0
 assert d2y_dx2.numpy() == 6.0
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_autodiff.py            (2020/05/16)                             \n'
+    )
+
+print(
+        '       finished        customization_autodiff.py                        ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -8,6 +8,7 @@ tf.data
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+import datetime
 import os
 import platform
 import shutil
@@ -603,9 +604,18 @@ print('ds = \n{0}\n'.format(ds))
 
 timeit(ds)
 
+
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets_image.py                                                              \n'
+    )
+
+print(
+        '       finished        datasets_image.py                                    ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

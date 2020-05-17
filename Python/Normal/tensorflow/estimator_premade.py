@@ -24,6 +24,7 @@ import platform
 import shutil
 import subprocess
 import random
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -352,9 +353,17 @@ for pred_dict, expec in zip(predictions, expected):
     print('Prediction is "{}" ({:.1f}%), expected "{}"'.format(
         SPECIES[class_id], 100 * probability, expec))
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        estimator_premade.py     　　　　　       　(2020/05/16)                       \n'
+    )
+
+print(
+    '       finished        estimator_premade.py                           ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

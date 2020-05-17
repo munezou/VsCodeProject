@@ -15,6 +15,7 @@ Import the required package
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
+import datetime
 import os
 import sys
 from pathlib import Path
@@ -306,9 +307,17 @@ print('\nElements in ds_file:')
 for x in ds_file:
     print(x)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_basic.py                 (2020/05/16)                           \n'
+    )
+
+print(
+        '       finished        customization_basic.py                          ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

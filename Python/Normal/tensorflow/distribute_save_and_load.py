@@ -20,6 +20,7 @@ import os
 import sys
 import json
 import contextlib
+import datetime
 from pathlib import Path
 from packaging import version
 from PIL import Image
@@ -334,9 +335,17 @@ my_model = SubclassedModel()
 # my_model.save(keras_model_path)  # ERROR! 
 tf.saved_model.save(my_model, saved_model_path)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        distribute_save_and_load.py                        (2020/05/16)                \n'
+    )
+
+print(
+    '       finished        distribute_save_and_load.py                        ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

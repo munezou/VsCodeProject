@@ -17,6 +17,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import itertools
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -164,9 +165,17 @@ result = c.map(lambda d: ...)
 print('c.map(lambda d: ...) = \n{0}\n'.format(result))
 '''
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        datasets.py                               (2020/05/16)                         \n'
+    )
+
+print(
+        '       finished       datasets.py                                ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

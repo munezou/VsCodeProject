@@ -29,6 +29,7 @@ import functools
 import time
 import glob
 import imageio
+import datetime
 from pathlib import Path
 from PIL import Image
 
@@ -63,10 +64,17 @@ print   (
         '---------------------------------------------------------------------------------\n'
         )
 
+data_today = datetime.date.today()
 
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         generative_CycleGan.py                (2020/05/15)                            \n'
+    )
+
+print   (
+        '       finished        generative_CycleGan.py                 ({0})                \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

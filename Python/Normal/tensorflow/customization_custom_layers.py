@@ -14,6 +14,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import tempfile
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -227,9 +228,17 @@ print('my_seq(tf.zeros([1, 2, 3, 3])) = \n{0}\n'.format(my_seq(tf.zeros([1, 2, 3
 
 my_seq.summary()
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         customization_custom_layers.py              (2020/05/16)                      \n'
+    )
+
+print(
+        '       finished        customization_custom_layers.py                ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()

@@ -24,6 +24,7 @@ from pathlib import Path
 from packaging import version
 from PIL import Image
 import tempfile
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -332,9 +333,17 @@ with strategy.scope():
 
 multi_worker_model.fit(x=train_datasets, epochs=3, callbacks=callbacks)
 
+data_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         distribute_multi_worker_with_keras.py                    (2020/05/16)         \n'
+    )
+
+print(
+        '       finished       distribute_multi_worker_with_keras.py                      ({0})       \n'.format(data_today)
+    )
+
+print   (
         '------------------------------------------------------------------------------------------------------\n'
         )
 print()
