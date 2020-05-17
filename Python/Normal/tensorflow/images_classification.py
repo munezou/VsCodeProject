@@ -8,22 +8,22 @@ It builds an image classifier using a tf.keras.Sequential model
 and load data using tf.keras.preprocessing.image.ImageDataGenerator. 
 You will get some practical experience and develop intuition for the following concepts:
 
-        * Building data input pipelines using the tf.keras.preprocessing.image.ImageDataGenerator class 
-        to efficiently work with data on disk to use with the model.
-        
-        * Overfitting —How to identify and prevent it.
-        
-        * Data augmentation and dropout —Key techniques to fight overfitting in computer vision tasks 
-        to incorporate into the data pipeline and image classifier model.
-        
+	* Building data input pipelines using the tf.keras.preprocessing.image.ImageDataGenerator class 
+	to efficiently work with data on disk to use with the model.
+	
+	* Overfitting —How to identify and prevent it.
+	
+	* Data augmentation and dropout —Key techniques to fight overfitting in computer vision tasks 
+	to incorporate into the data pipeline and image classifier model.
+	
 This tutorial follows a basic machine learning workflow:
 
-        1. Examine and understand data
-        2. Build an input pipeline
-        3. Build the model
-        4. Train the model
-        5. Test the model
-        6. Improve the model and repeat the process
+	1. Examine and understand data
+	2. Build an input pipeline
+	3. Build the model
+	4. Train the model
+	5. Test the model
+	6. Improve the model and repeat the process
 
 Import packages
 
@@ -159,16 +159,16 @@ print   (
 Format the images into appropriately pre-processed floating point tensors 
 before feeding to the network:
 
-        * Read images from the disk.
-        
-        * Decode contents of these images and convert it into proper grid format 
-        as per their RGB content.
-        
-        * Convert them into floating point tensors.
-        
-        * Rescale the tensors from values between 0 and 255 to values between 0 and 1, 
-        as neural networks prefer to deal with small input values.
-        
+	* Read images from the disk.
+	
+	* Decode contents of these images and convert it into proper grid format 
+	as per their RGB content.
+	
+	* Convert them into floating point tensors.
+	
+	* Rescale the tensors from values between 0 and 255 to values between 0 and 1, 
+	as neural networks prefer to deal with small input values.
+	
 Fortunately, 
 all these tasks can be done with the ImageDataGenerator class provided by tf.keras. 
 It can read images from disk and preprocess them into proper tensors. 
