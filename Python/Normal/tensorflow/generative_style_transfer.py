@@ -682,11 +682,19 @@ Finally, save the result:
 file_name = str(PROJECT_ROOT_DIR.joinpath('images', 'stylized-image.png'))
 tensor_to_image(image).save(file_name)
 
+date_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished         generative_style_transfer.py                  (2020/05/16)                    \n'
+    )
+
+print   (
+        '       finished         generative_style_transfer.py                ({0})             \n'.format(date_today)
+    )
+
+print(
         '------------------------------------------------------------------------------------------------------\n'
-        )
+    )
 print()
 print()
 print()

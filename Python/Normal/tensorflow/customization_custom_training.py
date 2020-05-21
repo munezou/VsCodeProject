@@ -224,7 +224,7 @@ model = Model()
 
 # Collect the history of W-values and b-values to plot later
 Ws, bs = [], []
-epochs = range(10)
+epochs = range(20)
 for epoch in epochs:
     Ws.append(model.W.numpy())
     bs.append(model.b.numpy())

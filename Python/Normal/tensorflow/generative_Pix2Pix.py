@@ -671,11 +671,19 @@ print   (
 for inp, tar in test_dataset.take(5):
     generate_images(generator, inp, tar)
 
+date_today = datetime.date.today()
+
 print   (
         '------------------------------------------------------------------------------------------------------\n'
-        '       finished        generative_Pix2Pix.py     　　 　　       　                                   \n'
+    )
+
+print   (
+        '       finished         generative_Pix2Pix.py                ({0})             \n'.format(date_today)
+    )
+
+print(
         '------------------------------------------------------------------------------------------------------\n'
-        )
+    )
 print()
 print()
 print()
