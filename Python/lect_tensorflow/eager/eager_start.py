@@ -1,17 +1,31 @@
-# tensorflow 2.0
+'''
+-----------------------------------------------------------------------------------------------
+base operation of Eager_Execution
+
+over view)
+TensorFlow's eager execution is an imperative programming environment that evaluates operations immediately, without building graphs: 
+operations return concrete values instead of constructing a computational graph to run later.
+This makes it easy to get started with TensorFlow and debug models, and it reduces boilerplate as well. 
+To follow along with this guide, run the code samples below in an interactive python interpreter.
+
+Eager execution is a flexible machine learning platform for research and experimentation, providing:
+
+* An intuitive interface—Structure your code naturally and use Python data structures. Quickly iterate on small models and small data.
+* Easier debugging—Call ops directly to inspect running models and test changes. Use standard Python debugging tools for immediate error reporting.
+* Natural control flow—Use Python control flow instead of graph control flow, simplifying the specification of dynamic models.
+
+Eager execution supports most TensorFlow operations and GPU acceleration.
+
+Note: Some models may experience increased overhead with eager execution enabled. 
+Performance improvements are ongoing, but please file a bug if you find a problem and share your benchmarks.
+-----------------------------------------------------------------------------------------------
+'''
+# common library
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-'''
------------------------------------------------------------------------------------------------
-base operation of Eager_Execution
------------------------------------------------------------------------------------------------
-'''
-print(__doc__)
-
-# common library
 import time
 import os
 import platform
@@ -23,9 +37,10 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-
 import tensorflow as tf
 import cProfile
+
+print(__doc__)
 
 print("TensorFlow version: ", tf.__version__)
 assert version.parse(tf.__version__).release[0] >= 2, \

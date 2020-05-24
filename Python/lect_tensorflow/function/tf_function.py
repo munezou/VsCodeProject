@@ -1,9 +1,3 @@
-# tensorflow 2.0
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 '''
 -----------------------------------------------------------------------------------------------
 Better performance with tf.function and AutoGraph
@@ -20,10 +14,12 @@ Functions, not Sessions. For more details about AutoGraph, see tf.autograph.
 This tutorial will walk you through the basic features of tf.function and AutoGraph.
 -----------------------------------------------------------------------------------------------
 '''
-
-print(__doc__)
-
 # common library
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import platform
 import shutil
@@ -33,6 +29,8 @@ import timeit
 
 import numpy as np
 import tensorflow as tf
+
+print(__doc__)
 
 print("TensorFlow version: ", tf.__version__)
 assert version.parse(tf.__version__).release[0] >= 2, \

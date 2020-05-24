@@ -70,3 +70,19 @@ print(expected_output)
 for num in test_nums:
     print('coustom_polynomial({0}) = {1}'.format(num, custom_polynomial(num)))
 
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         operations.py                                  ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()

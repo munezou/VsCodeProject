@@ -1,3 +1,4 @@
+'''
 # Combining Everything Together
 #----------------------------------
 # This file will perform binary classification on the
@@ -10,17 +11,52 @@
 #
 # We will use batch training, but this can be easily
 # adapted to stochastic training.
+'''
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import os
+import sys
+import io
+import datetime
+from packaging import version
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
 import tensorflow as tf
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
+
+print(__doc__)
+
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, \
+"This notebook requires TensorFlow 2.0 or above."
+
+print(
+        '---------------------------------------------------------------------------------------------------------\n'
+        '                            Combining Everything Together                                                \n'
+        '---------------------------------------------------------------------------------------------------------\n'
+    )
+'''
+This file will perform binary classification on the iris dataset. 
+We will only predict if a flower is I.setosa or not.
+
+We will create a simple binary classifier by creating a line and running everything through a sigmoid to get a binary predictor. 
+The two features we will use are pedal length and pedal width. 
+We use these two features because we know that Iris setosa is separable by these two features. 
+We aim to find the line that separates it out.
+
+We will use batch training, but this can be easily adapted to stochastic training (i.e. set batch size equal to 1).
+
+We start by loading the necessary libraries and resetting the computational graph.
+'''
+
+
 
 # Load the iris data
 # iris.target = {0, 1, 2}, where '0' is setosa
-# iris.data ~ [sepal.width, sepal.length, pedal.width, pedal.length]
+# iris.data ~ [0:sepal.width, 1:sepal.length, 2:pedal.width, 3:pedal.length]
 iris = datasets.load_iris()
 binary_target = np.array([1. if x==0 else 0. for x in iris.target])
 iris_2d = np.array([[x[2], x[3]] for x in iris.data])
@@ -28,17 +64,58 @@ iris_2d = np.array([[x[2], x[3]] for x in iris.data])
 # Declare batch size
 batch_size = 20
 
-# Create graph
-sess = tf.Session()
 
-# Declare placeholders
-x1_data = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-x2_data = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32)
+print   (
+        '---------------------------------------------------------------------------------------------------------\n'
+        '                            Model Variables                                                              \n'
+        '---------------------------------------------------------------------------------------------------------\n'
+    )
 
 # Create variables A and b (0 = x1 - A*x2 + b)
 A = tf.Variable(tf.random_normal(shape=[1, 1]))
 b = tf.Variable(tf.random_normal(shape=[1, 1]))
+
+print   (
+        '---------------------------------------------------------------------------------------------------------\n'
+        '                            Model Operations                                                             \n'
+        '---------------------------------------------------------------------------------------------------------\n'
+    )
+'''
+A line can be defined as  ??1=?????2+?? . 
+To create a linear separator, we would like to see which side of the line the data points fall. 
+There are three cases:
+
+	* A point exactly on the line will satisfy:  0=??1?(?????2+??) 
+	* A point above the line satisfies:  0>??1?(?????2+??) 
+	* A point below the line satisfies:  0<??1?(?????2+??) 
+We will make the output of this model:
+
+	??1?(?????2+??)
+
+Then the predictions will be the sign of that output:
+
+	????????????????????(??1,??2)=????????(??1?(?????2+??))
+
+So we add the corresponding operations to the computational graph.
+'''
+
+class Model(tf.keras.Model):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.W = tf.Variable(1., name='weight')
+        self.B = tf.Variable(15., name='bias')
+    def call(self, inputs):
+        return inputs * self.W + self.B
+
+def loss(model, inputs, targets):
+    error = model(inputs) - targets
+    return tf.reduce_mean(tf.square(error))
+
+def grad(model, inputs, targets):
+    with tf.GradientTape() as tape:
+        loss_value = loss(model, inputs, targets)
+    return tape.gradient(loss_value, [model.W, model.B])
+
 
 # Add model to graph:
 # x1 - A*x2 + b
@@ -52,10 +129,6 @@ xentropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=my_output, labels=y_ta
 # Create Optimizer
 my_opt = tf.train.GradientDescentOptimizer(0.05)
 train_step = my_opt.minimize(xentropy)
-
-# Initialize variables
-init = tf.global_variables_initializer()
-sess.run(init)
 
 # Run Loop
 for i in range(1000):
@@ -97,3 +170,20 @@ plt.xlabel('Petal Length')
 plt.ylabel('Petal Width')
 plt.legend(loc='lower right')
 plt.show()
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         back_propagation.py                             ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()

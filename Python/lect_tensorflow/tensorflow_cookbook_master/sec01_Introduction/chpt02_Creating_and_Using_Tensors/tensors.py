@@ -17,7 +17,7 @@ print(__doc__)
 import os
 import numpy as np
 import math
-from datetime import datetime
+import datetime
 
 import tensorflow as tf
 
@@ -31,10 +31,6 @@ print("TensorFlow version: ", tf.version.VERSION)
 # Introduce tensors in tf
 my_tensor = tf.zeros([1,20])
 print('my_tensor = \n{0}\n'.format(my_tensor))
-
-my_var = tf.Variable(tf.zeros([1, 20]))
-print('my_var = {0}\n'.format(my_var))
-
 
 # Different kinds of variables
 row_dim = 2
@@ -77,8 +73,8 @@ def my_func(x, y):
     return tf.nn.relu(tf.matmul(x, y))
 
 # Set up logging.
-stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-logdir = os.path.join(PROJECT_ROOT_DIR, "logs", "func", datetime.now().strftime("%Y%m%d-%H%M%S"))
+stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logdir = os.path.join(PROJECT_ROOT_DIR, "logs", "func", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 writer = tf.summary.create_file_writer(logdir)
 
 # Sample data for your function.
@@ -106,3 +102,20 @@ tf.summary.trace_off()
 rnorm_tensor = tf.random.normal([row_dim, col_dim], mean=0.0, stddev=1.0)
 
 print('rnorm_tensor = \n{0}'.format(rnorm_tensor))
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         tensors.py                                  ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()

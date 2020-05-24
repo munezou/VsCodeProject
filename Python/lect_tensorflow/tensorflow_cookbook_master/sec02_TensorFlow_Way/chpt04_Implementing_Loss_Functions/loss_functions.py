@@ -247,3 +247,20 @@ sparse_xentropy =  tf.nn.sparse_softmax_cross_entropy_with_logits(
                         labels=sparse_target_dist
                     )
 print('sparse_xentropy = {0}'.format(sparse_xentropy))
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         loss_function.py                             ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()

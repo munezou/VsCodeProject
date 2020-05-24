@@ -16,6 +16,7 @@ import requests
 import matplotlib.pyplot as plt
 import tarfile
 import codecs
+import datetime
 from PIL import Image
 from zipfile import ZipFile
 import tensorflow as tf
@@ -338,3 +339,20 @@ with open(file_path, encoding='utf-8') as f:
 print('len(english_sentence) = {0}'.format(len(english_sentence)))
 print('len(german_sentence) = {0}'.format(len(german_sentence)))
 print('eng_ger_data[10] = {0}\n'.format(eng_ger_data[10]))
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         data_gathering.py                                  ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()
