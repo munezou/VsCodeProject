@@ -61,10 +61,6 @@ iris = datasets.load_iris()
 binary_target = np.array([1. if x==0 else 0. for x in iris.target])
 iris_2d = np.array([[x[2], x[3]] for x in iris.data])
 
-# Declare batch size
-batch_size = 20
-
-
 print   (
         '---------------------------------------------------------------------------------------------------------\n'
         '                            Model Variables                                                              \n'
@@ -72,8 +68,8 @@ print   (
     )
 
 # Create variables A and b (0 = x1 - A*x2 + b)
-A = tf.Variable(tf.random_normal(shape=[1, 1]))
-b = tf.Variable(tf.random_normal(shape=[1, 1]))
+A = tf.Variable(tf.random.normal(shape=[1, 1]))
+b = tf.Variable(tf.random.normal(shape=[1, 1]))
 
 print   (
         '---------------------------------------------------------------------------------------------------------\n'
@@ -98,62 +94,48 @@ Then the predictions will be the sign of that output:
 
 So we add the corresponding operations to the computational graph.
 '''
+batch_size = 20
 
-class Model(tf.keras.Model):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.W = tf.Variable(1., name='weight')
-        self.B = tf.Variable(15., name='bias')
-    def call(self, inputs):
-        return inputs * self.W + self.B
+def loss(aa, bb, input_1, input_2, targets):
+    my_mult = tf.matmul(input_2, aa)
+    my_add = tf.add(my_mult, bb)
+    my_output = tf.subtract(input_1, my_add)
+    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=my_output, labels=targets))
 
-def loss(model, inputs, targets):
-    error = model(inputs) - targets
-    return tf.reduce_mean(tf.square(error))
-
-def grad(model, inputs, targets):
+def grad(aa, bb, input_1, input_2, targets):
     with tf.GradientTape() as tape:
-        loss_value = loss(model, inputs, targets)
-    return tape.gradient(loss_value, [model.W, model.B])
+        loss_value = loss(aa, bb, input_1, input_2, targets)
+    return tape.gradient(loss_value, [aa, bb])
 
+# decide optimize method.
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.05)
 
-# Add model to graph:
-# x1 - A*x2 + b
-my_mult = tf.matmul(x2_data, A)
-my_add = tf.add(my_mult, b)
-my_output = tf.subtract(x1_data, my_add)
-
-# Add classification loss (cross entropy)
-xentropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=my_output, labels=y_target)
-
-# Create Optimizer
-my_opt = tf.train.GradientDescentOptimizer(0.05)
-train_step = my_opt.minimize(xentropy)
+loss_batch = []
 
 # Run Loop
-for i in range(1000):
+for i in range(8000):
     rand_index = np.random.choice(len(iris_2d), size=batch_size)
-    #rand_x = np.transpose([iris_2d[rand_index]])
     rand_x = iris_2d[rand_index]
-    rand_x1 = np.array([[x[0]] for x in rand_x])
-    rand_x2 = np.array([[x[1]] for x in rand_x])
-    #rand_y = np.transpose([binary_target[rand_index]])
-    rand_y = np.array([[y] for y in binary_target[rand_index]])
-    sess.run(train_step, feed_dict={x1_data: rand_x1, x2_data: rand_x2, y_target: rand_y})
+    rand_x1 = tf.cast(np.array([[x[0]] for x in rand_x]), dtype=tf.float32)
+    rand_x2 = tf.cast(np.array([[x[1]] for x in rand_x]), dtype=tf.float32)
+    rand_y = tf.cast(np.array([[y] for y in binary_target[rand_index]]), dtype=tf.float32)
+    grands = grad(A, b, rand_x1, rand_x2, rand_y)
+
+    optimizer.apply_gradients(zip(grands, [A, b]))
     if (i+1)%200==0:
-        print('Step #' + str(i+1) + ' A = ' + str(sess.run(A)) + ', b = ' + str(sess.run(b)))
-        
+        tmploss = loss(A, b, rand_x1, rand_x2, rand_y)
+        print('Step #{0} loss = {1}, A = {2}, b = {3}'.format(i + 1, tmploss, A.numpy(), b.numpy()))
+        loss_batch.append(tmploss)
 
-# Visualize Results
-# Pull out slope/intercept
-[[slope]] = sess.run(A)
-[[intercept]] = sess.run(b)
+# Extract the coefficients.
+[[slope]] = A.numpy()
+[[intercept]] = b.numpy()
 
-# Create fitted line
+# Create a straight line that fits.
 x = np.linspace(0, 3, num=50)
 ablineValues = []
 for i in x:
-  ablineValues.append(slope*i+intercept)
+    ablineValues.append(slope*i+intercept)
 
 # Plot the fitted line over the data
 setosa_x = [a[1] for i,a in enumerate(iris_2d) if binary_target[i]==1]
@@ -170,6 +152,7 @@ plt.xlabel('Petal Length')
 plt.ylabel('Petal Width')
 plt.legend(loc='lower right')
 plt.show()
+
 
 date_today = datetime.date.today()
 

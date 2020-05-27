@@ -25,7 +25,6 @@ from datetime import datetime
 from packaging import version
 
 import tensorflow as tf
-from tensorflow import keras
 
 import numpy as np
 

@@ -1,18 +1,31 @@
+'''
 # Linear Regression: L1 vs L2
 #----------------------------------
 #
 # This function shows how to use TensorFlow to
 # solve linear regression via the matrix inverse.
-
+'''
+# common library
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+import datetime
+from packaging import version
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from sklearn import datasets
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Create graph
-sess = tf.Session()
+print(__doc__)
+
+# Display current path
+basic_path = Path.cwd()
+PROJECT_ROOT_DIR = basic_path.joinpath('Normal', 'tensorflow')
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
+
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 # Load the data
 # iris.data = [(Sepal Length, Sepal Width, Petal Length, Petal Width)]
@@ -25,80 +38,77 @@ batch_size = 25
 learning_rate = 0.4 # Will not converge with learning rate at 0.4
 iterations = 50
 
-# Initialize placeholders
-x_data = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-
 # Create variables for linear regression
-A = tf.Variable(tf.random_normal(shape=[1,1]))
-b = tf.Variable(tf.random_normal(shape=[1,1]))
+A = tf.cast(tf.Variable(tf.random.normal(shape=[1,1])), dtype=tf.float32)
+b = tf.cast(tf.Variable(tf.random.normal(shape=[1,1])), dtype=tf.float32)
 
-# Declare model operations
-model_output = tf.add(tf.matmul(x_data, A), b)
+# L1 loss
+def loss_l1(input_x1, aa1, bb1, targets1):
+    # Declare model operations
+    model_output_l1 = tf.add(tf.matmul(input_x1, aa1), bb1)
 
-# Declare loss functions
-loss_l1 = tf.reduce_mean(tf.abs(y_target - model_output))
+    # Declare loss functions
+    return tf.reduce_mean(tf.abs(targets1 - model_output_l1))
+
+def grad_l1(input_x1, aa1, bb1, targets1):
+    with tf.GradientTape() as tape1:
+        loss_value_l1 = loss_l1(input_x1, aa1, bb1, targets1)
+    return tape1.gradient(loss_value_l1, [aa1, bb1])
 
 # Declare optimizers
-my_opt_l1 = tf.train.GradientDescentOptimizer(learning_rate)
-train_step_l1 = my_opt_l1.minimize(loss_l1)
-
-# Initialize variables
-init = tf.global_variables_initializer()
-sess.run(init)
+opt_l1 = tf.keras.optimizers.SGD(learning_rate)
 
 # Training loop
 loss_vec_l1 = []
 for i in range(iterations):
     rand_index = np.random.choice(len(x_vals), size=batch_size)
-    rand_x = np.transpose([x_vals[rand_index]])
-    rand_y = np.transpose([y_vals[rand_index]])
-    sess.run(train_step_l1, feed_dict={x_data: rand_x, y_target: rand_y})
-    temp_loss_l1 = sess.run(loss_l1, feed_dict={x_data: rand_x, y_target: rand_y})
+    rand_x = tf.cast(np.transpose([x_vals[rand_index]]), dtype=tf.float32)
+    rand_y = tf.cast(np.transpose([y_vals[rand_index]]), dtype=tf.float32)
+    grads_l1 = grad_l1(rand_x, A, b, rand_y)
+
+    opt_l1.apply_gradients(zip(grads_l1, [A, b]))
+
+    temp_loss_l1 = loss_l1(rand_x, A, b, rand_y)
     loss_vec_l1.append(temp_loss_l1)
     if (i+1)%25==0:
-        print('Step #' + str(i+1) + ' A = ' + str(sess.run(A)) + ' b = ' + str(sess.run(b)))
+        print('Step #{0}   A = {1},  b = {2}'.format(i+1, A.numpy(), b.numpy()))
 
 
 # L2 Loss
-# Reinitialize graph
-ops.reset_default_graph()
+def loss_l2(input_x2, aa2, bb2, targets2):
+    # Declare model operations
+    model_output_l2 = tf.add(tf.matmul(input_x2, aa2), bb2)
 
-# Create graph
-sess = tf.Session()
+    # Declare loss functions
+    return tf.reduce_mean(tf.square(targets2 - model_output_l2))
 
-# Initialize placeholders
-x_data = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-
-# Create variables for linear regression
-A = tf.Variable(tf.random_normal(shape=[1,1]))
-b = tf.Variable(tf.random_normal(shape=[1,1]))
-
-# Declare model operations
-model_output = tf.add(tf.matmul(x_data, A), b)
-
-# Declare loss functions
-loss_l2 = tf.reduce_mean(tf.square(y_target - model_output))
+def grad_l2(input_x2, aa2, bb2, targets2):
+    with tf.GradientTape() as tape2:
+        loss_value_l2 = loss_l2(input_x2, aa2, bb2, targets2)
+    return tape2.gradient(loss_value_l2, [aa2, bb2])
 
 # Declare optimizers
-my_opt_l2 = tf.train.GradientDescentOptimizer(learning_rate)
-train_step_l2 = my_opt_l2.minimize(loss_l2)
+opt_l2 = tf.keras.optimizers.SGD(learning_rate)
 
-# Initialize variables
-init = tf.global_variables_initializer()
-sess.run(init)
+# Create variables for linear regression
+A = tf.cast(tf.Variable(tf.random.normal(shape=[1,1])), dtype=tf.float32)
+b = tf.cast(tf.Variable(tf.random.normal(shape=[1,1])), dtype=tf.float32)
 
+
+# Training loop
 loss_vec_l2 = []
 for i in range(iterations):
     rand_index = np.random.choice(len(x_vals), size=batch_size)
-    rand_x = np.transpose([x_vals[rand_index]])
-    rand_y = np.transpose([y_vals[rand_index]])
-    sess.run(train_step_l2, feed_dict={x_data: rand_x, y_target: rand_y})
-    temp_loss_l2 = sess.run(loss_l2, feed_dict={x_data: rand_x, y_target: rand_y})
+    rand_x = tf.cast(np.transpose([x_vals[rand_index]]), dtype=tf.float32)
+    rand_y = tf.cast(np.transpose([y_vals[rand_index]]), dtype=tf.float32)
+    grads_l2 = grad_l2(rand_x, A, b, rand_y)
+
+    opt_l2.apply_gradients(zip(grads_l2, [A, b]))
+
+    temp_loss_l2 = loss_l2(rand_x, A, b, rand_y)
     loss_vec_l2.append(temp_loss_l2)
     if (i+1)%25==0:
-        print('Step #' + str(i+1) + ' A = ' + str(sess.run(A)) + ' b = ' + str(sess.run(b)))
+        print('Step #{0}  A = {1},  b = {2}'.format(i+1, A.numpy(), b.numpy()))
 
 
 # Plot loss over time
@@ -109,3 +119,20 @@ plt.xlabel('Generation')
 plt.ylabel('L1 Loss')
 plt.legend(loc='upper right')
 plt.show()
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         lin_reg_l1_vs_l2.py                             ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()
