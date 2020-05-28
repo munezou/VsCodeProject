@@ -16,7 +16,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 import datetime
 from packaging import version
-from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -25,8 +24,7 @@ from sklearn import datasets
 print(__doc__)
 
 # Display current path
-basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Normal', 'tensorflow')
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version

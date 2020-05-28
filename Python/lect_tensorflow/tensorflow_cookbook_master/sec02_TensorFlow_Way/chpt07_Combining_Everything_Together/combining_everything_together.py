@@ -77,20 +77,20 @@ print   (
         '---------------------------------------------------------------------------------------------------------\n'
     )
 '''
-A line can be defined as  ??1=?????2+?? . 
+A line can be defined as  𝑥1=𝐴⋅𝑥2+𝑏 . 
 To create a linear separator, we would like to see which side of the line the data points fall. 
 There are three cases:
 
-	* A point exactly on the line will satisfy:  0=??1?(?????2+??) 
-	* A point above the line satisfies:  0>??1?(?????2+??) 
-	* A point below the line satisfies:  0<??1?(?????2+??) 
+	* A point exactly on the line will satisfy:  0=𝑥1−(𝐴⋅𝑥2+𝑏) 
+	* A point above the line satisfies:  0>𝑥1−(𝐴⋅𝑥2+𝑏) 
+	* A point below the line satisfies:  0<𝑥1−(𝐴⋅𝑥2+𝑏) 
 We will make the output of this model:
 
-	??1?(?????2+??)
+	𝑥1−(𝐴⋅𝑥2+𝑏)
 
 Then the predictions will be the sign of that output:
 
-	????????????????????(??1,??2)=????????(??1?(?????2+??))
+	𝑃𝑟𝑒𝑑𝑖𝑐𝑡𝑖𝑜𝑛(𝑥1,𝑥2)=𝑠𝑖𝑔𝑛(𝑥1−(𝐴⋅𝑥2+𝑏))
 
 So we add the corresponding operations to the computational graph.
 '''

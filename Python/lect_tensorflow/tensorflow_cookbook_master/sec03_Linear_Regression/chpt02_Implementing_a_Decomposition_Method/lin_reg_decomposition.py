@@ -23,8 +23,7 @@ import tensorflow as tf
 print(__doc__)
 
 # Display current path
-basic_path = Path.cwd()
-PROJECT_ROOT_DIR = basic_path.joinpath('Normal', 'tensorflow')
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
 
 # Display tensorflow version
