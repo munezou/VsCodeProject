@@ -1,3 +1,4 @@
+'''
 # Illustration of Various Kernels
 #----------------------------------
 #
@@ -9,16 +10,27 @@
 #
 # Gaussian Kernel (RBF):
 # K(x1, x2) = exp(-gamma * abs(x1 - x2)^2)
+'''
 
+# import required libraries
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+import datetime
+from packaging import version
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from sklearn import datasets
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Create graph
-sess = tf.Session()
+print(__doc__)
+
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
+
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 # Generate non-lnear data
 (x_vals, y_vals) = datasets.make_circles(n_samples=350, factor=.5, noise=.1)
@@ -28,87 +40,100 @@ class1_y = [x[1] for i,x in enumerate(x_vals) if y_vals[i]==1]
 class2_x = [x[0] for i,x in enumerate(x_vals) if y_vals[i]==-1]
 class2_y = [x[1] for i,x in enumerate(x_vals) if y_vals[i]==-1]
 
+plt.scatter(class1_x, class1_y, c='red', marker='x')
+plt.scatter(class2_x, class2_y, c='blue', marker='o')
+plt.title('raw data for analizing')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+
 # Declare batch size
 batch_size = 350
 
-# Initialize placeholders
-x_data = tf.placeholder(shape=[None, 2], dtype=tf.float32)
-y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-prediction_grid = tf.placeholder(shape=[None, 2], dtype=tf.float32)
-
 # Create variables for svm
-b = tf.Variable(tf.random_normal(shape=[1,batch_size]))
-
+b = tf.cast(tf.Variable(tf.random.normal(shape=[1, batch_size])), dtype=tf.float32)
+Gam = -50.0
 # Apply kernel
 # Linear Kernel
 # my_kernel = tf.matmul(x_data, tf.transpose(x_data))
 
-# Gaussian (RBF) kernel
-gamma = tf.constant(-50.0)
-dist = tf.reduce_sum(tf.square(x_data), 1)
-dist = tf.reshape(dist, [-1,1])
-sq_dists = tf.add(tf.subtract(dist, tf.multiply(2., tf.matmul(x_data, tf.transpose(x_data)))), tf.transpose(dist))
-my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
+def kernel_loss(input_x, bb, g, targets):
+    # Gaussian (RBF) kernel
+    gamma = tf.cast(tf.constant(g), dtype=tf.float32)
+    dist = tf.reduce_sum(input_tensor=tf.square(input_x), axis=1)
+    dist = tf.reshape(dist, [-1,1])
+    sq_dists = tf.add(tf.subtract(dist, tf.multiply(2., tf.matmul(input_x, tf.transpose(a=input_x)))), tf.transpose(a=dist))
+    my_kernel = tf.exp(tf.multiply(gamma, tf.abs(sq_dists)))
 
-# Compute SVM Model
-first_term = tf.reduce_sum(b)
-b_vec_cross = tf.matmul(tf.transpose(b), b)
-y_target_cross = tf.matmul(y_target, tf.transpose(y_target))
-second_term = tf.reduce_sum(tf.multiply(my_kernel, tf.multiply(b_vec_cross, y_target_cross)))
-loss = tf.negative(tf.subtract(first_term, second_term))
+    # Compute SVM Model
+    first_term = tf.reduce_sum(input_tensor=bb)
+    b_vec_cross = tf.matmul(tf.transpose(a=bb), bb)
+    target_cross = tf.matmul(targets, tf.transpose(a=targets))
+    second_term = tf.reduce_sum(input_tensor=tf.multiply(my_kernel, tf.multiply(b_vec_cross, target_cross)))
+    return tf.negative(tf.subtract(first_term, second_term))
+
+def kernel_grad(input_x, bb, g, targets):
+    with tf.GradientTape() as tape:
+        loss_value = kernel_loss(input_x, bb, g, targets)
+    return tape.gradient(loss_value, [bb])
 
 # Create Prediction Kernel
 # Linear prediction kernel
 # my_kernel = tf.matmul(x_data, tf.transpose(prediction_grid))
 
-# Gaussian (RBF) prediction kernel
-rA = tf.reshape(tf.reduce_sum(tf.square(x_data), 1),[-1,1])
-rB = tf.reshape(tf.reduce_sum(tf.square(prediction_grid), 1),[-1,1])
-pred_sq_dist = tf.add(tf.subtract(rA, tf.multiply(2., tf.matmul(x_data, tf.transpose(prediction_grid)))), tf.transpose(rB))
-pred_kernel = tf.exp(tf.multiply(gamma, tf.abs(pred_sq_dist)))
+def predection(input_x, bb, g, targets, pred_grid):
+    # Gaussian (RBF) prediction kernel
+    rA = tf.reshape(tf.reduce_sum(tf.square(input_x), 1),[-1,1])
+    rB = tf.reshape(tf.reduce_sum(tf.square(pred_grid), 1),[-1,1])
+    pred_sq_dist = tf.add(tf.subtract(rA, tf.multiply(2., tf.matmul(input_x, tf.transpose(pred_grid)))), tf.transpose(rB))
+    pred_kernel = tf.exp(tf.multiply(g, tf.abs(pred_sq_dist)))
 
-prediction_output = tf.matmul(tf.multiply(tf.transpose(y_target),b), pred_kernel)
-prediction = tf.sign(prediction_output-tf.reduce_mean(prediction_output))
-accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.squeeze(prediction), tf.squeeze(y_target)), tf.float32))
+    prediction_output = tf.matmul(tf.multiply(tf.transpose(targets), bb), pred_kernel)
+    return tf.sign(prediction_output-tf.reduce_mean(prediction_output))
+
+
+def accuracy(input_x, bb, g, targets, pred_grid):
+    prediction_value =  predection(input_x, bb, g, targets, pred_grid)
+    return tf.reduce_mean(tf.cast(tf.equal(tf.squeeze(prediction_value), tf.squeeze(targets)), tf.float32))
 
 # Declare optimizer
-my_opt = tf.train.GradientDescentOptimizer(0.002)
-train_step = my_opt.minimize(loss)
-
-# Initialize variables
-init = tf.global_variables_initializer()
-sess.run(init)
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.002)
 
 # Training loop
 loss_vec = []
 batch_accuracy = []
+
 for i in range(1000):
     rand_index = np.random.choice(len(x_vals), size=batch_size)
-    rand_x = x_vals[rand_index]
-    rand_y = np.transpose([y_vals[rand_index]])
-    sess.run(train_step, feed_dict={x_data: rand_x, y_target: rand_y})
+    rand_x = tf.cast(x_vals[rand_index], dtype=tf.float32)
+    rand_y = tf.cast(np.transpose([y_vals[rand_index]]), dtype=tf.float32)
     
-    temp_loss = sess.run(loss, feed_dict={x_data: rand_x, y_target: rand_y})
+    grads = kernel_grad(rand_x, b, Gam, rand_y)
+    optimizer.apply_gradients(zip(grads, [b]))
+    
+    temp_loss = kernel_loss(rand_x, b, Gam, rand_y)
     loss_vec.append(temp_loss)
     
-    acc_temp = sess.run(accuracy, feed_dict={x_data: rand_x,
-                                             y_target: rand_y,
-                                             prediction_grid:rand_x})
+    acc_temp = accuracy(rand_x, b, Gam, rand_y, rand_x)
     batch_accuracy.append(acc_temp)
     
-    if (i+1)%250==0:
-        print('Step #' + str(i+1))
-        print('Loss = ' + str(temp_loss))
+    if (i +1 ) % 250 == 0:
+        print('Step #{0}'.format(i + 1))
+        print('Loss = {0}\n'.format(temp_loss.numpy()))
 
 # Create a mesh to plot points in
 x_min, x_max = x_vals[:, 0].min() - 1, x_vals[:, 0].max() + 1
 y_min, y_max = x_vals[:, 1].min() - 1, x_vals[:, 1].max() + 1
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
-                     np.arange(y_min, y_max, 0.02))
-grid_points = np.c_[xx.ravel(), yy.ravel()]
-[grid_predictions] = sess.run(prediction, feed_dict={x_data: rand_x,
-                                                   y_target: rand_y,
-                                                   prediction_grid: grid_points})
+
+xx, yy = np.meshgrid(
+            np.arange(x_min, x_max, 0.02),
+            np.arange(y_min, y_max, 0.02)
+        )
+
+grid_points = tf.cast(np.c_[xx.ravel(), yy.ravel()], dtype=tf.float32)
+
+[grid_predictions] = predection(rand_x, b, Gam, rand_y, grid_points).numpy()
+
 grid_predictions = grid_predictions.reshape(xx.shape)
 
 # Plot points and grid
@@ -140,16 +165,40 @@ plt.show()
 
 # Evaluate on new/unseen data points
 # New data points:
-new_points = np.array([(-0.75, -0.75),
-                       (-0.5, -0.5),
-                       (-0.25, -0.25),
-                       (0.25, 0.25),
-                       (0.5, 0.5),
-                       (0.75, 0.75)])
+new_points = np.array([
+                (-0.75, -0.75),
+                (-0.5, -0.5),
+                (-0.25, -0.25),
+                (0.25, 0.25),
+                (0.5, 0.5),
+                (0.75, 0.75)
+            ])
 
-[evaluations] = sess.run(prediction, feed_dict={x_data: x_vals,
-                                                y_target: np.transpose([y_vals]),
-                                                prediction_grid: new_points})
+[evaluations] = predection(
+                    tf.cast(x_vals, dtype=tf.float32), 
+                    b, 
+                    Gam, 
+                    tf.cast(np.transpose([y_vals]), dtype=tf.float32), 
+                    tf.cast(new_points, dtype=tf.float32)
+                ).numpy()
+
 
 for ix, p in enumerate(new_points):
-    print('{} : class={}'.format(p, evaluations[ix]))
+    print('p = {0} : class={1}'.format(p, evaluations[ix]))
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished         svm_kernels.py                                          ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()
