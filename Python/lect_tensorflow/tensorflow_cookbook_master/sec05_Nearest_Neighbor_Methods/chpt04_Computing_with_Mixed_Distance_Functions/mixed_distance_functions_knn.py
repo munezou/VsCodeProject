@@ -1,3 +1,4 @@
+'''
 # Mixed Distance Functions for  k-Nearest Neighbor
 #----------------------------------
 #
@@ -21,17 +22,27 @@
 # LSTAT  : % lower status of pop
 #------------y-value-----------
 # MEDV   : Median Value of homes in $1,000's
+'''
 
-
+# import required libraries
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+import datetime
+from packaging import version
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 import requests
-from tensorflow.python.framework import ops
-ops.reset_default_graph()
 
-# Create graph
-sess = tf.Session()
+print(__doc__)
+
+# Display current path
+PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
+
+# Display tensorflow version
+print("TensorFlow version: ", tf.version.VERSION)
+assert version.parse(tf.version.VERSION).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 # Load the data
 housing_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.data'
@@ -49,7 +60,7 @@ x_vals = (x_vals - x_vals.min(0)) / x_vals.ptp(0)
 
 ## Create distance metric weight matrix weighted by standard deviation
 weight_diagonal = x_vals.std(0)
-weight_matrix = tf.cast(tf.diag(weight_diagonal), dtype=tf.float32)
+weight_matrix = tf.cast(tf.linalg.tensor_diag(weight_diagonal), dtype=tf.float32)
 
 # Split the data into train and test sets
 np.random.seed(13)   # reproducible results
@@ -64,30 +75,30 @@ y_vals_test = y_vals[test_indices]
 k = 4
 batch_size=len(x_vals_test)
 
-# Placeholders
-x_data_train = tf.placeholder(shape=[None, num_features], dtype=tf.float32)
-x_data_test = tf.placeholder(shape=[None, num_features], dtype=tf.float32)
-y_target_train = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-y_target_test = tf.placeholder(shape=[None, 1], dtype=tf.float32)
+def distance(input_x_train, input_x_test, w_matrix, bat_size):
+    # Declare weighted distance metric
+    # Weighted L2 = sqrt((x-y)^T * A * (x-y))
+    subtraction_term =  tf.subtract(input_x_train, tf.expand_dims(input_x_test, 1))
+    first_product = tf.matmul(subtraction_term, tf.tile(tf.expand_dims(w_matrix, 0), [bat_size, 1, 1]))
+    second_product = tf.matmul(first_product, tf.transpose(subtraction_term, perm=[0, 2, 1]))
+    return tf.sqrt(tf.linalg.diag_part(second_product))
 
-# Declare weighted distance metric
-# Weighted L2 = sqrt((x-y)^T * A * (x-y))
-subtraction_term =  tf.subtract(x_data_train, tf.expand_dims(x_data_test,1))
-first_product = tf.matmul(subtraction_term, tf.tile(tf.expand_dims(weight_matrix,0), [batch_size,1,1]))
-second_product = tf.matmul(first_product, tf.transpose(subtraction_term, perm=[0,2,1]))
-distance = tf.sqrt(tf.matrix_diag_part(second_product))
+def prediction(input_x_train, input_x_test, targets_train, w_matrix, bat_size, kk):
+    tmp_distance = distance(input_x_train, input_x_test, w_matrix, bat_size)
 
-# Predict: Get min distance index (Nearest neighbor)
-top_k_xvals, top_k_indices = tf.nn.top_k(tf.negative(distance), k=k)
-x_sums = tf.expand_dims(tf.reduce_sum(top_k_xvals, 1),1)
-x_sums_repeated = tf.matmul(x_sums,tf.ones([1, k], tf.float32))
-x_val_weights = tf.expand_dims(tf.div(top_k_xvals,x_sums_repeated), 1)
+    # Predict: Get min distance index (Nearest neighbor)
+    top_k_xvals, top_k_indices = tf.nn.top_k(tf.negative(tmp_distance), k=kk)
+    x_sums = tf.expand_dims(tf.reduce_sum(top_k_xvals, 1), 1)
+    x_sums_repeated = tf.matmul(x_sums, tf.ones([1, k], tf.float32))
+    x_val_weights = tf.expand_dims(tf.math.divide(top_k_xvals, x_sums_repeated), 1)
 
-top_k_yvals = tf.gather(y_target_train, top_k_indices)
-prediction = tf.squeeze(tf.matmul(x_val_weights,top_k_yvals), axis=[1])
+    top_k_yvals = tf.gather(targets_train, top_k_indices)
+    return tf.squeeze(tf.matmul(x_val_weights, top_k_yvals), axis=[1])
 
-# Calculate MSE
-mse = tf.div(tf.reduce_sum(tf.square(tf.subtract(prediction, y_target_test))), batch_size)
+def mse(input_x_train, input_x_test, targets_train, targets_test, w_matrix, bat_size, kk):
+    # Calculate MSE
+    temp_prediction = prediction(input_x_train, input_x_test, targets_train, w_matrix, bat_size, kk)
+    return tf.math.divide(tf.reduce_sum(tf.square(tf.subtract(temp_prediction, targets_test))), bat_size)
 
 # Calculate how many loops over training data
 num_loops = int(np.ceil(len(x_vals_test)/batch_size))
@@ -95,22 +106,40 @@ num_loops = int(np.ceil(len(x_vals_test)/batch_size))
 for i in range(num_loops):
     min_index = i*batch_size
     max_index = min((i+1)*batch_size,len(x_vals_train))
-    x_batch = x_vals_test[min_index:max_index]
-    y_batch = y_vals_test[min_index:max_index]
-    predictions = sess.run(prediction, feed_dict={x_data_train: x_vals_train, x_data_test: x_batch,
-                                         y_target_train: y_vals_train, y_target_test: y_batch})
-    batch_mse = sess.run(mse, feed_dict={x_data_train: x_vals_train, x_data_test: x_batch,
-                                         y_target_train: y_vals_train, y_target_test: y_batch})
 
-    print('Batch #' + str(i+1) + ' MSE: ' + str(np.round(batch_mse,3)))
+    x_batch = tf.cast(x_vals_test[min_index:max_index], dtype=tf.float32)
+    y_batch = tf.cast(y_vals_test[min_index:max_index], dtype=tf.float32)
+
+    predictions = prediction(tf.cast(x_vals_train, dtype=tf.float32), x_batch, tf.cast(y_vals_train, dtype=tf.float32), weight_matrix, batch_size, k)
+    
+    batch_mse = mse(tf.cast(x_vals_train, dtype=tf.float32), x_batch, tf.cast(y_vals_train, dtype=tf.float32), y_batch, weight_matrix, batch_size, k)
+
+    print('Batch #{0}  MSE: {1}\n'.format(i + 1, (np.round(batch_mse.numpy(),3))))
 
 # Plot prediction and actual distribution
 bins = np.linspace(5, 50, 45)
 
-plt.hist(predictions, bins, alpha=0.5, label='Prediction')
-plt.hist(y_batch, bins, alpha=0.5, label='Actual')
+plt.hist(predictions.numpy(), bins, alpha=0.5, label='Prediction')
+plt.hist(y_batch.numpy(), bins, alpha=0.5, label='Actual')
 plt.title('Histogram of Predicted and Actual Values')
 plt.xlabel('Med Home Value in $1,000s')
 plt.ylabel('Frequency')
 plt.legend(loc='upper right')
 plt.show()
+
+date_today = datetime.date.today()
+
+print   (
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+
+print   (
+        '       finished        mixed_distance_functions_knn.py                           ({0})             \n'.format(date_today)
+    )
+
+print(
+        '------------------------------------------------------------------------------------------------------\n'
+    )
+print()
+print()
+print()

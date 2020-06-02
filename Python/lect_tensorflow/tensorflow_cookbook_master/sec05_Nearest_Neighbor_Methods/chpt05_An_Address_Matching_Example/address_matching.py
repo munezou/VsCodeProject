@@ -1,3 +1,4 @@
+'''
 # Address Matching with k-Nearest Neighbors
 #----------------------------------
 #
@@ -10,13 +11,41 @@
 # We will consider two distance functions:
 # 1) Edit distance for street number/name and
 # 2) Euclidian distance (L2) for the zip codes
+'''
 
+# import required libraries
+from __future__ import absolute_import, division, print_function, unicode_literals
+import os
+from cpuinfo import get_cpu_info
+import datetime
+from packaging import version
 import random
 import string
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import ops
-ops.reset_default_graph()
+
+print(__doc__)
+
+print(
+    '--------------------------------------------------------------------------\n'
+    '                      cpu information                                     \n'
+    '--------------------------------------------------------------------------\n'
+)
+# display the using cpu information
+for key, value in get_cpu_info().items():
+    print("{0}: {1}".format(key, value))
+
+print()
+print()
+
+# Display current path
+PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+print('PROJECT_ROOT_DIR = \n{0}\n'.format(PROJECT_ROOT_DIR))
+
+# Display tensorflow version
+print("TensorFlow version: {0}\n".format(tf.version.VERSION))
+assert version.parse(tf.version.VERSION).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 # First we generate the data sets we will need
 # n = Size of created data sets
@@ -37,13 +66,14 @@ def create_typo(s, prob=0.75):
         s = ''.join(s_list)
     return s
 
+
 # Generate the reference dataset
 numbers = [random.randint(1, 9999) for _ in range(n)]
 streets = [random.choice(street_names) for _ in range(n)]
 street_suffs = [random.choice(street_types) for _ in range(n)]
 zips = [random.choice(rand_zips) for _ in range(n)]
 full_streets = [str(x) + ' ' + y + ' ' + z for x, y, z in zip(numbers, streets, street_suffs)]
-reference_data = [list(x) for x in zip(full_streets,zips)]
+reference_data = [list(x) for x in zip(full_streets, zips)]
 
 # Generate test dataset with some typos
 typo_streets = [create_typo(x) for x in streets]
@@ -51,42 +81,35 @@ typo_full_streets = [str(x) + ' ' + y + ' ' + z for x, y, z in zip(numbers, typo
 test_data = [list(x) for x in zip(typo_full_streets, zips)]
 
 # Now we can perform address matching
-# Create graph
-sess = tf.Session()
+def top_match_index(test_address, test_zip, ref_address, ref_zip):
+    # Declare Zip code distance for a test zip and reference set
+    zip_dist = tf.square(tf.subtract(ref_zip, test_zip))
 
-# Placeholders
-test_address = tf.sparse_placeholder(dtype=tf.string)
-test_zip = tf.placeholder(shape=[None, 1], dtype=tf.float32)
-ref_address = tf.sparse_placeholder(dtype=tf.string)
-ref_zip = tf.placeholder(shape=[None, n], dtype=tf.float32)
+    # Declare Edit distance for address
+    address_dist = tf.edit_distance(test_address, ref_address, normalize=True)
 
-# Declare Zip code distance for a test zip and reference set
-zip_dist = tf.square(tf.subtract(ref_zip, test_zip))
+    # Create similarity scores
+    zip_max = tf.gather(tf.squeeze(zip_dist), tf.argmax(input=zip_dist, axis=1))
+    zip_min = tf.gather(tf.squeeze(zip_dist), tf.argmin(input=zip_dist, axis=1))
+    zip_sim = tf.cast(tf.math.divide(tf.subtract(zip_max, zip_dist), tf.subtract(zip_max, zip_min)), dtype=tf.float32)
+    address_sim = tf.subtract(1., address_dist)
 
-# Declare Edit distance for address
-address_dist = tf.edit_distance(test_address, ref_address, normalize=True)
+    # Combine distance functions
+    address_weight = tf.cast(0.5, dtype=tf.float32)
+    zip_weight = tf.cast((1. - address_weight), dtype=tf.float32)
+    weighted_sim = tf.add(tf.transpose(a=tf.multiply(address_weight, address_sim)), tf.multiply(zip_weight, zip_sim))
 
-# Create similarity scores
-zip_max = tf.gather(tf.squeeze(zip_dist), tf.argmax(zip_dist, 1))
-zip_min = tf.gather(tf.squeeze(zip_dist), tf.argmin(zip_dist, 1))
-zip_sim = tf.div(tf.subtract(zip_max, zip_dist), tf.subtract(zip_max, zip_min))
-address_sim = tf.subtract(1., address_dist)
-
-# Combine distance functions
-address_weight = 0.5
-zip_weight = 1. - address_weight
-weighted_sim = tf.add(tf.transpose(tf.multiply(address_weight, address_sim)), tf.multiply(zip_weight, zip_sim))
-
-# Predict: Get max similarity entry
-top_match_index = tf.argmax(weighted_sim, 1)
+    # Predict: Get max similarity entry
+    return tf.cast(tf.argmax(input=weighted_sim, axis=1), dtype=tf.int32)
 
 
 # Function to Create a character-sparse tensor from strings
 def sparse_from_word_vec(word_vec):
     num_words = len(word_vec)
-    indices = [[xi, 0, yi] for xi,x in enumerate(word_vec) for yi,y in enumerate(x)]
+    indices = [[xi, 0, yi] for xi, x in enumerate(word_vec) for yi, y in enumerate(x)]
     chars = list(''.join(word_vec))
-    return tf.SparseTensorValue(indices, chars, [num_words,1,1])
+    return tf.sparse.SparseTensor(indices, chars, [num_words, 1, 1])
+
 
 # Loop through test indices
 reference_addresses = [x[0] for x in reference_data]
@@ -98,18 +121,35 @@ sparse_ref_set = sparse_from_word_vec(reference_addresses)
 for i in range(n):
     test_address_entry = test_data[i][0]
     test_zip_entry = [[test_data[i][1]]]
-    
+
     # Create sparse address vectors
     test_address_repeated = [test_address_entry] * n
     sparse_test_set = sparse_from_word_vec(test_address_repeated)
-    
-    feeddict = {test_address: sparse_test_set,
-                test_zip: test_zip_entry,
-                ref_address: sparse_ref_set,
-                ref_zip: reference_zips}
-    best_match = sess.run(top_match_index, feed_dict=feeddict)
+
+    best_match = top_match_index(sparse_test_set, test_zip_entry, sparse_ref_set, reference_zips)
+
     best_street = reference_addresses[best_match[0]]
-    [best_zip] = reference_zips[0][best_match]
+
+    [best_zip] = reference_zips[0][best_match.numpy()]
     [[test_zip_]] = test_zip_entry
-    print('Address: ' + str(test_address_entry) + ', ' + str(test_zip_))
-    print('Match  : ' + str(best_street) + ', ' + str(best_zip))
+
+    print('Address: {0}, {1}'.format(test_address_entry, test_zip_))
+    print('Match  : {0}, {1}\n'.format(best_street, best_zip))
+
+date_today = datetime.date.today()
+
+print(
+    '------------------------------------------------------------------------------------------------------\n'
+)
+
+print(
+    '       finished      address_matching.py                          ({0})             \n'.format(
+        date_today)
+)
+
+print(
+    '------------------------------------------------------------------------------------------------------\n'
+)
+print()
+print()
+print()
