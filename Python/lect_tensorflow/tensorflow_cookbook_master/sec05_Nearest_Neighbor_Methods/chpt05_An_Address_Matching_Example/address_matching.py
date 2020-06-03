@@ -23,7 +23,6 @@ import random
 import string
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.framework import ops
 
 print(__doc__)
 

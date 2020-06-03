@@ -19,7 +19,6 @@ from packaging import version
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from tensorflow.python.framework import ops
 
 print(__doc__)
 

@@ -18,7 +18,6 @@ from cpuinfo import get_cpu_info
 import datetime
 from packaging import version
 import tensorflow as tf
-from tensorflow.python.framework import ops
 
 print(__doc__)
 

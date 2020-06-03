@@ -30,7 +30,6 @@ import csv
 import os
 import numpy as np
 import requests
-from tensorflow.python.framework import ops
 
 # name of data file
 birth_weight_file = 'birth_weight.csv'
