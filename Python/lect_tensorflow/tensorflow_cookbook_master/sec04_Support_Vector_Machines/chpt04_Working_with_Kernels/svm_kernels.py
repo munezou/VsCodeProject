@@ -97,7 +97,7 @@ def accuracy(input_x, bb, g, targets, pred_grid):
     return tf.reduce_mean(tf.cast(tf.equal(tf.squeeze(prediction_value), tf.squeeze(targets)), tf.float32))
 
 # Declare optimizer
-optimizer = tf.keras.optimizers.SGD(learning_rate=0.002)
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
 
 # Training loop
 loss_vec = []

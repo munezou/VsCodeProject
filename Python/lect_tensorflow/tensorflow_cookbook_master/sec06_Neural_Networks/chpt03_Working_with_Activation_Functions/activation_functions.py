@@ -19,20 +19,29 @@ from packaging import version
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+from tensorflow.python.framework import ops
 
 print(__doc__)
 
-print(
-    '--------------------------------------------------------------------------\n'
-    '                      cpu information                                     \n'
-    '--------------------------------------------------------------------------\n'
-)
-# display the using cpu information
-for key, value in get_cpu_info().items():
-    print("{0}: {1}".format(key, value))
+'''
+--------------------------------------------
+In casee of windows, os name is 'nt'.
+In case of linux, os name is 'posix'.
+--------------------------------------------
+'''
 
-print()
-print()
+if os.name == 'nt':
+    print(
+        '--------------------------------------------------------------------------\n'
+        '                      cpu information                                     \n'
+        '--------------------------------------------------------------------------\n'
+    )
+    # display the using cpu information
+    for key, value in get_cpu_info().items():
+        print("{0}: {1}".format(key, value))
+
+    print()
+    print()
 
 # Display current path
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
