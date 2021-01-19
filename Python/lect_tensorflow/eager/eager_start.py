@@ -43,8 +43,7 @@ import cProfile
 print(__doc__)
 
 print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
-"This notebook requires TensorFlow 2.0 or above."
+assert version.parse(tf.__version__).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 pf = platform.system()
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))

@@ -33,8 +33,7 @@ import tensorflow as tf
 print(__doc__)
 
 print("TensorFlow version: ", tf.__version__)
-assert version.parse(tf.__version__).release[0] >= 2, \
-"This notebook requires TensorFlow 2.0 or above."
+assert version.parse(tf.__version__).release[0] >= 2, "This notebook requires TensorFlow 2.0 or above."
 
 pf = platform.system()
 PROJECT_ROOT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
@@ -124,11 +123,11 @@ lstm_cell(input, state); lstm_fn(input, state)
 print("eager lstm: {0}\n".format(timeit.timeit(lambda: lstm_cell(input, state), number=10)))
 print("function lstm: {0}\n".format(timeit.timeit(lambda: lstm_fn(input, state), number=10)))
 
-print   (
+print(
         '------------------------------------------------------------------------------------------------------\n'
         '       Use Python control flow                                                                        \n'
         '------------------------------------------------------------------------------------------------------\n'
-        )
+    )
 '''
 ---------------------------------------------------------------------------------------------------------------
 When using data-dependent control flow inside tf.function, 
