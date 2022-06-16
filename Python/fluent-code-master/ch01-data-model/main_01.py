@@ -48,87 +48,90 @@ class Vector:
     def __mul__(self, scalar):
         return Vector(self.x * scalar, self.y * scalar)
 
-beer_card = Card('7', 'diamonds')
 
-print('---------------< frenchdeck.py example >--------------------')
-print('beer_card : ', beer_card)
+def main() -> None:
+    beer_card = Card('7', 'diamonds')
 
-print()
+    print('---------------< frenchdeck.py example >--------------------')
+    print('beer_card : ', beer_card)
 
-deck = FrenchDeck();
-print ('length of deck = ', len(deck))
+    print()
 
-print()
+    deck = FrenchDeck();
+    print ('length of deck = ', len(deck))
 
-print('-----------< choice card >----------------')
-for i in range(10):
-    print('choice time[', i, '] =', choice(deck))
+    print()
 
-print()
+    print('-----------< choice card >----------------')
+    for i in range(10):
+        print(f'choice time[', i, '] =', choice(deck[i]))
 
-print('---< Display inner data in FrenchDeck >---')
+    print()
 
-print('deck[0] = ', deck[0])
-print('deck[1] = ', deck[1])
-print('deck[2] = ', deck[2])
-print('deck[:3] = ', deck[:3])
+    print('---< Display inner data in FrenchDeck >---')
 
-print()
+    print('deck[0] = ', deck[0])
+    print('deck[1] = ', deck[1])
+    print('deck[2] = ', deck[2])
+    print('deck[:3] = ', deck[:3])
 
-print('---< Element No .: 12 (index), 13 sheets at a time. >---')
-print('deck[12::13] = ', deck[12::13])
+    print()
 
-print()
+    print('---< Element No .: 12 (index), 13 sheets at a time. >---')
+    print('deck[12::13] = ', deck[12::13])
 
-print('--------< Output all card >-------')
-for card in deck:
-    print(card)
+    print()
 
-print()
+    print('--------< Output all card >-------')
+    for card in deck[:]:
+        print(card)
 
-print('---< Output reverse all card >---')
-for card in reversed(deck):
-    print(card)
+    print()
 
-print()
+    print('---< Output reverse all card >---')
+    for card in reversed(deck[:]):
+        print(card)
 
-print ('-------< Output in order of card strength.  >-------')
-suit_values = dict(spades=3, hearts=2, diamonds=1, clubs=0)
+    print()
 
-def spades_high(card):
-    rank_value = FrenchDeck.ranks.index(card.rank)
-    return rank_value * len(suit_values) + suit_values[card.suit]
+    print ('-------< Output in order of card strength.  >-------')
+    suit_values = dict(spades=3, hearts=2, diamonds=1, clubs=0)
 
-for card in sorted(deck, key=spades_high):
-    print(card)
+    def spades_high(card):
+        rank_value = FrenchDeck.ranks.index(card.rank)
+        return rank_value * len(suit_values) + suit_values[card.suit]
 
-print()
+    for card in sorted(deck[:], key=spades_high):
+        print(card)
 
-print('---------------< vector.py example >--------------------')
+    print()
 
-# additonal function
-v1 = Vector(2, 4)
-v2 = Vector(2, 1)
+    print('---------------< vector.py example >--------------------')
 
-print('v1 + v2 = ', v1 + v2)
+    # additonal function
+    v1 = Vector(2, 4)
+    v2 = Vector(2, 1)
 
-print()
+    print('v1 + v2 = ', v1 + v2)
 
-# abs function
-v = Vector(3, 4)
-print('abs(Vector(3, 4)) = ', abs(v))
+    print()
 
-print()
+    # abs function
+    v = Vector(3, 4)
+    print('abs(Vector(3, 4)) = ', abs(v))
 
-# Multiplication
-print('Vector(3, 4) * 3 = ', v * 3)
+    print()
 
-print()
+    # Multiplication
+    print('Vector(3, 4) * 3 = ', v * 3)
 
-# abs(Multiplication)
-print('abs(Vector(3, 4) * 3) = {0}'.format(abs(v * 3)))
+    print()
 
+    # abs(Multiplication)
+    print('abs(Vector(3, 4) * 3) = {0}'.format(abs(v * 3)))
 
+if __name__ == '__main__':
+    main()
 
 
 

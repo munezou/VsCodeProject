@@ -84,6 +84,7 @@ class PersonModify:
     def __str__(self):
         return 'My name is {0}.'.format(self.name)
 
+
 john = PersonModify("John")
 print('Hello, ' + str(john))
 
@@ -141,9 +142,3 @@ print("obect.__bytes__({0}) = {1}".format(taro.name, bytes(taro)))
 print("object.__hash__({0}) = {1}".format(taro.name, hash(taro)))
 
 print("object.__eq__({0}) = {1}".format(taro.name, taro == jiro or taro == taro_2))
-
-
-
-
-
-
