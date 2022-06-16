@@ -64,7 +64,7 @@ def main() -> None:
 
     print('-----------< choice card >----------------')
     for i in range(10):
-        print(f'choice time[', i, '] =', choice(deck[i]))
+        print(f"choice time[{i}] = {choice(deck[:])}")
 
     print()
 
